@@ -1,11 +1,64 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
+        "APIOpcionalesSQSIAM": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "Path": "/app/all/",
+                "RoleName": "APIOpcionalesSQSRole",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [ "apigateway.amazonaws.com" ]
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyName": "APIGATEWAYIAMAll",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Resource": "*",
+                                    "Action": [
+                                        "logs:CreateLogGroup",
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ]
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Resource": [ "*" ],
+                                    "Action": [ "sqs:SendMessage" ]
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
         "APIOpcionales": {
             "Type": "AWS::ApiGateway::RestApi",
+            "Description": "Integración de Pedidos para SALN",
             "Properties": {
                 "Name": "APIOpcionales"
             },
+        },
+        "APIOpcionalesValidator": {
+            "Type": "AWS::ApiGateway::RequestValidator",
+            "Properties": {
+                "Name": "Validate Body",
+                "RestApiId": { "Ref": "APIOpcionales" },
+                "ValidateRequestBody": true,
+                "ValidateRequestParameters": false
+            }
         },
         "order": {
             "Type": "AWS::ApiGateway::Resource",
@@ -39,10 +92,14 @@
                         "Ref": "OrderModel"
                     }
                 },
+                "RequestValidatorId": { "Ref": "APIOpcionalesValidator" },
                 "Integration": {
+                    "Type": "AWS",
+                    "Credentials": { 
+                        "Fn::GetAtt": [ "APIOpcionalesSQSIAM", "Arn" ]
+                    },
                     "IntegrationHttpMethod": "POST",
                     "PassthroughBehavior": "NEVER",
-                    "Type": "AWS",
                     "RequestParameters": {
                         "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
                     },
