@@ -1,5 +1,5 @@
 {
-  "name": "sap-worker",
+  "name": "sap-order-worker",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",

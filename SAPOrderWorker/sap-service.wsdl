@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wsdl:definitions targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
                   xmlns:tns="urn:sap-com:document:sap:rfc:functions"
                   xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
                   xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
     <wsdl:documentation>
         <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
     </wsdl:documentation>
-    <wsp:UsingPolicy wsdl:required="false"/>
+    <wsp:UsingPolicy wsdl:required="true"/>
     <wsp:Policy wsu:Id="BN_ZWS_GEN_BINDING">
         <wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
         <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml"
@@ -16,6 +16,7 @@
                                         wsp:Optional="true"/>
         <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
         <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                        xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
                         xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
                         xmlns:wsa="http://www.w3.org/2005/08/addressing"
                         xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility">
@@ -51,6 +52,7 @@
             <sapsession:enableSession>false</sapsession:enableSession>
         </sapsession:Session>
         <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                        xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
                         xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
                         xmlns:wsa="http://www.w3.org/2005/08/addressing"
                         xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
@@ -150,15 +152,14 @@
                     <xsd:maxLength value="6"/>
                 </xsd:restriction>
             </xsd:simpleType>
+            <xsd:simpleType name="char8">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="8"/>
+                </xsd:restriction>
+            </xsd:simpleType>
             <xsd:simpleType name="cuky5">
                 <xsd:restriction base="xsd:string">
                     <xsd:maxLength value="5"/>
-                </xsd:restriction>
-            </xsd:simpleType>
-            <xsd:simpleType name="date">
-                <xsd:restriction base="xsd:string">
-                    <xsd:maxLength value="10"/>
-                    <xsd:pattern value="\d\d\d\d-\d\d-\d\d"/>
                 </xsd:restriction>
             </xsd:simpleType>
             <xsd:simpleType name="decimal28.9">
@@ -203,6 +204,7 @@
                     <xsd:element name="POSNR" type="tns:numeric6"/>
                     <xsd:element name="MATNR" type="tns:char18"/>
                     <xsd:element name="WERKS" type="tns:char4"/>
+                    <xsd:element name="LGORT" type="tns:char4"/>
                     <xsd:element name="MENGE" type="tns:quantum13.3"/>
                     <xsd:element name="MEINS" type="tns:unit3"/>
                     <xsd:element name="MVGR5" type="tns:char3"/>
@@ -270,7 +272,7 @@
                         <xsd:element name="AD_SMTPADR" type="tns:char241" minOccurs="0"/>
                         <xsd:element name="AUART" type="tns:char4"/>
                         <xsd:element name="AUGRU" type="tns:char3" minOccurs="0"/>
-                        <xsd:element name="BSTDK" type="tns:date" minOccurs="0"/>
+                        <xsd:element name="BSTDK" type="tns:char8" minOccurs="0"/>
                         <xsd:element name="BSTKD" type="tns:char35" minOccurs="0"/>
                         <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
                         <xsd:element name="KUNNR" type="tns:char10"/>
