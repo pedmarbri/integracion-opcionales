@@ -1,380 +1,554 @@
 {
-    "AWSTemplateFormatVersion": "2010-09-09",
-    "Resources": {
-        "APIOpcionalesSQSIAM": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "Path": "/app/all/",
-                "RoleName": "APIOpcionalesSQSRole",
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [ "apigateway.amazonaws.com" ]
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                },
-                "Policies": [
-                    {
-                        "PolicyName": "APIGATEWAYIAMAll",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Resource": "*",
-                                    "Action": [
-                                        "logs:CreateLogGroup",
-                                        "logs:CreateLogStream",
-                                        "logs:PutLogEvents"
-                                    ]
-                                },
-                                {
-                                    "Effect": "Allow",
-                                    "Resource": [ "*" ],
-                                    "Action": [ "sqs:SendMessage" ]
-                                }
-                            ]
-                        }
-                    }
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Integracion de pedidos para SALN",
+  "Resources": {
+    "APIOpcionalesSQSIAM": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/app/all/",
+        "RoleName": "APIOpcionalesSQSRole",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "apigateway.amazonaws.com"
                 ]
+              },
+              "Action": "sts:AssumeRole"
             }
+          ]
         },
-        "APIOpcionales": {
-            "Type": "AWS::ApiGateway::RestApi",
-            "Description": "Integración de Pedidos para SALN",
-            "Properties": {
-                "Name": "APIOpcionales"
-            },
-        },
-        "APIOpcionalesValidator": {
-            "Type": "AWS::ApiGateway::RequestValidator",
-            "Properties": {
-                "Name": "Validate Body",
-                "RestApiId": { "Ref": "APIOpcionales" },
-                "ValidateRequestBody": true,
-                "ValidateRequestParameters": false
-            }
-        },
-        "order": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-                "RestApiId": {
-                    "Ref": "APIOpcionales"
+        "Policies": [
+          {
+            "PolicyName": "APIGATEWAYIAMAll",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": "*",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ]
                 },
-                "ParentId": {
-                    "Fn::GetAtt": [
-                        "APIOpcionales",
-                        "RootResourceId"
-                    ]
-                },
-                "PathPart": "order"
-            }
-        },
-        "PostOrder": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-                "ApiKeyRequired": true,
-                "AuthorizationType": "NONE",
-                "HttpMethod": "POST",
-                "ResourceId": {
-                    "Ref": "order"
-                },
-                "RestApiId": {
-                    "Ref": "APIOpcionales"
-                },
-                "RequestModels": {
-                    "application/json": {
-                        "Ref": "OrderModel"
-                    }
-                },
-                "RequestValidatorId": { "Ref": "APIOpcionalesValidator" },
-                "Integration": {
-                    "Type": "AWS",
-                    "Credentials": { 
-                        "Fn::GetAtt": [ "APIOpcionalesSQSIAM", "Arn" ]
-                    },
-                    "IntegrationHttpMethod": "POST",
-                    "PassthroughBehavior": "NEVER",
-                    "RequestParameters": {
-                        "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
-                    },
-                    "IntegrationResponses": [
-                        {
-                            "ResponseTemplates": {
-                                "application/json": "#set($inputRoot = $input.path('$')){\"messaage_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
-                            },
-                            "StatusCode": "200",
-                            "SelectionPattern": ""
-                        }
-                    ],
-                    "Uri": {
-                        "Fn::Join": [
-                            "",
-                            [
-                                "arn:aws:apigateway:", 
-                                {"Ref": "AWS::Region"}, ":sqs:path//", 
-                                {"Ref": "AWS::AccountId"},
-                                {"Fn::GetAtt": ["JobQueue",  "QueueName"]}
-                            ]
-                        ]
-                    }
-                },
-            },
-        },
-        "OrderModel": {
-            "Type": "AWS::ApiGateway::Model",
-            "Properties": {
-                "RestApiId": {
-                    "Ref": "APIOpcionales"
-                },
-                "ContentType": "application/json",
-                "Schema": {
-                    "title": "Order",
-                    "type": "object",
-                    "required": [
-                        "order_id", "timestamp", "shipping_method", "sales_channel", "customer",
-                        "totals", "billing_address", "shipping_address", "items","payment"
-                    ],
-                    "properties": {
-                        "order_id": {
-                            "type": "string"
-                        },
-                        "timestamp": {
-                            "type": "string",
-                            "format": "date-time"
-                        },
-                        "shipping_method": {
-                            "type": "string"
-                        },
-                        "sales_channel": {
-                            "type": "string"
-                        },
-                        "customer": {
-                            "type": "object",
-                            "required": [
-                                "birth_date", "email", "first_name", "last_name", "id_type", 
-                                "id_number", "gender"
-                            ],
-                            "properties": {
-                                "birth_date": {
-                                    "type": "string",
-                                    "format": "date-time"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "format": "email"
-                                },
-                                "first_name": {
-                                    "type": "string"
-                                },
-                                "last_name": {
-                                    "type": "string"
-                                },
-                                "id_type": {
-                                    "type": "string"
-                                },
-                                "id_number": {
-                                    "type": "string"
-                                },
-                                "gender": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "totals": {
-                            "type": "object",
-                            "required": [
-                                "subtotal", "discount", "shipping", "finance_cost", 
-                                "grand_total"
-                            ],
-                            "properties": {
-                                "subtotal": {
-                                    "type": "number",
-                                    "minimum": 0
-                                },
-                                "discount": {
-                                    "type": "number",
-                                    "minimum": 0
-                                },
-                                "shipping": {
-                                    "type": "number",
-                                    "minimum": 0
-                                },
-                                "finance_cost": {
-                                    "type": "number",
-                                    "minimum": 0
-                                },
-                                "grand_total": {
-                                    "type": "number",
-                                    "minimum": 0
-                                }
-                            }
-                        },
-                        "billing_address": {
-                            "type": "object",
-                            "required": [
-                                "country", "region", "city", "post_code", "street", "number", 
-                                "first_name", "last_name", "email", "telephone"
-                            ],
-                            "properties": {
-                                "country": {
-                                    "type": "string"
-                                },
-                                "region": {
-                                    "type": "string"
-                                },
-                                "city": {
-                                    "type": "string"
-                                },
-                                "post_code": {
-                                    "type": "string"
-                                },
-                                "street": {
-                                    "type": "string"
-                                },
-                                "number": {
-                                    "type": "integer"
-                                },
-                                "floor": {
-                                    "type": "string"
-                                },
-                                "apartment": {
-                                    "type": "string"
-                                },
-                                "first_name": {
-                                    "type": "string"
-                                },
-                                "last_name": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "format": "email"
-                                },
-                                "telephone": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "shipping_address": {
-                            "type": "object",
-                            "required": [
-                                "country", "region", "city", "post_code", "street", "number", 
-                                "first_name", "last_name", "email", "telephone"
-                            ],
-                            "properties": {
-                                "country": {
-                                    "type": "string"
-                                },
-                                "region": {
-                                    "type": "string"
-                                },
-                                "city": {
-                                    "type": "string"
-                                },
-                                "post_code": {
-                                    "type": "string"
-                                },
-                                "street": {
-                                    "type": "string"
-                                },
-                                "number": {
-                                    "type": "integer"
-                                },
-                                "floor": {
-                                    "type": "string"
-                                },
-                                "apartment": {
-                                    "type": "string"
-                                },
-                                "first_name": {
-                                    "type": "string"
-                                },
-                                "last_name": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string",
-                                    "format": "email"
-                                },
-                                "telephone": {
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "items": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "required": [
-                                    "sku", "name", "qty", "weight", "row_weight", "list_price",
-                                    "discount_percent", "discount_amount", "row_total"
-                                ],
-                                "properties": {
-                                    "sku": {
-                                        "type": "string"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "qty": {
-                                        "type": "number",
-                                        "exclusiveMinimum": true,
-                                        "minimum": 0
-                                    },
-                                    "weight": {
-                                        "type": "number",
-                                        "minimum": 0
-                                    },
-                                    "row_weight": {
-                                        "type": "number",
-                                        "minimum": 0
-                                    },
-                                    "list_price": {
-                                        "type": "number",
-                                        "exclusiveMinimum": true,
-                                        "minimum": 0
-                                    },
-                                    "discount_percent": {
-                                        "type": "number",
-                                        "minimum": 0
-                                    },
-                                    "discount_amount": {
-                                        "type": "number",
-                                        "minimum": 0
-                                    },
-                                    "row_total": {
-                                        "type": "number",
-                                        "exclusiveMinimum": true,
-                                        "minimum": 0
-                                    }
-                                }
-                            },
-                            "minItems": 1
-                        },
-                        "payment": {
-                            "type": "object",
-                            "required": ["method", "transaction_id"],
-                            "properties": {
-                                "method": {
-                                    "type": "string"
-                                },
-                                "transaction_id": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
+                {
+                  "Effect": "Allow",
+                  "Resource": [
+                    "*"
+                  ],
+                  "Action": [
+                    "sqs:SendMessage"
+                  ]
                 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "APIOpcionales": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Description": "Integración de Pedidos para SALN",
+      "Properties": {
+        "Name": "APIOpcionales"
+      }
+    },
+    "APIOpcionalesValidator": {
+      "Type": "AWS::ApiGateway::RequestValidator",
+      "Properties": {
+        "Name": "Validate Body",
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ValidateRequestBody": true,
+        "ValidateRequestParameters": false
+      }
+    },
+    "APIOpcionalesOrderResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "APIOpcionales",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "order"
+      }
+    },
+    "PostOrder": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "APIOpcionalesOrderResource"
+        },
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "OrderModel"
+          }
+        },
+        "RequestValidatorId": {
+          "Ref": "APIOpcionalesValidator"
+        },
+        "Integration": {
+          "Type": "AWS",
+          "Credentials": {
+            "Fn::GetAtt": [
+              "APIOpcionalesSQSIAM",
+              "Arn"
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "NEVER",
+          "RequestParameters": {
+            "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+          },
+          "RequestTemplates": {
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"order\",\"payload\":$input.body}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"messaage_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
+              },
+              "StatusCode": "200",
+              "SelectionPattern": ""
+            }
+          ],
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":sqs:path//",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                "/",
+                {
+                  "Fn::GetAtt": [
+                    "JobQueue",
+                    "QueueName"
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            }
+          },
+          {
+            "StatusCode": "400",
+            "ResponseModels": {
+              "application/json": "Error"
+            }
+          }
+        ]
+      }
+    },
+    "OrderModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "title": "Order",
+          "type": "object",
+          "required": [
+            "order_id",
+            "timestamp",
+            "shipping_method",
+            "sales_channel",
+            "customer",
+            "totals",
+            "billing_address",
+            "shipping_address",
+            "items",
+            "payment"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
             },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "shipping_method": {
+              "type": "string"
+            },
+            "sales_channel": {
+              "type": "string"
+            },
+            "customer": {
+              "type": "object",
+              "required": [
+                "birth_date",
+                "email",
+                "first_name",
+                "last_name",
+                "id_type",
+                "id_number",
+                "gender"
+              ],
+              "properties": {
+                "birth_date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "id_type": {
+                  "type": "string"
+                },
+                "id_number": {
+                  "type": "string"
+                },
+                "gender": {
+                  "type": "string"
+                }
+              }
+            },
+            "totals": {
+              "type": "object",
+              "required": [
+                "subtotal",
+                "discount",
+                "shipping",
+                "finance_cost",
+                "grand_total"
+              ],
+              "properties": {
+                "subtotal": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "discount": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "shipping": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "finance_cost": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "grand_total": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "billing_address": {
+              "type": "object",
+              "required": [
+                "country",
+                "region",
+                "city",
+                "post_code",
+                "street",
+                "number",
+                "first_name",
+                "last_name",
+                "email",
+                "telephone"
+              ],
+              "properties": {
+                "country": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "post_code": {
+                  "type": "string"
+                },
+                "street": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "floor": {
+                  "type": "string"
+                },
+                "apartment": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "telephone": {
+                  "type": "string"
+                }
+              }
+            },
+            "shipping_address": {
+              "type": "object",
+              "required": [
+                "country",
+                "region",
+                "city",
+                "post_code",
+                "street",
+                "number",
+                "first_name",
+                "last_name",
+                "email",
+                "telephone"
+              ],
+              "properties": {
+                "country": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "post_code": {
+                  "type": "string"
+                },
+                "street": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "floor": {
+                  "type": "string"
+                },
+                "apartment": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "telephone": {
+                  "type": "string"
+                }
+              }
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "name",
+                  "qty",
+                  "weight",
+                  "row_weight",
+                  "list_price",
+                  "discount_percent",
+                  "discount_amount",
+                  "row_total"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "qty": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                  },
+                  "weight": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "row_weight": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "list_price": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                  },
+                  "discount_percent": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "discount_amount": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "row_total": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                  }
+                }
+              },
+              "minItems": 1
+            },
+            "payment": {
+              "type": "object",
+              "required": [
+                "method",
+                "transaction_id"
+              ],
+              "properties": {
+                "method": {
+                  "type": "string"
+                },
+                "transaction_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "JobQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "JobBrokerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2017-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "lambda.amazon.com" },
+              "Action": [ "sts:AssumeRole" ]
+            }
+          ],
         },
-        "JobQueue": {
-            "Type": "AWS::SQS::Queue",
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "Version" : "2012-10-17",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn::aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsRead",
+            "Version" : "2012-10-17",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [ "sqs:ReceiveMessage" ],
+                  "Resource": { "Fn::GetAtt": [ "JobQueue", "Arn" ] }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsWrite",
+            "Version" : "2012-10-17",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [ "sqs:SendMessage" ],
+                  "Resource": { "Fn::GetAtt": [ "SapOrderQueue", "Arn" ] }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "JobBroker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./JobBroker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": { "Fn::GetAtt": [ "JobBrokerRole", "Arn" ] },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "JOB_QUEUE_URL": { "Ref": "JobQueue" },
+            "SAP_ORDER_QUEUE_URL": { "Ref": "SapOrderQueue" }
+          }
         },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(1 minute)"
+            }
+          }
+        }
+      }
+    },
+    "SapOrderQueue": {
+      "Type": "AWS::SQS::Queue"
     }
+  }
 }

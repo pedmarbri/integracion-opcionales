@@ -1,0 +1,16 @@
+{
+  "name": "job-broker",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/jshint ."
+  },
+  "dependencies": {
+    "async": "2.0.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.206.0",
+    "jshint": "2.9.1"
+  }
+}
