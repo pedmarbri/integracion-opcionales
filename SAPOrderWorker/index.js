@@ -38,7 +38,7 @@ exports.handler = function(event, context, callback) {
                 },
                 {
                     KPOSN: null,  // ???
-                    KSCHL: 'ZPBI',  // ???
+                    KSCHL: 'ZCEI',  // ???
                     KBETR: 42.65,  // ???
                     WAERS: 'ARK'  // ???
                 }
@@ -48,7 +48,7 @@ exports.handler = function(event, context, callback) {
             item: [
                 {
                     POSNR: 10,  // !!!
-                    MATNR: '123', // !!!
+                    MATNR: 'OPC110741008', // !!!
                     WERKS: 'SALN',
                     LGORT: 'GSTK',
                     MENGE: '1',  // !!!

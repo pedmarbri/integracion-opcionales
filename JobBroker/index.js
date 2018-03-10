@@ -24,10 +24,12 @@ function receiveMessages(callback) {
     });
 }
 
-function sendToSapOrderQueue(message, callback) {
+function sendToSapOrderQueue(order, callback) {
+    console.log(order);
+
     var params = {
         QueueUrl: SAP_ORDER_QUEUE_URL,
-        MessageBody: JSON.stringify(message.payload)
+        MessageBody: JSON.stringify(order)
     };
 
     sqs.sendMessage(params, function(err, data) {
@@ -45,9 +47,15 @@ function handleSQSMessages(context, callback) {
         if (messages && messages.length > 0) {
             var invocations = [];
             messages.forEach(function(message) {
-                invocations.push(function(callback) {
-                    sendToSapOrderQueue(message, callback);
-                });
+
+                var messageBody = JSON.parse(message.Body);
+
+                if (messageBody.type === 'order') {
+                    invocations.push(function(callback) {
+                        sendToSapOrderQueue(message.payload, callback);
+                    });
+                }
+
             });
             async.parallel(invocations, function(err) {
                 if (err) {
@@ -67,6 +75,12 @@ function handleSQSMessages(context, callback) {
     });
 }
 
+// TODO Delete processed messages
+
 exports.handler = function (event, context, callback) {
-    handleSQSMessages(context, callback);
+    handleSQSMessages(context, function(err) {
+        if (err) {
+            callback(err);
+        }
+    });
 };
