@@ -42,21 +42,49 @@ function sendToSapOrderQueue(order, callback) {
     });
 }
 
+function deleteMessage(receiptHandle, callback) {
+    var params = {
+        QueueUrl: JOB_QUEUE_URL,
+        ReceiptHandle: receiptHandle
+    };
+
+    sqs.deleteMessage(params, function(err, data) {
+        if (err) {
+            console.error(err, err.stack);
+            callback(err);
+        } else {
+            callback(null, "DONE");
+        }
+    });
+}
+
 function handleSQSMessages(context, callback) {
     receiveMessages(function(err, messages) {
+        function handleIndividualMessage (message) {
+            var messageBody = JSON.parse(message.Body);
+
+            // TODO Send to DynamoDB
+            // TODO Delete processed messages
+            if (messageBody.type === 'order') {
+                invocations.push(function(callback) {
+                    sendToSapOrderQueue(messageBody.payload, function(err, data) {
+                        if (err) {
+                            console.error(err, err.stack);
+                            callback(err);
+                            return;
+                        }
+
+                        deleteMessage(message.ReceiptHandle, callback);
+                    });
+                });
+            }
+
+        }
+
         if (messages && messages.length > 0) {
             var invocations = [];
-            messages.forEach(function(message) {
 
-                var messageBody = JSON.parse(message.Body);
-
-                if (messageBody.type === 'order') {
-                    invocations.push(function(callback) {
-                        sendToSapOrderQueue(message.payload, callback);
-                    });
-                }
-
-            });
+            messages.forEach(handleIndividualMessage);
             async.parallel(invocations, function(err) {
                 if (err) {
                     console.error(err, err.stack);
@@ -75,7 +103,6 @@ function handleSQSMessages(context, callback) {
     });
 }
 
-// TODO Delete processed messages
 
 exports.handler = function (event, context, callback) {
     handleSQSMessages(context, function(err) {

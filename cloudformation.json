@@ -499,7 +499,8 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "sqs:ReceiveMessage"
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage"
                   ],
                   "Resource": {
                     "Fn::Sub": "${JobQueue.Arn}"
