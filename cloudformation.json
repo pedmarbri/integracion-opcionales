@@ -467,6 +467,81 @@
         }
       }
     },
+    "CreditMemoModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "title": "Credit Memo",
+          "type": "object",
+          "required": [
+            "creditmemo_id",
+            "order_id",
+            "timestamp",
+            "totals",
+            "items",
+            "payment"
+          ],
+          "properties": {
+            "creditmemo_id": {
+              "type": "string"
+            },
+            "order_id": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "totals": {
+              "type": "object",
+              "properties": {
+                "shipping": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "qty",
+                  "refund_amount",
+                  "row_total"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string"
+                  },
+                  "qty": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "refund_amount": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "row_total": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "JobQueue": {
       "Type": "AWS::SQS::Queue"
     },
