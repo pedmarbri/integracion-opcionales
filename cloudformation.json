@@ -434,6 +434,12 @@
                     "type": "number",
                     "exclusiveMinimum": true,
                     "minimum": 0
+                  },
+                  "flags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 }
               },

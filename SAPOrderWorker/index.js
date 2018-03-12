@@ -57,9 +57,15 @@ function formatCustomerIdNumber(customer) {
 }
 
 function formatPriceCondition(item, index) {
+    var priceType = UNIT_PRICE_CONDITION;
+
+    if (item.flags && item.flags.indexOf('exclusive') > -1) {
+        priceType = EXCLUSIVE_PRICE_CONDITION;
+    }
+
     return {
         KPOSN: (index + 1) * 10,
-        KSCHL: UNIT_PRICE_CONDITION,
+        KSCHL: priceType,
         KBETR: item.list_price,
         WAERS: CONDITION_CURRENCY
     };
@@ -189,14 +195,15 @@ function work(order, callback) {
 
         console.log(JSON.stringify(params));
         callback();
-        return;
 
         // client.ZWS_GEN_PED(params, function(err, data) {
+        //     console.log(client.lastRequest);
         //     if (err) {
         //         callback(err);
         //     }
         //
-        //     callback(null, client.lastResponse);
+        //     console.log(client.lastResponse);
+        //     callback();
         // });
     });
 }
