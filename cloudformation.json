@@ -56,7 +56,7 @@
       "Type": "AWS::ApiGateway::RestApi",
       "Description": "Integración de Pedidos para SALN",
       "Properties": {
-        "Name": "APIOpcionales"
+        "Name": "Order API"
       }
     },
     "APIOpcionalesValidator": {
@@ -124,7 +124,7 @@
           "IntegrationResponses": [
             {
               "ResponseTemplates": {
-                "application/json": "#set($inputRoot = $input.path('$')){\"messaage_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
+                "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
               },
               "StatusCode": "200",
               "SelectionPattern": ""
@@ -467,6 +467,105 @@
         }
       }
     },
+    "APIOpcionalesCreditMemoResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "APIOpcionales",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "creditmemo"
+      }
+    },
+    "PostCreditMemo": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "APIOpcionalesCreditMemoResource"
+        },
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "CreditMemoModel"
+          }
+        },
+        "RequestValidatorId": {
+          "Ref": "APIOpcionalesValidator"
+        },
+        "Integration": {
+          "Type": "AWS",
+          "Credentials": {
+            "Fn::GetAtt": [
+              "APIOpcionalesSQSIAM",
+              "Arn"
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "NEVER",
+          "RequestParameters": {
+            "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+          },
+          "RequestTemplates": {
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"creditmemo\",\"payload\":$input.body}"
+          },
+          "IntegrationResponses": [
+            {
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
+              },
+              "StatusCode": "200",
+              "SelectionPattern": ""
+            }
+          ],
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":sqs:path//",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                "/",
+                {
+                  "Fn::GetAtt": [
+                    "JobQueue",
+                    "QueueName"
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            }
+          },
+          {
+            "StatusCode": "400",
+            "ResponseModels": {
+              "application/json": "Error"
+            }
+          }
+        ]
+      }
+    },
     "CreditMemoModel": {
       "Type": "AWS::ApiGateway::Model",
       "Properties": {
@@ -482,8 +581,7 @@
             "order_id",
             "timestamp",
             "totals",
-            "items",
-            "payment"
+            "items"
           ],
           "properties": {
             "creditmemo_id": {
@@ -553,8 +651,14 @@
           "Statement": [
             {
               "Effect": "Allow",
-              "Principal": { "Service": [ "lambda.amazonaws.com" ] },
-              "Action": [ "sts:AssumeRole" ]
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
             }
           ]
         },
@@ -599,8 +703,12 @@
               "Statement": [
                 {
                   "Effect": "Allow",
-                  "Action": [ "sqs:SendMessage" ],
-                  "Resource": { "Fn::Sub": "${SapOrderQueue.Arn}" }
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapOrderQueue.Arn}"
+                  }
                 }
               ]
             }
@@ -614,13 +722,22 @@
         "CodeUri": "./JobBroker",
         "Handler": "index.handler",
         "MemorySize": 128,
-        "Role": { "Fn::GetAtt": [ "JobBrokerRole", "Arn" ] },
+        "Role": {
+          "Fn::GetAtt": [
+            "JobBrokerRole",
+            "Arn"
+          ]
+        },
         "Runtime": "nodejs6.10",
         "Timeout": 60,
         "Environment": {
           "Variables": {
-            "JOB_QUEUE_URL": { "Ref": "JobQueue" },
-            "SAP_ORDER_QUEUE_URL": { "Ref": "SapOrderQueue" }
+            "JOB_QUEUE_URL": {
+              "Ref": "JobQueue"
+            },
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
+            }
           }
         },
         "Events": {
@@ -633,7 +750,7 @@
         },
         "Tags": {
           "COST CENTER": "integracion-colecciones",
-          "Stack": "Dev"
+          "Stack": "Test"
         }
       }
     },
@@ -684,7 +801,9 @@
                   "Action": [
                     "sqs:ReceiveMessage"
                   ],
-                  "Resource": { "Fn::Sub": "${SapOrderQueue.Arn}" }
+                  "Resource": {
+                    "Fn::Sub": "${SapOrderQueue.Arn}"
+                  }
                 }
               ]
             }
@@ -780,20 +899,20 @@
           },
           {
             "PolicyName": "VPC-execution",
-            "PolicyDocument":{
-               "Statement":[
+            "PolicyDocument": {
+              "Statement": [
                 {
-                  "Effect":"Allow",
-                  "Action":[
-                      "ec2:CreateNetworkInterface",
-                      "ec2:DescribeNetworkInterfaces",
-                      "ec2:DetachNetworkInterface",
-                      "ec2:DeleteNetworkInterface"
-                       ],
-                  "Resource":"*"
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
                 }
-               ]
-             }
+              ]
+            }
           },
           {
             "PolicyName": "sqs",
