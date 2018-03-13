@@ -630,7 +630,17 @@
               "Schedule": "rate(1 minute)"
             }
           }
-        }
+        },
+        "Tags": [
+          {
+            "key": "COST CENTER",
+            "value": "integracion-colecciones"
+          },
+          {
+            "key": "Stack",
+            "value": "Dev"
+          }
+        ]
       }
     },
     "SapOrderQueue": {
@@ -732,7 +742,17 @@
               "Schedule": "rate(1 minute)"
             }
           }
-        }
+        },
+        "Tags": [
+          {
+            "key": "COST CENTER",
+            "value": "integracion-colecciones"
+          },
+          {
+            "key": "Stack",
+            "value": "Dev"
+          }
+        ]
       }
     },
     "SapOrderWorkerRole": {
@@ -806,7 +826,17 @@
               "Ref": "SapOrderQueue"
             }
           }
-        }
+        },
+        "Tags": [
+          {
+            "key": "COST CENTER",
+            "value": "integracion-colecciones"
+          },
+          {
+            "key": "Stack",
+            "value": "Dev"
+          }
+        ]
       }
     }
   }
