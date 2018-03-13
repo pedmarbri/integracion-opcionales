@@ -631,16 +631,10 @@
             }
           }
         },
-        "Tags": [
-          {
-            "key": "COST CENTER",
-            "value": "integracion-colecciones"
-          },
-          {
-            "key": "Stack",
-            "value": "Dev"
-          }
-        ]
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": "Dev"
+        }
       }
     },
     "SapOrderQueue": {
@@ -743,16 +737,10 @@
             }
           }
         },
-        "Tags": [
-          {
-            "key": "COST CENTER",
-            "value": "integracion-colecciones"
-          },
-          {
-            "key": "Stack",
-            "value": "Dev"
-          }
-        ]
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": "Dev"
+        }
       }
     },
     "SapOrderWorkerRole": {
@@ -844,16 +832,10 @@
             }
           }
         },
-        "Tags": [
-          {
-            "key": "COST CENTER",
-            "value": "integracion-colecciones"
-          },
-          {
-            "key": "Stack",
-            "value": "Dev"
-          }
-        ]
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": "Dev"
+        }
       }
     }
   }
