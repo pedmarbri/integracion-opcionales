@@ -641,6 +641,19 @@
       }
     },
     "JobQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "MessageRetentionPeriod": 3600,
+        "VisibilityTimeout": 60,
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${JobDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "JobDeadLetterQueue": {
       "Type": "AWS::SQS::Queue"
     },
     "JobBrokerRole": {
