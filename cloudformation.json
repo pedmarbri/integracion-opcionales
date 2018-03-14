@@ -119,15 +119,22 @@
             "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
           },
           "RequestTemplates": {
-            "application/json": "Action=SendMessage&MessageBody={\"type\":\"order\",\"payload\":$input.body}"
+            "application/json": "Action=SendMessage&MessageBody=$util.urlEncode({\"type\":\"order\",\"payload\":$input.json('$')})"
           },
           "IntegrationResponses": [
             {
+              "StatusCode": "200",
               "ResponseTemplates": {
                 "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
               },
-              "StatusCode": "200",
-              "SelectionPattern": ""
+              "SelectionPattern": "2\\d{2}"
+            },
+            {
+              "StatusCode": "400",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message\" : \"$inputRoot.Error.Code\"}"
+              },
+              "SelectionPattern": "4\\d{2}"
             }
           ],
           "Uri": {
@@ -432,7 +439,6 @@
                   },
                   "row_total": {
                     "type": "number",
-                    "exclusiveMinimum": true,
                     "minimum": 0
                   },
                   "flags": {
@@ -516,15 +522,22 @@
             "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
           },
           "RequestTemplates": {
-            "application/json": "Action=SendMessage&MessageBody={\"type\":\"creditmemo\",\"payload\":$input.body}"
+            "application/json": "Action=SendMessage&MessageBody=$util.urlEncode({\"type\":\"creditmemo\",\"payload\":$input.json('$')})"
           },
           "IntegrationResponses": [
             {
+              "StatusCode": "200",
               "ResponseTemplates": {
                 "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
               },
-              "StatusCode": "200",
-              "SelectionPattern": ""
+              "SelectionPattern": "2\\d{2}"
+            },
+            {
+              "StatusCode": "400",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message\" : \"$inputRoot.Error.Code\"}"
+              },
+              "SelectionPattern": "4\\d{2}"
             }
           ],
           "Uri": {
