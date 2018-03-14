@@ -643,7 +643,6 @@
     "JobQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "MessageRetentionPeriod": 3600,
         "VisibilityTimeout": 60,
         "RedrivePolicy": {
           "deadLetterTargetArn": {
@@ -768,6 +767,17 @@
       }
     },
     "SapOrderQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${SapOrderDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "SapOrderDeadLetterQueue": {
       "Type": "AWS::SQS::Queue"
     },
     "SapOrderConsumerRole": {
