@@ -194,17 +194,16 @@ function work(order, callback) {
         };
 
         console.log(JSON.stringify(params));
-        callback();
 
-        // client.ZWS_GEN_PED(params, function(err, data) {
-        //     console.log(client.lastRequest);
-        //     if (err) {
-        //         callback(err);
-        //     }
-        //
-        //     console.log(client.lastResponse);
-        //     callback();
-        // });
+        client.ZWS_GEN_PED(params, function(err, data) {
+            console.log(client.lastRequest);
+            if (err) {
+                callback(err);
+            }
+
+            console.log(client.lastResponse);
+            callback();
+        });
     });
 }
 
