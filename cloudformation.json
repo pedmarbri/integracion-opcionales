@@ -119,7 +119,7 @@
             "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
           },
           "RequestTemplates": {
-            "application/json": "Action=SendMessage&MessageBody=$util.urlEncode({\"type\":\"order\",\"payload\":$input.json('$')})"
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"order\",\"payload\":$input.json('$')}"
           },
           "IntegrationResponses": [
             {
@@ -522,7 +522,7 @@
             "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
           },
           "RequestTemplates": {
-            "application/json": "Action=SendMessage&MessageBody=$util.urlEncode({\"type\":\"creditmemo\",\"payload\":$input.json('$')})"
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"creditmemo\",\"payload\":$input.json('$')}"
           },
           "IntegrationResponses": [
             {
