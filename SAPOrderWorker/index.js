@@ -15,6 +15,7 @@ var EXCLUSIVE_PRICE_CONDITION = 'ZPEE';
 var SHIPPING_CONDITION = 'ZCEI';
 var PERCENT_DISCOUNT_CONDITION = 'ZBP1';
 var FIXED_DISCOUNT_CONDITION = 'ZBP';
+var EXCLUSIVE_DISCOUNT_CONDITION = 'ZBEE';
 var CONDITION_CURRENCY = 'ARK';
 
 var sqs = new AWS.SQS({region: AWS_REGION});
@@ -77,11 +78,18 @@ function formatDiscountCondition(item, index) {
     }
 
     var discountIsPercent = item.discount_percent > 0;
+    let discountType = discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION;
+    let discountAmount = discountIsPercent ? item.discount_percent : item.discount_amount;
+
+    if (item.flags && item.flags.indexOf('exclusive') > -1) {
+        discountType = EXCLUSIVE_DISCOUNT_CONDITION;
+        discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.list_price);
+    }
 
     return {
         KPOSN: (index + 1) * 10,
-        KSCHL: discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION,
-        KBETR: discountIsPercent ? item.discount_percent : item.discount_amount,
+        KSCHL: discountType,
+        KBETR: discountAmount,
         WAERS: discountIsPercent ? null : CONDITION_CURRENCY
     };
 }

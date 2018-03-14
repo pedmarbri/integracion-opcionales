@@ -644,7 +644,6 @@
                   "row_total": {
                     "type": "number",
                     "minimum": 0,
-                    "exclusiveMinimum": true
                   }
                 }
               }
