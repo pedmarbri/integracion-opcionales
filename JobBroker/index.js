@@ -1,16 +1,16 @@
 'use strict';
 
-var AWS = require('aws-sdk');
-var async = require('async');
+const AWS = require('aws-sdk');
+const async = require('async');
 
-var JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
-var SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
-var AWS_REGION = process.env.AWS_REGION;
+const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
+const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
+const AWS_REGION = process.env.AWS_REGION;
 
-var sqs = new AWS.SQS({region: AWS_REGION});
+const sqs = new AWS.SQS({ region: AWS_REGION });
 
 function receiveMessages(callback) {
-    var params = {
+    const params = {
         QueueUrl: JOB_QUEUE_URL,
         MaxNumberOfMessages: 10
     };
@@ -25,9 +25,8 @@ function receiveMessages(callback) {
 }
 
 function sendToSapOrderQueue(order, callback) {
-    console.log(order);
 
-    var params = {
+    const params = {
         QueueUrl: SAP_ORDER_QUEUE_URL,
         MessageBody: JSON.stringify(order)
     };
@@ -43,12 +42,12 @@ function sendToSapOrderQueue(order, callback) {
 }
 
 function deleteMessage(receiptHandle, callback) {
-    var params = {
+    const params = {
         QueueUrl: JOB_QUEUE_URL,
         ReceiptHandle: receiptHandle
     };
 
-    sqs.deleteMessage(params, function(err, data) {
+    sqs.deleteMessage(params, function(err) {
         if (err) {
             console.error(err, err.stack);
             callback(err);
@@ -60,14 +59,16 @@ function deleteMessage(receiptHandle, callback) {
 
 function handleSQSMessages(context, callback) {
     receiveMessages(function(err, messages) {
-        function handleIndividualMessage (message) {
-            var messageBody = JSON.parse(message.Body);
+        let invocations = [];
+
+        function handleIndividualMessage(message) {
+            const messageBody = JSON.parse(message.Body);
 
             // TODO Send to DynamoDB
             // TODO Delete processed messages
             if (messageBody.type === 'order') {
                 invocations.push(function(callback) {
-                    sendToSapOrderQueue(messageBody.payload, function(err, data) {
+                    sendToSapOrderQueue(messageBody.payload, function(err) {
                         if (err) {
                             console.error(err, err.stack);
                             callback(err);
@@ -82,7 +83,6 @@ function handleSQSMessages(context, callback) {
         }
 
         if (messages && messages.length > 0) {
-            var invocations = [];
 
             messages.forEach(handleIndividualMessage);
             async.parallel(invocations, function(err) {
@@ -106,8 +106,7 @@ function handleSQSMessages(context, callback) {
 
 exports.handler = function (event, context, callback) {
     handleSQSMessages(context, function(err) {
-        if (err) {
-            callback(err);
-        }
+        console.log("handleSQSMessages -> callback");
+        callback(err);
     });
 };
