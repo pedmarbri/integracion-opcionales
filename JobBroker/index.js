@@ -1,7 +1,6 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const async = require('async');
 
 const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
 const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
@@ -9,103 +8,83 @@ const AWS_REGION = process.env.AWS_REGION;
 
 const sqs = new AWS.SQS({ region: AWS_REGION });
 
-function receiveMessages(callback) {
-    const params = {
-        QueueUrl: JOB_QUEUE_URL,
-        MaxNumberOfMessages: 10
-    };
-    sqs.receiveMessage(params, function(err, data) {
-        if (err) {
-            console.error(err, err.stack);
-            callback(err);
-        } else {
-            callback(null, data.Messages);
-        }
-    });
-}
+exports.handler = function (event, context, callback) {
+    console.log('sendMessageToSapOrderQueue');
+    const params2 = {QueueUrl: JOB_QUEUE_URL, MaxNumberOfMessages: 10};
+    let receiveMessagesPromise = sqs.receiveMessage(params2).promise();
 
-function sendToSapOrderQueue(order, callback) {
+    let sendMessageToSapOrderQueue = payload => {
+        console.log('sendMessageToSapOrderQueue - ' + payload.order_id);
+        const params = {
+            QueueUrl: SAP_ORDER_QUEUE_URL,
+            MessageBody: JSON.stringify(payload)
+        };
 
-    const params = {
-        QueueUrl: SAP_ORDER_QUEUE_URL,
-        MessageBody: JSON.stringify(order)
+        return sqs.sendMessage(params).promise();
     };
 
-    sqs.sendMessage(params, function(err, data) {
-        if (err) {
-            console.error(err, err.stack);
-            callback(err);
-        } else {
-            callback(null, data.MessageId);
-        }
-    });
-}
+    let deleteFromJobQueue = message => {
+        return () => {
+            console.log('deleteFromJobQueue - ' + message.MessageId);
 
-function deleteMessage(receiptHandle, callback) {
-    const params = {
-        QueueUrl: JOB_QUEUE_URL,
-        ReceiptHandle: receiptHandle
+            const params = {
+                QueueUrl: JOB_QUEUE_URL,
+                ReceiptHandle: message.ReceiptHandle
+            };
+
+            return sqs.deleteMessage(params).promise();
+        };
     };
 
-    sqs.deleteMessage(params, function(err) {
-        if (err) {
-            console.error(err, err.stack);
-            callback(err);
-        } else {
-            callback(null, "DONE");
-        }
-    });
-}
-
-function handleSQSMessages(context, callback) {
-    receiveMessages(function(err, messages) {
-        let invocations = [];
-
-        function handleIndividualMessage(message) {
+    let processSingleMessage = message => {
+        return new Promise((resolve, reject) => {
             const messageBody = JSON.parse(message.Body);
+            const acceptedTypes = ['order', 'creditmemo'];
 
-            // TODO Send to DynamoDB
-            // TODO Delete processed messages
-            if (messageBody.type === 'order') {
-                invocations.push(function(callback) {
-                    sendToSapOrderQueue(messageBody.payload, function(err) {
-                        if (err) {
-                            console.error(err, err.stack);
-                            callback(err);
-                            return;
-                        }
+            if (acceptedTypes.indexOf(messageBody.type) < 0) {
+                reject(new Error("Invalid message type"));
+            } else {
+                switch (messageBody.type) {
+                    case 'order':
+                        sendMessageToSapOrderQueue(messageBody.payload)
+                            .then(deleteFromJobQueue(message))
+                            .then(Promise.resolve("Done " + message.MessageId))
+                            .catch(err => resolve(err));
 
-                        deleteMessage(message.ReceiptHandle, callback);
-                    });
-                });
+                        break;
+
+                    case 'creditmemo':
+                        // TBD
+                        resolve('creditmemo is not yet implemented');
+                        break;
+
+                    default:
+                        reject(new Error('Unexpected type case'));
+                }
             }
 
-        }
+        });
+    };
+
+    let processMessages = sqsResult => {
+        let messages = sqsResult.Messages;
 
         if (messages && messages.length > 0) {
-
-            messages.forEach(handleIndividualMessage);
-            async.parallel(invocations, function(err) {
-                if (err) {
-                    console.error(err, err.stack);
-                    callback(err);
-                } else {
-                    if (context.getRemainingTimeInMillis() > 20000) {
-                        handleSQSMessages(context, callback);
-                    } else {
-                        callback(null, 'PAUSE');
-                    }
-                }
-            });
-        } else {
-            callback(null, 'DONE');
+            return Promise.all(messages.map(message => processSingleMessage(message)));
         }
-    });
-}
 
+        return Promise.resolve("No messages");
+    };
 
-exports.handler = function (event, context, callback) {
-    handleSQSMessages(context, function(err) {
-        callback(err);
-    });
+    receiveMessagesPromise
+        .then(processMessages)
+        .then(result => {
+            console.log(result);
+            callback(null, result);
+        })
+        .catch(error => {
+           console.log(error);
+           callback(error);
+        });
+
 };
