@@ -6,13 +6,13 @@ const sinon = require( 'sinon' );
 
 LambdaTester.checkForResourceLeak(true);
 
-describe("Job Broker handler", function () {
+describe("Job Broker handler", () => {
 
     let AWSStub = {};
     let sqsStub = {};
     let JobBroker = {};
 
-    beforeEach(function() {
+    beforeEach(() => {
         sqsStub = {
             receiveMessage: sinon.stub(),
             sendMessage: sinon.stub(),
@@ -28,7 +28,7 @@ describe("Job Broker handler", function () {
         });
     });
 
-    it("is successful with no queued messages", function (done) {
+    it("is successful with no queued messages", (done) => {
         sqsStub.receiveMessage.yieldsAsync(null, []);
 
         return LambdaTester(JobBroker.handler)

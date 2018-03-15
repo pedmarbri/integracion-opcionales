@@ -106,7 +106,6 @@ function handleSQSMessages(context, callback) {
 
 exports.handler = function (event, context, callback) {
     handleSQSMessages(context, function(err) {
-        console.log("handleSQSMessages -> callback");
         callback(err);
     });
 };
