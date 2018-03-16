@@ -1,6 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const JobQueueService = require('./job-queue-service');
 
 const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
 const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
@@ -9,11 +10,7 @@ const AWS_REGION = process.env.AWS_REGION;
 const sqs = new AWS.SQS({ region: AWS_REGION });
 const db = new AWS.DynamoDB();
 
-
 exports.handler = function (event, context, callback) {
-    console.log('sendMessageToSapOrderQueue');
-    const params2 = {QueueUrl: JOB_QUEUE_URL, MaxNumberOfMessages: 10};
-    let receiveMessagesPromise = sqs.receiveMessage(params2).promise();
 
     let sendMessageToSapOrderQueue = payload => {
         console.log('sendMessageToSapOrderQueue - ' + payload.order_id);
@@ -98,7 +95,7 @@ exports.handler = function (event, context, callback) {
         return Promise.resolve("No messages");
     };
 
-    receiveMessagesPromise
+    JobQueueService.receiveMessages()
         .then(processMessages)
         .then(result => {
             console.log(result);
@@ -108,5 +105,4 @@ exports.handler = function (event, context, callback) {
            console.log(error);
            callback(error);
         });
-
 };
