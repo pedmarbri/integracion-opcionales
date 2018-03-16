@@ -43,10 +43,10 @@ exports.handler = function (event, context, callback) {
             const params = {
                 Item: {
                     order_id: {
-                        S: '123'
+                        S: message.payload.order_id
                     },
                     payload: {
-                        S: 'a very long json string'
+                        S: JSON.stringify(message.payload)
                     }
                 },
                 TableName: 'Order',
@@ -69,7 +69,7 @@ exports.handler = function (event, context, callback) {
                     case 'order':
                         sendMessageToSapOrderQueue(messageBody.payload)
                             .then(deleteFromJobQueue(message))
-                            .then(saveInDb(message))
+                            .then(saveInDb(messageBody))
                             .then(Promise.resolve("Done " + message.MessageId))
                             .catch(err => resolve(err));
 
