@@ -57,7 +57,7 @@
                         xmlns:wsa="http://www.w3.org/2005/08/addressing"
                         xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
     </wsp:Policy>
-    <wsp:Policy wsu:Id="OP_ZWS_GEN_NC">
+    <wsp:Policy wsu:Id="OP_ZWS_GEN_PED">
         <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false
         </sapcomhnd:enableCommit>
         <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true
@@ -66,7 +66,7 @@
         </saptrhnw05:required>
         <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
     </wsp:Policy>
-    <wsp:Policy wsu:Id="OP_ZWS_GEN_PED">
+    <wsp:Policy wsu:Id="OP_ZWS_GEN_NC">
         <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false
         </sapcomhnd:enableCommit>
         <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true
@@ -171,11 +171,6 @@
                 <xsd:restriction base="xsd:decimal">
                     <xsd:totalDigits value="28"/>
                     <xsd:fractionDigits value="9"/>
-                </xsd:restriction>
-            </xsd:simpleType>
-            <xsd:simpleType name="lang">
-                <xsd:restriction base="xsd:string">
-                    <xsd:maxLength value="1"/>
                 </xsd:restriction>
             </xsd:simpleType>
             <xsd:simpleType name="numeric3">
@@ -292,7 +287,7 @@
                         <xsd:element name="COUNTRY" type="tns:char3"/>
                         <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
                         <xsd:element name="KUNNR" type="tns:char10"/>
-                        <xsd:element name="LANGU" type="tns:lang"/>
+                        <xsd:element name="LANGU" type="tns:char1"/>
                         <xsd:element name="NAME1" type="tns:char30"/>
                         <xsd:element name="NAME4" type="tns:char30" minOccurs="0"/>
                         <xsd:element name="SPART" type="tns:char2"/>
@@ -375,10 +370,10 @@
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
-    <wsdl:service name="ZSW_GEN">
+    <wsdl:service name="ZWS_GEN">
         <wsdl:port name="ZWS_GEN_BINDING" binding="tns:ZWS_GEN_BINDING">
             <soap:address
-                    location="http://srvsapdes1.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zsw_gen/zws_gen_binding"/>
+                    location="http://srvsappro.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zws_gen/zws_gen_binding"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
