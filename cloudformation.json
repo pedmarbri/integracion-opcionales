@@ -814,6 +814,18 @@
             },
             "LN_STACK": {
               "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Fn::Join": [
+                "",
+                [
+                  "IntegracionColecciones",
+                  "Order",
+                  {
+                    "Ref": "LNStack"
+                  }
+                ]
+              ]
             }
           }
         },

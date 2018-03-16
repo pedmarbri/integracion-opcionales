@@ -6,6 +6,7 @@ const JobQueueService = require('./job-queue-service');
 const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
 const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
+const ORDER_TABLE = process.env.ORDER_TABLE;
 
 const sqs = new AWS.SQS({ region: AWS_REGION });
 const db = new AWS.DynamoDB();
@@ -47,7 +48,7 @@ exports.handler = function (event, context, callback) {
                         S: JSON.stringify(message.payload)
                     }
                 },
-                TableName: 'Order',
+                TableName: ORDER_TABLE,
                 ConditionExpression: "attribute_not_exists(order_id)"
             };
 
