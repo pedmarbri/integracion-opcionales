@@ -23,7 +23,8 @@ exports.handler = function (event, context, callback) {
     };
 
     let deleteFromJobQueue = message => {
-        return () => {
+        return (prev) => {
+            console.log(prev);
             console.log('deleteFromJobQueue - ' + message.MessageId);
 
             const params = {

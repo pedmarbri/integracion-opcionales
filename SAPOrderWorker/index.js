@@ -3,7 +3,8 @@
 const soap = require('soap');
 const AWS = require('aws-sdk');
 
-const WSDL_URI = './sap-service.wsdl';
+const LN_STACK = process.env.LN_STACK;
+const WSDL_URI = './sap-service-' + LN_STACK.toLowerCase() + '.wsdl';
 const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
 const  SAP_HTTP_USER = 'webservice';
@@ -214,7 +215,7 @@ function work(order, callback) {
 
             console.log(client.lastResponse);
             callback();
-        });
+        }/*, {timeout: 10000}*/);
     });
 }
 
