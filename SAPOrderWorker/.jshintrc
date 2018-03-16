@@ -1,4 +1,5 @@
 {
+  "esversion"     : 6,
   "maxerr"        : 500,
   "bitwise"       : true,
   "camelcase"     : false,
@@ -8,7 +9,6 @@
   "immed"         : false,
   "indent"        : 4,
   "latedef"       : false,
-  "newcap"        : false,
   "noarg"         : true,
   "noempty"       : true,
   "nonew"         : false,
@@ -60,5 +60,6 @@
   "wsh"           : false,
   "yui"           : false,
   "globals"       : {},
-  "predef"        : ["describe", "it", "before", "after"]
+  "predef"        : ["describe", "it", "beforeEach", "afterEach", "beforeAll", "afterAll"],
+  "varstmt"       : true
 }

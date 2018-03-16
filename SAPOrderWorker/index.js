@@ -1,24 +1,24 @@
 'use strict';
 
-var soap = require('soap');
-var AWS = require('aws-sdk');
+const soap = require('soap');
+const AWS = require('aws-sdk');
 
-var WSDL_URI = './sap-service.wsdl';
-var TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
-var AWS_REGION = process.env.AWS_REGION;
-var  SAP_HTTP_USER = 'webservice';
-var  SAP_HTTP_PASS = '12345678';
+const WSDL_URI = './sap-service.wsdl';
+const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
+const AWS_REGION = process.env.AWS_REGION;
+const  SAP_HTTP_USER = 'webservice';
+const  SAP_HTTP_PASS = '12345678';
 
 // Condition types
-var UNIT_PRICE_CONDITION = 'ZPBI';
-var EXCLUSIVE_PRICE_CONDITION = 'ZPEE';
-var SHIPPING_CONDITION = 'ZCEI';
-var PERCENT_DISCOUNT_CONDITION = 'ZBP1';
-var FIXED_DISCOUNT_CONDITION = 'ZBP';
-var EXCLUSIVE_DISCOUNT_CONDITION = 'ZBEE';
-var CONDITION_CURRENCY = 'ARK';
+const UNIT_PRICE_CONDITION = 'ZPBI';
+const EXCLUSIVE_PRICE_CONDITION = 'ZPEE';
+const SHIPPING_CONDITION = 'ZCEI';
+const PERCENT_DISCOUNT_CONDITION = 'ZBP1';
+const FIXED_DISCOUNT_CONDITION = 'ZBP';
+const EXCLUSIVE_DISCOUNT_CONDITION = 'ZBEE';
+const CONDITION_CURRENCY = 'ARK';
 
-var sqs = new AWS.SQS({region: AWS_REGION});
+const sqs = new AWS.SQS({region: AWS_REGION});
 
 function deleteMessage(receiptHandle, cb) {
     sqs.deleteMessage({
@@ -27,13 +27,13 @@ function deleteMessage(receiptHandle, cb) {
     }, cb);
 }
 
-var soapOptions = {
+const soapOptions = {
 };
 
 function formatDate(isoDate) {
-    var dateObj = new Date(isoDate);
-    var mm = dateObj.getMonth() + 1;
-    var dd = dateObj.getDate();
+    const dateObj = new Date(isoDate);
+    const mm = dateObj.getMonth() + 1;
+    const dd = dateObj.getDate();
     return [
         dateObj.getFullYear(),
         (mm > 9 ? '' : '0') + mm,
@@ -58,7 +58,7 @@ function formatCustomerIdNumber(customer) {
 }
 
 function formatPriceCondition(item, index) {
-    var priceType = UNIT_PRICE_CONDITION;
+    let priceType = UNIT_PRICE_CONDITION;
 
     if (item.flags && item.flags.indexOf('exclusive') > -1) {
         priceType = EXCLUSIVE_PRICE_CONDITION;
@@ -77,7 +77,7 @@ function formatDiscountCondition(item, index) {
         return null;
     }
 
-    var discountIsPercent = item.discount_percent > 0;
+    let discountIsPercent = item.discount_percent > 0;
     let discountType = discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION;
     let discountAmount = discountIsPercent ? item.discount_percent : item.discount_amount;
 
@@ -108,17 +108,17 @@ function formatShippingCondition(totals) {
 }
 
 function formatConditions(items, totals) {
-    var conditions = [];
+    const conditions = [];
 
     items.forEach(function(item, index) {
         conditions.push(formatPriceCondition(item, index));
-        var discountCondition = formatDiscountCondition(item, index);
+        let discountCondition = formatDiscountCondition(item, index);
         if (discountCondition) {
             conditions.push(discountCondition);
         }
     });
 
-    var shipping = formatShippingCondition(totals);
+    const shipping = formatShippingCondition(totals);
 
     if (shipping) {
         conditions.push(shipping);
@@ -128,10 +128,10 @@ function formatConditions(items, totals) {
 }
 
 function formatItems(orderItems) {
-    var items = [];
+    const items = [];
 
     orderItems.forEach(function(item, index) {
-        var rowPosition = (index + 1) * 10;
+        const rowPosition = (index + 1) * 10;
         items.push ({
             POSNR: rowPosition,
             MATNR: item.sku,
@@ -159,18 +159,21 @@ function work(order, callback) {
             callback(err);
         }
 
-        var auth = "Basic " + new Buffer(SAP_HTTP_USER + ":" + SAP_HTTP_PASS).toString("base64");
+        const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
 
         client.addHttpHeader('Authorization', auth);
 
-        var params = {
+        const params = {
             AD_SMTPADR: order.customer.email,
             AUART: 'ZPSI',
             AUGRU: '001',
             BSTDK: formatDate(order.timestamp),
             BSTKD: formatOrderNum(order.order_id),
+            CITY: 'CABA',
+            COUNTRY: 'AR',
             IHREZ: formatTransactionId(order.payment),
             KUNNR: 'Y600099',
+            LANGU: 'S',
             NAME1: formatCustomerName(order.customer),
             NAME4: formatCustomerIdNumber(order.customer),
             SPART: '02',

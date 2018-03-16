@@ -8,7 +8,7 @@
     <wsdl:documentation>
         <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
     </wsdl:documentation>
-    <wsp:UsingPolicy wsdl:required="true"/>
+    <wsp:UsingPolicy wsdl:required="false"/>
     <wsp:Policy wsu:Id="BN_ZWS_GEN_BINDING">
         <wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
         <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml"
@@ -142,6 +142,11 @@
                     <xsd:maxLength value="4"/>
                 </xsd:restriction>
             </xsd:simpleType>
+            <xsd:simpleType name="char40">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="40"/>
+                </xsd:restriction>
+            </xsd:simpleType>
             <xsd:simpleType name="char50">
                 <xsd:restriction base="xsd:string">
                     <xsd:maxLength value="50"/>
@@ -166,6 +171,11 @@
                 <xsd:restriction base="xsd:decimal">
                     <xsd:totalDigits value="28"/>
                     <xsd:fractionDigits value="9"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="lang">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="1"/>
                 </xsd:restriction>
             </xsd:simpleType>
             <xsd:simpleType name="numeric3">
@@ -249,6 +259,10 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="AUART" type="tns:char4"/>
+                        <xsd:element name="AUGRU" type="tns:char3" minOccurs="0"/>
+                        <xsd:element name="BSTDK" type="tns:char8" minOccurs="0"/>
+                        <xsd:element name="BSTKD" type="tns:char35" minOccurs="0"/>
+                        <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
                         <xsd:element name="T_CONDITIONS" type="tns:TABLE_OF_ZCONDITIONS_SALESORDER"/>
                         <xsd:element name="T_ITEMS" type="tns:TABLE_OF_ZITEMS_SALESORDER"/>
                         <xsd:element name="T_RETURN" type="tns:TABLE_OF_BAPIRET2"/>
@@ -274,8 +288,11 @@
                         <xsd:element name="AUGRU" type="tns:char3" minOccurs="0"/>
                         <xsd:element name="BSTDK" type="tns:char8" minOccurs="0"/>
                         <xsd:element name="BSTKD" type="tns:char35" minOccurs="0"/>
+                        <xsd:element name="CITY" type="tns:char40"/>
+                        <xsd:element name="COUNTRY" type="tns:char3"/>
                         <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
                         <xsd:element name="KUNNR" type="tns:char10"/>
+                        <xsd:element name="LANGU" type="tns:lang"/>
                         <xsd:element name="NAME1" type="tns:char30"/>
                         <xsd:element name="NAME4" type="tns:char30" minOccurs="0"/>
                         <xsd:element name="SPART" type="tns:char2"/>
@@ -358,10 +375,10 @@
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
-    <wsdl:service name="ZWS_GEN">
+    <wsdl:service name="ZSW_GEN">
         <wsdl:port name="ZWS_GEN_BINDING" binding="tns:ZWS_GEN_BINDING">
             <soap:address
-                    location="http://srvsapdes1.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zws_gen/zws_gen_binding"/>
+                    location="http://srvsapdes1.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zsw_gen/zws_gen_binding"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
