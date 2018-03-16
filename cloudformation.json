@@ -2,6 +2,14 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Transform": "AWS::Serverless-2016-10-31",
   "Description": "Integracion de pedidos para SALN",
+  "Parameters": {
+    "LNStack": {
+      "Type": "String",
+      "Default": "Test",
+      "AllowedValues": ["Test", "Production"],
+      "Description": "LN Stack being used, Test or Production. Default is Test"
+    }
+  },
   "Resources": {
     "APIOpcionalesSQSIAM": {
       "Type": "AWS::IAM::Role",
@@ -643,7 +651,7 @@
                   },
                   "row_total": {
                     "type": "number",
-                    "minimum": 0,
+                    "minimum": 0
                   }
                 }
               }
@@ -761,6 +769,9 @@
             },
             "SAP_ORDER_QUEUE_URL": {
               "Ref": "SapOrderQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
             }
           }
         },
@@ -774,7 +785,9 @@
         },
         "Tags": {
           "COST CENTER": "integracion-colecciones",
-          "Stack": "Test"
+          "Stack": {
+            "Ref": "LNStack"
+          }
         }
       }
     },
@@ -880,6 +893,9 @@
             },
             "SAP_ORDER_WORKER": {
               "Ref": "SapOrderWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
             }
           }
         },
@@ -893,7 +909,9 @@
         },
         "Tags": {
           "COST CENTER": "integracion-colecciones",
-          "Stack": "Dev"
+          "Stack": {
+            "Ref": "LNStack"
+          }
         }
       }
     },
@@ -983,12 +1001,17 @@
           "Variables": {
             "SAP_ORDER_QUEUE_URL": {
               "Ref": "SapOrderQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
             }
           }
         },
         "Tags": {
           "COST CENTER": "integracion-colecciones",
-          "Stack": "Dev"
+          "Stack": {
+            "Ref": "LNStack"
+          }
         }
       }
     }
