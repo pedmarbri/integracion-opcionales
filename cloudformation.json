@@ -15,7 +15,6 @@
       "Type": "AWS::IAM::Role",
       "Properties": {
         "Path": "/app/all/",
-        "RoleName": "APIOpcionalesSQSRole",
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -64,7 +63,17 @@
       "Type": "AWS::ApiGateway::RestApi",
       "Description": "Integración de Pedidos para SALN",
       "Properties": {
-        "Name": "Order API"
+        "Name": {
+          "Fn::Join": [
+            " - ",
+            [
+              "Order API",
+              {
+                "Ref": "LNStack"
+              }
+            ]
+          ]
+        }
       }
     },
     "APIOpcionalesValidator": {
@@ -1067,7 +1076,18 @@
           "ReadCapacityUnits": 5,
           "WriteCapacityUnits": 5
         },
-        "TableName": "Order",
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              "IntegracionColecciones",
+              "Order",
+              {
+                "Ref": "LNStack"
+              }
+            ]
+          ]
+        },
         "Tags": [
           {
             "Key": "COST CENTER",
