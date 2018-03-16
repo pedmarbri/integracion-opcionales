@@ -7,8 +7,8 @@ const LN_STACK = process.env.LN_STACK;
 const WSDL_URI = './sap-service-' + LN_STACK.toLowerCase() + '.wsdl';
 const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
-const  SAP_HTTP_USER = 'webservice';
-const  SAP_HTTP_PASS = '12345678';
+const SAP_HTTP_USER = 'webservice';
+const SAP_HTTP_PASS = '12345678';
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -173,7 +173,7 @@ function work(order, callback) {
             CITY: 'CABA',
             COUNTRY: 'AR',
             IHREZ: formatTransactionId(order.payment),
-            KUNNR: 'Y600099',
+            KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
             LANGU: 'S',
             NAME1: formatCustomerName(order.customer),
             NAME4: formatCustomerIdNumber(order.customer),

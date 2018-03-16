@@ -11,6 +11,7 @@ describe("Job Broker handler", () => {
     let AWSStub = {};
     let sqsStub = {};
     let JobBroker = {};
+    let dynamoDBStub = {};
 
     beforeEach(() => {
         sqsStub = {
@@ -20,7 +21,8 @@ describe("Job Broker handler", () => {
         };
 
         AWSStub = {
-            SQS: sinon.stub().returns(sqsStub)
+            SQS: sinon.stub().returns(sqsStub),
+            DynamoDB: sinon.stub().returns(dynamoDBStub)
         };
 
         JobBroker = proxyquire('../index', {
