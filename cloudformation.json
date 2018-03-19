@@ -779,7 +779,10 @@
                         {
                           "Ref": "AWS::AccountId"
                         },
-                        ":table/Order*"
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
                       ]
                     ]
                   }
