@@ -12,6 +12,7 @@ describe("Job Broker handler", () => {
     let sqsStub = {};
     let JobBroker = {};
     let dynamoDBStub = {};
+    let JobQueueServiceStub = {};
 
     beforeEach(() => {
         sqsStub = {
@@ -25,12 +26,18 @@ describe("Job Broker handler", () => {
             DynamoDB: sinon.stub().returns(dynamoDBStub)
         };
 
+        JobQueueServiceStub = {
+            receiveMessages: sinon.stub().returns(Promise.resolve([]))
+        };
+
         JobBroker = proxyquire('../index', {
-            'aws-sdk': AWSStub
+            'aws-sdk': AWSStub,
+            './job-queue-service': JobQueueServiceStub
         });
     });
 
     it("is successful with no queued messages", (done) => {
+
         sqsStub.receiveMessage.yieldsAsync(null, []);
 
         return LambdaTester(JobBroker.handler)

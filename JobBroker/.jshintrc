@@ -60,6 +60,21 @@
   "wsh"           : false,
   "yui"           : false,
   "globals"       : {},
-  "predef"        : ["describe", "it", "beforeEach", "afterEach", "beforeAll", "afterAll"],
+  "predef"        : [
+    "jasmine",
+    "describe",
+    "xdescribe",
+    "before",
+    "beforeAll",
+    "beforeEach",
+    "after",
+    "afterAll",
+    "afterEach",
+    "it",
+    "xit",
+    "inject",
+    "expect",
+    "spyOn"
+  ],
   "varstmt"       : true
 }
