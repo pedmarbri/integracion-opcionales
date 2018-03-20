@@ -58,7 +58,7 @@ exports.handler = function (event, context, callback) {
 
     let processSingleMessage = message => {
         return new Promise((resolve, reject) => {
-            const messageBody = JSON.parse(message.Body);
+            const messageBody = message.json;
             const acceptedTypes = ['order', 'creditmemo'];
 
             if (acceptedTypes.indexOf(messageBody.type) < 0) {
@@ -87,8 +87,7 @@ exports.handler = function (event, context, callback) {
         });
     };
 
-    let processMessages = sqsResult => {
-        let messages = sqsResult.Messages;
+    let processMessages = messages => {
 
         if (messages && messages.length > 0) {
             return Promise.all(messages.map(message => processSingleMessage(message)));
@@ -100,11 +99,9 @@ exports.handler = function (event, context, callback) {
     JobQueueService.receiveMessages()
         .then(processMessages)
         .then(result => {
-            console.log(result);
             callback(null, result);
         })
         .catch(error => {
-           console.log(error);
            callback(error);
         });
 };

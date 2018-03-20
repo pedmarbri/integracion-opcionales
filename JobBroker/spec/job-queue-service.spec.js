@@ -12,33 +12,39 @@ describe('Job Queue Service', () => {
     let stubConfig;
 
     beforeEach(() => {
-        sqsStub = {
-            receiveMessage: sinon.stub()
-        };
-
-        sqsRequestStub = {
-            promise: () => Promise.resolve([])
-        };
+        sqsRequestStub = { promise: sinon.stub() };
+        sqsStub = { receiveMessage: sinon.stub() };
 
         sqsStub.receiveMessage.returns(sqsRequestStub);
 
-        AWSStub = {
-            SQS: sinon.stub().returns(sqsStub)
-        };
+        AWSStub = { SQS: sinon.stub().returns(sqsStub) };
 
-        stubConfig = {
-            'aws-sdk': AWSStub
-        };
-
+        stubConfig = { 'aws-sdk': AWSStub };
         jobQueueService = proxyquire('../job-queue-service', stubConfig);
     });
 
     it('Returns a promise on receiveMessage', () => {
-        const messagesPromise = jobQueueService.receiveMessages();
+        let messagesPromise;
+
+        sqsRequestStub.promise.resolves([]);
+        messagesPromise = jobQueueService.receiveMessages();
+
         expect(messagesPromise).toEqual(jasmine.any(Promise));
     });
 
-    xit('Contains json messages', () => {
+    it('Contains json messages', () => {
+        let sqsMessage = {
+            Body: '{"foo":"bar"}',
+            ReceiptHandler: '1234'
+        };
 
+        let sqsResult = {
+            MessageId: '123',
+            Messages: [ sqsMessage ]
+        };
+
+        sqsRequestStub.promise.resolves(sqsResult);
+
+        jobQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
     });
 });

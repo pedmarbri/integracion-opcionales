@@ -26,9 +26,7 @@ describe("Job Broker handler", () => {
             DynamoDB: sinon.stub().returns(dynamoDBStub)
         };
 
-        JobQueueServiceStub = {
-            receiveMessages: sinon.stub().returns(Promise.resolve([]))
-        };
+        JobQueueServiceStub = { receiveMessages: sinon.stub().resolves([]) };
 
         JobBroker = proxyquire('../index', {
             'aws-sdk': AWSStub,
