@@ -26,4 +26,17 @@ describe('SAP Order Queue', () => {
         sqsRequestStub.promise.resolves( {} );
         expect(sapOrderQueueService.sendMessage()).toEqual(jasmine.any(Promise));
     });
+
+    it('Handles rejection', () => {
+        sqsRequestStub.promise.rejects();
+
+        let resultHandler = jasmine.createSpy('resultHandler');
+
+        sapOrderQueueService.sendMessage()
+            .then(resultHandler)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+                expect(resultHandler).not.toHaveBeenCalled();
+            });
+    });
 });
