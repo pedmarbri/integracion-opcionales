@@ -2,9 +2,9 @@
 
 const AWS = require('aws-sdk');
 const JobQueueService = require('./job-queue-service');
+const SapOrderQueueService = require('./sap-order-queue-service');
 
 const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
-const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
 const ORDER_TABLE = process.env.ORDER_TABLE;
 
@@ -14,13 +14,7 @@ const db = new AWS.DynamoDB();
 exports.handler = function (event, context, callback) {
 
     let sendMessageToSapOrderQueue = payload => {
-        console.log('sendMessageToSapOrderQueue - ' + payload.order_id);
-        const params = {
-            QueueUrl: SAP_ORDER_QUEUE_URL,
-            MessageBody: JSON.stringify(payload)
-        };
-
-        return sqs.sendMessage(params).promise();
+        return SapOrderQueueService.sendMessage(payload);
     };
 
     let deleteFromJobQueue = message => {
@@ -63,25 +57,25 @@ exports.handler = function (event, context, callback) {
 
             if (acceptedTypes.indexOf(messageBody.type) < 0) {
                 reject(new Error("Invalid message type"));
-            } else {
-                switch (messageBody.type) {
-                    case 'order':
-                        sendMessageToSapOrderQueue(messageBody.payload)
-                            .then(deleteFromJobQueue(message))
-                            .then(saveInDb(messageBody))
-                            .then(Promise.resolve("Done " + message.MessageId))
-                            .catch(err => resolve(err));
+                return;
+            }
 
-                        break;
+            switch (messageBody.type) {
+                case 'order':
+                    sendMessageToSapOrderQueue(messageBody.payload)
+                        .then(deleteFromJobQueue(message))
+                        .then(saveInDb(messageBody))
+                        .then(() => resolve("Done " + message.MessageId))
+                        .catch(err => reject(err));
+                    break;
 
-                    case 'creditmemo':
-                        // TBD
-                        resolve('creditmemo is not yet implemented');
-                        break;
+                case 'creditmemo':
+                    // TBD
+                    resolve('creditmemo is not yet implemented');
+                    break;
 
-                    default:
-                        reject(new Error('Unexpected type case'));
-                }
+                default:
+                    reject(new Error('Unexpected type case'));
             }
 
         });
