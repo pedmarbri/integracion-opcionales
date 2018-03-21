@@ -24,12 +24,8 @@ describe('Job Queue Service', () => {
     });
 
     it('Returns a promise on receiveMessage', () => {
-        let messagesPromise;
-
         sqsRequestStub.promise.resolves([]);
-        messagesPromise = jobQueueService.receiveMessages();
-
-        expect(messagesPromise).toEqual(jasmine.any(Promise));
+        expect(jobQueueService.receiveMessages()).toEqual(jasmine.any(Promise));
     });
 
     it('Contains json messages', () => {
