@@ -13,22 +13,19 @@ const db = new AWS.DynamoDB();
 
 exports.handler = function (event, context, callback) {
 
-    let sendMessageToSapOrderQueue = payload => {
-        return SapOrderQueueService.sendMessage(payload);
+    let sendMessageToSapOrderQueue = message => {
+        return SapOrderQueueService.sendMessage(message.json.payload).then(() => Promise.resolve(message));
     };
 
     let deleteFromJobQueue = message => {
-        return (prev) => {
-            console.log(prev);
-            console.log('deleteFromJobQueue - ' + message.MessageId);
+        console.log('deleteFromJobQueue - ' + message.MessageId);
 
-            const params = {
-                QueueUrl: JOB_QUEUE_URL,
-                ReceiptHandle: message.ReceiptHandle
-            };
-
-            return sqs.deleteMessage(params).promise();
+        const params = {
+            QueueUrl: JOB_QUEUE_URL,
+            ReceiptHandle: message.ReceiptHandle
         };
+
+        return sqs.deleteMessage(params).promise().then(() => Promise.resolve(message));
     };
 
     const saveInDb = (message) => {
@@ -62,7 +59,7 @@ exports.handler = function (event, context, callback) {
 
             switch (messageBody.type) {
                 case 'order':
-                    sendMessageToSapOrderQueue(messageBody.payload)
+                    sendMessageToSapOrderQueue(message)
                         .then(deleteFromJobQueue(message))
                         .then(saveInDb(messageBody))
                         .then(() => resolve("Done " + message.MessageId))
