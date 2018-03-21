@@ -47,4 +47,17 @@ describe('Job Queue Service', () => {
 
         jobQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
     });
+
+    it('Handles rejection', () => {
+        sqsRequestStub.promise.rejects();
+
+        let messagesHandler = jasmine.createSpy('messagesHandler');
+
+        jobQueueService.receiveMessages()
+            .then(messagesHandler)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+                expect(messagesHandler).not.toHaveBeenCalled();
+            });
+    });
 });
