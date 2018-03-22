@@ -1,33 +1,10 @@
 'use strict';
 
-const AWS = require('aws-sdk');
 const JobQueueService = require('./job-queue-service');
 const SapOrderQueueService = require('./sap-order-queue-service');
-
-const ORDER_TABLE = process.env.ORDER_TABLE;
-
-const db = new AWS.DynamoDB();
+const OrderTableService = require('./order-table-service');
 
 exports.handler = function (event, context, callback) {
-
-    const saveInDb = (message) => {
-        return () => {
-            const params = {
-                Item: {
-                    order_id: {
-                        S: message.payload.order_id
-                    },
-                    payload: {
-                        S: JSON.stringify(message.payload)
-                    }
-                },
-                TableName: ORDER_TABLE,
-                ConditionExpression: "attribute_not_exists(order_id)"
-            };
-
-            return db.putItem(params).promise();
-        };
-    };
 
     let processSingleMessage = message => {
         return new Promise((resolve, reject) => {
@@ -42,7 +19,7 @@ exports.handler = function (event, context, callback) {
                 case 'order':
                     SapOrderQueueService.sendMessage(message)
                         .then(JobQueueService.deleteMessage)
-                        .then(saveInDb(message.json))
+                        .then(OrderTableService.saveMessage)
                         .then(resolve)
                         .catch(err => reject(err));
                     break;
