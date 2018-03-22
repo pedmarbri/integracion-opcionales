@@ -13,9 +13,14 @@ describe('Job Queue Service', () => {
 
     beforeEach(() => {
         sqsRequestStub = { promise: sinon.stub() };
-        sqsStub = { receiveMessage: sinon.stub() };
+
+        sqsStub = {
+            receiveMessage: sinon.stub(),
+            deleteMessage: sinon.stub()
+        };
 
         sqsStub.receiveMessage.returns(sqsRequestStub);
+        sqsStub.deleteMessage.returns(sqsRequestStub);
 
         AWSStub = { SQS: sinon.stub().returns(sqsStub) };
 
@@ -44,7 +49,7 @@ describe('Job Queue Service', () => {
         jobQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
     });
 
-    it('Handles rejection', () => {
+    it('Handles rejection receiveMessage', () => {
         sqsRequestStub.promise.rejects();
 
         let messagesHandler = jasmine.createSpy('messagesHandler');
@@ -55,5 +60,27 @@ describe('Job Queue Service', () => {
                 expect(err).toEqual(jasmine.any(Error));
                 expect(messagesHandler).not.toHaveBeenCalled();
             });
+    });
+
+    it('Returns a promise on deleteMessage', () => {
+        const message = {
+            Body: JSON.stringify({foo: 'bar'}),
+            MessageId: '12345',
+            ReceiptHandler: '12345'
+        };
+
+        sqsRequestStub.promise.resolves({});
+        expect(jobQueueService.deleteMessage(message)).toEqual(jasmine.any(Promise));
+    });
+
+    it('Returns the deleted message', () => {
+        const message = {
+            Body: JSON.stringify({foo: 'bar'}),
+            MessageId: '12345',
+            ReceiptHandler: '12345'
+        };
+
+        sqsRequestStub.promise.resolves({});
+        jobQueueService.deleteMessage(message).then(result => expect(result).toEqual(message));
     });
 });

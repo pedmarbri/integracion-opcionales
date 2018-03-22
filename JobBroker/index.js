@@ -17,17 +17,6 @@ exports.handler = function (event, context, callback) {
         return SapOrderQueueService.sendMessage(message.json.payload).then(() => Promise.resolve(message));
     };
 
-    let deleteFromJobQueue = message => {
-        console.log('deleteFromJobQueue - ' + message.MessageId);
-
-        const params = {
-            QueueUrl: JOB_QUEUE_URL,
-            ReceiptHandle: message.ReceiptHandle
-        };
-
-        return sqs.deleteMessage(params).promise().then(() => Promise.resolve(message));
-    };
-
     const saveInDb = (message) => {
         return () => {
             const params = {
@@ -49,19 +38,18 @@ exports.handler = function (event, context, callback) {
 
     let processSingleMessage = message => {
         return new Promise((resolve, reject) => {
-            const messageBody = message.json;
             const acceptedTypes = ['order', 'creditmemo'];
 
-            if (acceptedTypes.indexOf(messageBody.type) < 0) {
+            if (acceptedTypes.indexOf(message.json.type) < 0) {
                 reject(new Error("Invalid message type"));
                 return;
             }
 
-            switch (messageBody.type) {
+            switch (message.json.type) {
                 case 'order':
                     sendMessageToSapOrderQueue(message)
-                        .then(deleteFromJobQueue(message))
-                        .then(saveInDb(messageBody))
+                        .then(JobQueueService.deleteMessage)
+                        .then(saveInDb(message.json))
                         .then(() => resolve("Done " + message.MessageId))
                         .catch(err => reject(err));
                     break;

@@ -27,3 +27,12 @@ exports.receiveMessages = () => {
             }));
         });
 };
+
+exports.deleteMessage = message => {
+    const params = {
+        QueueUrl: JOB_QUEUE_URL,
+        ReceiptHandle: message.ReceiptHandle
+    };
+
+    return sqs.deleteMessage(params).promise().then(() => Promise.resolve(message));
+};

@@ -23,8 +23,10 @@ describe('SAP Order Queue', () => {
     });
 
     it('Returns a promise on sendMessage', () => {
+        const message = { foo: 'bar' };
         sqsRequestStub.promise.resolves( {} );
-        expect(sapOrderQueueService.sendMessage()).toEqual(jasmine.any(Promise));
+
+        expect(sapOrderQueueService.sendMessage(message)).toEqual(jasmine.any(Promise));
     });
 
     it('Handles rejection', () => {
@@ -39,4 +41,5 @@ describe('SAP Order Queue', () => {
                 expect(resultHandler).not.toHaveBeenCalled();
             });
     });
+
 });
