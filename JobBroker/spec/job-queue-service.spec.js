@@ -49,10 +49,10 @@ describe('Job Queue Service', () => {
         jobQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
     });
 
-    it('Handles rejection receiveMessage', () => {
-        sqsRequestStub.promise.rejects();
-
+    it('Handles rejection on receiveMessage', () => {
         let messagesHandler = jasmine.createSpy('messagesHandler');
+
+        sqsRequestStub.promise.rejects();
 
         jobQueueService.receiveMessages()
             .then(messagesHandler)
@@ -71,6 +71,25 @@ describe('Job Queue Service', () => {
 
         sqsRequestStub.promise.resolves({});
         expect(jobQueueService.deleteMessage(message)).toEqual(jasmine.any(Promise));
+    });
+
+    it('Handles rejection on deleteMessage', () => {
+        const message = {
+            Body: JSON.stringify({foo: 'bar'}),
+            MessageId: '12345',
+            ReceiptHandler: '12345'
+        };
+
+        let messagesHandler = jasmine.createSpy('messagesHandler');
+
+        sqsRequestStub.promise.rejects();
+
+        jobQueueService.deleteMessage(message)
+            .then(messagesHandler)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+                expect(messagesHandler).not.toHaveBeenCalled();
+            });
     });
 
     it('Returns the deleted message', () => {
