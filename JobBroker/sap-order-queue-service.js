@@ -7,12 +7,12 @@ const SAP_ORDER_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 
 const sqs = new AWS.SQS({ region: AWS_REGION });
 
-exports.sendMessage = payload => {
+exports.sendMessage = message => {
     const params = {
         QueueUrl: SAP_ORDER_QUEUE_URL,
-        MessageBody: JSON.stringify(payload)
+        MessageBody: JSON.stringify(message.json.payload)
     };
 
-    return sqs.sendMessage(params).promise();
+    return sqs.sendMessage(params).promise().then(() => Promise.resolve(message));
 };
 

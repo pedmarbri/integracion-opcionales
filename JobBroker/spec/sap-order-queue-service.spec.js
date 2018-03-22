@@ -23,23 +23,45 @@ describe('SAP Order Queue', () => {
     });
 
     it('Returns a promise on sendMessage', () => {
-        const message = { foo: 'bar' };
+        const message = {
+            MessageId: '1234',
+            Body: '{"foo":"bar"}',
+            json: { payload: { foo: 'bar' } }
+        };
+
         sqsRequestStub.promise.resolves( {} );
 
         expect(sapOrderQueueService.sendMessage(message)).toEqual(jasmine.any(Promise));
     });
 
     it('Handles rejection', () => {
+        let resultHandler = jasmine.createSpy('resultHandler');
+        const message = {
+            MessageId: '1234',
+            Body: '{"foo":"bar"}',
+            json: { payload: { foo: 'bar' } }
+        };
+
         sqsRequestStub.promise.rejects();
 
-        let resultHandler = jasmine.createSpy('resultHandler');
-
-        sapOrderQueueService.sendMessage()
+        sapOrderQueueService.sendMessage(message)
             .then(resultHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
                 expect(resultHandler).not.toHaveBeenCalled();
             });
+    });
+
+    it('Resolves to the sent message', () => {
+        const message = {
+            MessageId: '1234',
+            Body: '{"foo":"bar"}',
+            json: { payload: { foo: 'bar' } }
+        };
+
+        sqsRequestStub.promise.resolves( {} );
+
+        sapOrderQueueService.sendMessage(message).then(result => expect(result).toEqual(message));
     });
 
 });

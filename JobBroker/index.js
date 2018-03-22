@@ -4,18 +4,11 @@ const AWS = require('aws-sdk');
 const JobQueueService = require('./job-queue-service');
 const SapOrderQueueService = require('./sap-order-queue-service');
 
-const JOB_QUEUE_URL = process.env.JOB_QUEUE_URL;
-const AWS_REGION = process.env.AWS_REGION;
 const ORDER_TABLE = process.env.ORDER_TABLE;
 
-const sqs = new AWS.SQS({ region: AWS_REGION });
 const db = new AWS.DynamoDB();
 
 exports.handler = function (event, context, callback) {
-
-    let sendMessageToSapOrderQueue = message => {
-        return SapOrderQueueService.sendMessage(message.json.payload).then(() => Promise.resolve(message));
-    };
 
     const saveInDb = (message) => {
         return () => {
@@ -47,10 +40,10 @@ exports.handler = function (event, context, callback) {
 
             switch (message.json.type) {
                 case 'order':
-                    sendMessageToSapOrderQueue(message)
+                    SapOrderQueueService.sendMessage(message)
                         .then(JobQueueService.deleteMessage)
                         .then(saveInDb(message.json))
-                        .then(() => resolve("Done " + message.MessageId))
+                        .then(resolve)
                         .catch(err => reject(err));
                     break;
 
