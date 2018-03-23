@@ -3,6 +3,7 @@
 const JobQueueService = require('./job-queue-service');
 const SapOrderQueueService = require('./sap-order-queue-service');
 const OrderTableService = require('./order-table-service');
+const CrmQueueService = require('./crm-queue-service');
 
 exports.handler = function (event, context, callback) {
 
@@ -18,6 +19,7 @@ exports.handler = function (event, context, callback) {
             switch (message.json.type) {
                 case 'order':
                     OrderTableService.saveMessage(message)
+                        .then(CrmQueueService.sendMessage)
                         .then(JobQueueService.deleteMessage)
                         .then(SapOrderQueueService.sendMessage)
                         .then(resolve)
