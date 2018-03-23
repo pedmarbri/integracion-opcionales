@@ -17,9 +17,9 @@ exports.handler = function (event, context, callback) {
 
             switch (message.json.type) {
                 case 'order':
-                    SapOrderQueueService.sendMessage(message)
+                    OrderTableService.saveMessage(message)
                         .then(JobQueueService.deleteMessage)
-                        .then(OrderTableService.saveMessage)
+                        .then(SapOrderQueueService.sendMessage)
                         .then(resolve)
                         .catch(err => reject(err));
                     break;
