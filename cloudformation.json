@@ -747,9 +747,14 @@
                   "Action": [
                     "sqs:SendMessage"
                   ],
-                  "Resource": {
-                    "Fn::Sub": "${SapOrderQueue.Arn}"
-                  }
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${SapOrderQueue.Arn}"
+                    },
+                    {
+                      "Fn::Sub": "${CrmQueue.Arn}"
+                    }
+                  ]
                 }
               ]
             }
@@ -815,6 +820,9 @@
             "SAP_ORDER_QUEUE_URL": {
               "Ref": "SapOrderQueue"
             },
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
+            },
             "LN_STACK": {
               "Ref": "LNStack"
             },
@@ -847,6 +855,20 @@
           }
         }
       }
+    },
+    "CrmQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${CrmDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "CrmDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
     },
     "SapOrderQueue": {
       "Type": "AWS::SQS::Queue",
