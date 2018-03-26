@@ -2,6 +2,7 @@
 
 const JobQueueService = require('./job-queue-service');
 const SapOrderQueueService = require('./sap-order-queue-service');
+const SapCMQueueService = require('./sap-cm-queue-service');
 const OrderTableService = require('./order-table-service');
 const CrmQueueService = require('./crm-queue-service');
 
@@ -21,12 +22,14 @@ const processSingleMessage = message => {
                     .then(JobQueueService.deleteMessage)
                     .then(SapOrderQueueService.sendMessage)
                     .then(resolve)
-                    .catch(err => reject(err));
+                    .catch(reject);
                 break;
 
             case 'creditmemo':
-                // TBD
-                resolve('creditmemo is not yet implemented');
+                JobQueueService.deleteMessage(message)
+                    .then(SapCMQueueService.sendMessage)
+                    .then(resolve)
+                    .catch(reject);
                 break;
 
             default:

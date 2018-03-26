@@ -15,6 +15,7 @@ describe("Job Broker handler", () => {
     let JobBroker = {};
     let JobQueueServiceStub = {};
     let SapOrderQueueServiceStub = {};
+    let SapCMQueueServiceStub = {};
     let OrderTableServiceStub = {};
     let CrmQueueServiceStub = {};
 
@@ -27,8 +28,24 @@ describe("Job Broker handler", () => {
         }
     };
 
+    const cmMessage = {
+        json: {
+            type: 'creditmemo',
+            payload: {
+                order_id: '123456'
+            }
+        }
+    };
+
     beforeEach(() => {
         SapOrderQueueServiceStub = {
+            /**
+             * @var {SinonStub}
+             */
+            sendMessage: sinon.stub()
+        };
+
+        SapCMQueueServiceStub = {
             /**
              * @var {SinonStub}
              */
@@ -64,6 +81,7 @@ describe("Job Broker handler", () => {
         JobBroker = proxyquire('../index', {
             './job-queue-service': JobQueueServiceStub,
             './sap-order-queue-service': SapOrderQueueServiceStub,
+            './sap-cm-queue-service': SapCMQueueServiceStub,
             './order-table-service': OrderTableServiceStub,
             './crm-queue-service': CrmQueueServiceStub
         });
@@ -136,7 +154,7 @@ describe("Job Broker handler", () => {
             .verify(done);
     });
 
-    it('Fails when it cannot send to CRM', done => {
+    it('Fails when it cannot send Order to CRM', done => {
         JobQueueServiceStub.receiveMessages.resolves([orderMessage]);
         OrderTableServiceStub.saveMessage.resolves(orderMessage);
         CrmQueueServiceStub.sendMessage.rejects(new Error('Dummy Error'));
@@ -161,7 +179,7 @@ describe("Job Broker handler", () => {
             .verify(done);
     });
 
-    it('Fails when it cannot delete from Job Queue', done => {
+    it('Fails when it cannot delete order message from Job Queue', done => {
         JobQueueServiceStub.receiveMessages.resolves([orderMessage]);
         OrderTableServiceStub.saveMessage.resolves(orderMessage);
         CrmQueueServiceStub.sendMessage.resolves(orderMessage);
@@ -186,7 +204,7 @@ describe("Job Broker handler", () => {
             .verify(done);
     });
 
-    it('Fails when it cannot insert into Sap Order Queue', done => {
+    it('Fails when it cannot insert Order Message into Sap Order Queue', done => {
         JobQueueServiceStub.receiveMessages.resolves([orderMessage]);
         OrderTableServiceStub.saveMessage.resolves(orderMessage);
         CrmQueueServiceStub.sendMessage.resolves(orderMessage);
@@ -207,6 +225,44 @@ describe("Job Broker handler", () => {
                 expect(CrmQueueServiceStub.sendMessage).toHaveBeenCalled();
                 expect(JobQueueServiceStub.deleteMessage).toHaveBeenCalled();
                 expect(SapOrderQueueServiceStub.sendMessage).toHaveBeenCalled();
+            })
+            .verify(done);
+    });
+
+    it('Fails when it cannot delete credit memo message from Job Queue', done => {
+        JobQueueServiceStub.receiveMessages.resolves([cmMessage]);
+        JobQueueServiceStub.deleteMessage.rejects(new Error('Dummy Error'));
+        SapCMQueueServiceStub.sendMessage.resolves(cmMessage);
+
+        spyOn(JobQueueServiceStub, 'receiveMessages').and.callThrough();
+        spyOn(JobQueueServiceStub, 'deleteMessage').and.callThrough();
+        spyOn(SapCMQueueServiceStub, 'sendMessage').and.callThrough();
+
+        return LambdaTester(JobBroker.handler)
+            .timeout(60)
+            .expectError(() => {
+                expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
+                expect(JobQueueServiceStub.deleteMessage).toHaveBeenCalled();
+                expect(SapCMQueueServiceStub.sendMessage).not.toHaveBeenCalled();
+            })
+            .verify(done);
+    });
+
+    it('Fails when it cannot insert credit memo message into Sap CM Queue', done => {
+        JobQueueServiceStub.receiveMessages.resolves([cmMessage]);
+        JobQueueServiceStub.deleteMessage.resolves(cmMessage);
+        SapCMQueueServiceStub.sendMessage.rejects(new Error('Dummy Error'));
+
+        spyOn(JobQueueServiceStub, 'receiveMessages').and.callThrough();
+        spyOn(JobQueueServiceStub, 'deleteMessage').and.callThrough();
+        spyOn(SapCMQueueServiceStub, 'sendMessage').and.callThrough();
+
+        return LambdaTester(JobBroker.handler)
+            .timeout(60)
+            .expectError(() => {
+                expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
+                expect(JobQueueServiceStub.deleteMessage).toHaveBeenCalled();
+                expect(SapCMQueueServiceStub.sendMessage).toHaveBeenCalled();
             })
             .verify(done);
     });
