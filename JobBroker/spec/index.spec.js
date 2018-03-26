@@ -79,6 +79,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectResult(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).not.toHaveBeenCalled();
@@ -99,6 +100,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectError(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).not.toHaveBeenCalled();
@@ -123,6 +125,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectError(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).toHaveBeenCalled();
@@ -147,6 +150,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectError(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).toHaveBeenCalled();
@@ -171,6 +175,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectError(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).toHaveBeenCalled();
@@ -195,6 +200,7 @@ describe("Job Broker handler", () => {
         spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
 
         return LambdaTester(JobBroker.handler)
+            .timeout(60)
             .expectError(() => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveMessage).toHaveBeenCalled();

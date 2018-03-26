@@ -38,8 +38,6 @@ const processSingleMessage = message => {
 
 const processMessages = messages => {
 
-    console.log(messages.length + ' messages');
-
     if (messages && messages.length > 0) {
         return Promise.all(messages.map(message => processSingleMessage(message)));
     }
