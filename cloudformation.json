@@ -820,6 +820,9 @@
             "SAP_ORDER_QUEUE_URL": {
               "Ref": "SapOrderQueue"
             },
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
             "CRM_QUEUE_URL": {
               "Ref": "CrmQueue"
             },
