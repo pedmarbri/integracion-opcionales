@@ -1094,6 +1094,20 @@
         }
       }
     },
+    "SapCMQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${SapCMDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "SapCMDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
     "OrderTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
