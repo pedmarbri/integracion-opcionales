@@ -5,54 +5,65 @@ const SapOrderQueueService = require('./sap-order-queue-service');
 const OrderTableService = require('./order-table-service');
 const CrmQueueService = require('./crm-queue-service');
 
-exports.handler = function (event, context, callback) {
+const processSingleMessage = message => {
+    return new Promise((resolve, reject) => {
+        const acceptedTypes = ['order', 'creditmemo'];
 
-    let processSingleMessage = message => {
-        return new Promise((resolve, reject) => {
-            const acceptedTypes = ['order', 'creditmemo'];
-
-            if (acceptedTypes.indexOf(message.json.type) < 0) {
-                reject(new Error("Invalid message type"));
-                return;
-            }
-
-            switch (message.json.type) {
-                case 'order':
-                    OrderTableService.saveMessage(message)
-                        .then(CrmQueueService.sendMessage)
-                        .then(JobQueueService.deleteMessage)
-                        .then(SapOrderQueueService.sendMessage)
-                        .then(resolve)
-                        .catch(err => reject(err));
-                    break;
-
-                case 'creditmemo':
-                    // TBD
-                    resolve('creditmemo is not yet implemented');
-                    break;
-
-                default:
-                    reject(new Error('Unexpected type case'));
-            }
-
-        });
-    };
-
-    let processMessages = messages => {
-
-        if (messages && messages.length > 0) {
-            return Promise.all(messages.map(message => processSingleMessage(message)));
+        if (acceptedTypes.indexOf(message.json.type) < 0) {
+            reject(new Error("Invalid message type"));
+            return;
         }
 
-        return Promise.resolve("No messages");
+        switch (message.json.type) {
+            case 'order':
+                OrderTableService.saveMessage(message)
+                    .then(CrmQueueService.sendMessage)
+                    .then(JobQueueService.deleteMessage)
+                    .then(SapOrderQueueService.sendMessage)
+                    .then(resolve)
+                    .catch(err => reject(err));
+                break;
+
+            case 'creditmemo':
+                // TBD
+                resolve('creditmemo is not yet implemented');
+                break;
+
+            default:
+                reject(new Error('Unexpected type case'));
+        }
+
+    });
+};
+
+const processMessages = messages => {
+
+    console.log(messages.length + ' messages');
+
+    if (messages && messages.length > 0) {
+        return Promise.all(messages.map(message => processSingleMessage(message)));
+    }
+
+    /**
+     * Resolve to false to indicate that the batch was empty and trigger process end
+     */
+    return Promise.resolve(false);
+};
+
+exports.handler = function (event, context, callback) {
+
+    const work = previousBatch => {
+
+        if (previousBatch !== false && context.getRemainingTimeInMillis() > 20000) {
+            return JobQueueService.receiveMessages()
+                .then(processMessages)
+                .then(work);
+        }
+
+        return Promise.resolve("Done");
     };
 
-    JobQueueService.receiveMessages()
-        .then(processMessages)
-        .then(result => {
-            callback(null, result);
-        })
-        .catch(error => {
-           callback(error);
-        });
+    work(true, context)
+        .then(result => callback(null, result))
+        .catch(callback);
 };
