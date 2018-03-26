@@ -753,6 +753,9 @@
                     },
                     {
                       "Fn::Sub": "${CrmQueue.Arn}"
+                    },
+                    {
+                      "Fn::Sub": "${SapCMQueue.Arn}"
                     }
                   ]
                 }
