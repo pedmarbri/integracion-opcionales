@@ -1,17 +1,17 @@
 'use strict';
 
-var AWS = require('aws-sdk');
-var async = require('async');
+const AWS = require('aws-sdk');
+const async = require('async');
 
-var TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
-var WORKER_LAMBDA_NAME = process.env.SAP_ORDER_WORKER;
-var AWS_REGION = process.env.AWS_REGION;
+const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
+const WORKER_LAMBDA_NAME = process.env.SAP_ORDER_WORKER;
+const AWS_REGION = process.env.AWS_REGION;
 
-var sqs = new AWS.SQS({region: AWS_REGION});
-var lambda = new AWS.Lambda({region: AWS_REGION});
+const sqs = new AWS.SQS({ region: AWS_REGION });
+const lambda = new AWS.Lambda({ region: AWS_REGION });
 
 function receiveMessages(callback) {
-    var params = {
+    const params = {
         QueueUrl: TASK_QUEUE_URL,
         MaxNumberOfMessages: 10
     };
@@ -26,7 +26,7 @@ function receiveMessages(callback) {
 }
 
 function invokeWorkerLambda(task, callback) {
-    var params = {
+    const params = {
         FunctionName: WORKER_LAMBDA_NAME,
         InvocationType: 'Event',
         Payload: JSON.stringify(task)
@@ -44,7 +44,7 @@ function invokeWorkerLambda(task, callback) {
 function handleSQSMessages(context, callback) {
     receiveMessages(function(err, messages) {
         if (messages && messages.length > 0) {
-            var invocations = [];
+            let invocations = [];
             messages.forEach(function(message) {
                 invocations.push(function(callback) {
                     invokeWorkerLambda(message, callback);

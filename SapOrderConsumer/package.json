@@ -4,12 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/jshint ."
+    "test": "npm run-script jshint && npm run-script jasmine",
+    "jshint": "./node_modules/.bin/jshint .",
+    "jasmine": "./node_modules/.bin/jasmine"
   },
   "dependencies": {
     "async": "2.0.1"
   },
   "devDependencies": {
-    "jshint": "2.9.1"
+    "aws-sdk": "^2.213.1",
+    "jasmine": "^3.1.0",
+    "jshint": "2.9.1",
+    "lambda-tester": "^3.2.0",
+    "proxyquire": "^2.0.1",
+    "sinon": "^4.4.8"
   }
 }
