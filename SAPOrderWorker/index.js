@@ -7,8 +7,13 @@ const LN_STACK = process.env.LN_STACK;
 const WSDL_URI = './sap-service-' + LN_STACK.toLowerCase() + '.wsdl';
 const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
+
+// Service Credentials
 const SAP_HTTP_USER = 'webservice';
 const SAP_HTTP_PASS = '12345678';
+
+// Fixed Values
+const DOCUMENT_TYPE_ORDER = 'ZPSI';
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -164,9 +169,10 @@ function work(order, callback) {
 
         client.addHttpHeader('Authorization', auth);
 
+
         const params = {
             AD_SMTPADR: order.customer.email,
-            AUART: 'ZPSI',
+            AUART: DOCUMENT_TYPE_ORDER,
             AUGRU: '001',
             BSTDK: formatDate(order.timestamp),
             BSTKD: formatOrderNum(order.order_id),
@@ -215,7 +221,7 @@ function work(order, callback) {
 
             console.log(client.lastResponse);
             callback();
-        }/*, {timeout: 10000}*/);
+        }, {timeout: 10000});
     });
 }
 

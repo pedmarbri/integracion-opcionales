@@ -1,73 +1,36 @@
 'use strict';
 
-const AWS = require('aws-sdk');
-const async = require('async');
+const SapOrderQueueService = require('./sap-order-queue-service');
+const SapOrderWorker = require('./sap-order-worker-service');
 
-const TASK_QUEUE_URL = process.env.SAP_ORDER_QUEUE_URL;
-const WORKER_LAMBDA_NAME = process.env.SAP_ORDER_WORKER;
-const AWS_REGION = process.env.AWS_REGION;
+const processMessages = messages => {
+    if (messages && messages.length > 0) {
+        console.log('Processing ' + messages.length + ' messages');
+        return Promise.all(messages.map(message => SapOrderWorker.process(message)));
+    }
 
-const sqs = new AWS.SQS({ region: AWS_REGION });
-const lambda = new AWS.Lambda({ region: AWS_REGION });
-
-function receiveMessages(callback) {
-    const params = {
-        QueueUrl: TASK_QUEUE_URL,
-        MaxNumberOfMessages: 10
-    };
-    sqs.receiveMessage(params, function(err, data) {
-        if (err) {
-            console.error(err, err.stack);
-            callback(err);
-        } else {
-            callback(null, data.Messages);
-        }
-    });
-}
-
-function invokeWorkerLambda(task, callback) {
-    const params = {
-        FunctionName: WORKER_LAMBDA_NAME,
-        InvocationType: 'Event',
-        Payload: JSON.stringify(task)
-    };
-    lambda.invoke(params, function(err, data) {
-        if (err) {
-            console.error(err, err.stack);
-            callback(err);
-        } else {
-            callback(null, data);
-        }
-    });
-}
-
-function handleSQSMessages(context, callback) {
-    receiveMessages(function(err, messages) {
-        if (messages && messages.length > 0) {
-            let invocations = [];
-            messages.forEach(function(message) {
-                invocations.push(function(callback) {
-                    invokeWorkerLambda(message, callback);
-                });
-            });
-            async.parallel(invocations, function(err) {
-                if (err) {
-                    console.error(err, err.stack);
-                    callback(err);
-                } else {
-                    if (context.getRemainingTimeInMillis() > 20000) {
-                        handleSQSMessages(context, callback);
-                    } else {
-                        callback(null, 'PAUSE');
-                    }
-                }
-            });
-        } else {
-            callback(null, 'DONE');
-        }
-    });
-}
+    /**
+     * Resolve to false to indicate that the batch was empty and trigger process end
+     */
+    return Promise.resolve(false);
+};
 
 exports.handler = function (event, context, callback) {
-    handleSQSMessages(context, callback);
+
+    let batch = 1;
+
+    const work = previousBatch => {
+        console.log('Batch ' + batch++);
+        if (previousBatch !== false && context.getRemainingTimeInMillis() > 20000) {
+            return SapOrderQueueService.receiveMessages()
+                .then(processMessages)
+                .then(work);
+        }
+
+        return Promise.resolve("Done");
+    };
+
+    work(true, context)
+        .then(result => callback(null, result))
+        .catch(callback);
 };
