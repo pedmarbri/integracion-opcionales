@@ -23,7 +23,8 @@ describe('Sap Service', () => {
         };
 
         clientStub = {
-            ZWS_GEN_PEDAsync: () => Promise.resolve({})
+            ZWS_GEN_PEDAsync: () => Promise.resolve({}),
+            addHttpHeader: sinon.stub()
         };
 
         soapStub.createClientAsync.resolves(clientStub);
@@ -51,6 +52,19 @@ describe('Sap Service', () => {
             .then(() => {
                 expect(createClientSpy).toHaveBeenCalled();
                 clientMock.expects('ZWS_GEN_PEDAsync').once();
+            })
+            .catch(fail);
+    });
+
+    it('Sends authorization header to Sap', () => {
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+
+        SapService.sendOrder(order)
+            .then(() => {
+                clientMock.expects('addHttpHeader').atLeast(1).withArgs('Authorization');
             })
             .catch(fail);
     });
