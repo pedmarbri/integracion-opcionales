@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run-script jshint",
-    "xtest": "npm run-script jshint && npm run-script jasmine",
+    "test": "npm run-script jshint && npm run-script jasmine",
     "jshint": "./node_modules/.bin/jshint .",
     "jasmine": "./node_modules/.bin/jasmine"
   },
@@ -14,6 +13,8 @@
   },
   "devDependencies": {
     "jasmine": "^3.1.0",
-    "jshint": "2.9.1"
+    "jshint": "2.9.1",
+    "proxyquire": "^2.0.1",
+    "sinon": "^4.4.10"
   }
 }
