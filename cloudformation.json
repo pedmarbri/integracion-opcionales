@@ -6,8 +6,8 @@
     "LNStack": {
       "Type": "String",
       "Default": "Test",
-      "AllowedValues": ["Test", "Production"],
-      "Description": "LN Stack being used, Test or Production. Default is Test"
+      "AllowedValues": ["Test", "Production", "Dev"],
+      "Description": "LN Stack being used, Dev, Test or Production. Default is Test"
     }
   },
   "Resources": {
