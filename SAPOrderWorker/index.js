@@ -14,6 +14,15 @@ const SAP_HTTP_PASS = '12345678';
 
 // Fixed Values
 const DOCUMENT_TYPE_ORDER = 'ZPSI';
+const ORDER_REASON_CODE = '001';
+const LANGUAGE_CODE = 'S';
+const SECTOR_CODE = '02';
+const SALES_ORGANIZATION = '0002';
+const SALES_CHANNEL = '02';
+const CENTER_CODE = 'SALN';
+const WAREHOUSE = 'GSTK';
+const MEASUREMENT_UNIT = 'EJE';
+const MATERIAL_GROUP_5 = 30;
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -48,7 +57,7 @@ function formatDate(isoDate) {
 }
 
 function formatOrderNum(orderNum) {
-    return '127' + orderNum.substr(orderNum.length - 8);
+    return orderNum.substr(0, 3) + orderNum.substr(orderNum.length - 8);
 }
 
 function formatTransactionId(payment) {
@@ -87,6 +96,9 @@ function formatDiscountCondition(item, index) {
     let discountType = discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION;
     let discountAmount = discountIsPercent ? item.discount_percent : item.discount_amount;
 
+    /**
+     * Exclusive products always express the discount as percentual
+     */
     if (item.flags && item.flags.indexOf('exclusive') > -1) {
         discountType = EXCLUSIVE_DISCOUNT_CONDITION;
         discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.list_price);
@@ -141,12 +153,12 @@ function formatItems(orderItems) {
         items.push ({
             POSNR: rowPosition,
             MATNR: item.sku,
-            WERKS: 'SALN',
-            LGORT: 'GSTK',
+            WERKS: CENTER_CODE,
+            LGORT: WAREHOUSE,
             MENGE: item.qty,
-            MEINS: 'EJE',
-            MVGR5: 30,
-            KDMAT: item.name, // !!!
+            MEINS: MEASUREMENT_UNIT,
+            MVGR5: MATERIAL_GROUP_5,
+            KDMAT: item.name,
             POSEX: rowPosition
         });
     });
@@ -169,25 +181,24 @@ function work(order, callback) {
 
         client.addHttpHeader('Authorization', auth);
 
-
         const params = {
             AD_SMTPADR: order.customer.email,
             AUART: DOCUMENT_TYPE_ORDER,
-            AUGRU: '001',
+            AUGRU: ORDER_REASON_CODE,
             BSTDK: formatDate(order.timestamp),
             BSTKD: formatOrderNum(order.order_id),
             CITY: 'CABA',
             COUNTRY: 'AR',
             IHREZ: formatTransactionId(order.payment),
             KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
-            LANGU: 'S',
+            LANGU: LANGUAGE_CODE,
             NAME1: formatCustomerName(order.customer),
             NAME4: formatCustomerIdNumber(order.customer),
-            SPART: '02',
+            SPART: SECTOR_CODE,
             T_CONDITIONS: formatConditions(order.items, order.totals),
             T_ITEMS: formatItems(order.items),
             T_RETURN: {
-                item: [  // Es obligatorio!!!!!!!
+                item: [
                     {
                         TYPE: '?',
                         ID: '?',
@@ -207,8 +218,8 @@ function work(order, callback) {
                 ],
             },
             VBELN_EXT: null,
-            VKORG: '0002',
-            VTWEG: '02'
+            VKORG: SALES_ORGANIZATION,
+            VTWEG: SALES_CHANNEL
         };
 
         console.log(JSON.stringify(params));
