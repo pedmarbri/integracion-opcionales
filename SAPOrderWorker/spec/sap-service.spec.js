@@ -8,12 +8,12 @@ describe('Sap Service', () => {
     let soapStub;
     let clientStub;
     let stubConfig;
-
-    const order = {
-        order_id: '12700000065'
-    };
+    let sampleOrder;
+    let expectedRequest;
 
     beforeEach(() => {
+        sampleOrder = require('./sample-order');
+        expectedRequest = require('./sample-request');
 
         soapStub = {
             /**
@@ -24,7 +24,7 @@ describe('Sap Service', () => {
 
         clientStub = {
             ZWS_GEN_PEDAsync: () => Promise.resolve({}),
-            addHttpHeader: sinon.stub()
+            addHttpHeader: () => { return this; }
         };
 
         soapStub.createClientAsync.resolves(clientStub);
@@ -37,10 +37,10 @@ describe('Sap Service', () => {
     });
 
     it('Returns a promise on sendOrder', () => {
-        expect(SapService.sendOrder(order)).toEqual(jasmine.any(Promise));
+        expect(SapService.sendOrder(sampleOrder)).toEqual(jasmine.any(Promise));
     });
 
-    it('Calls the right soap function on sendOrder', () => {
+    it('Calls the right soap function on sendOrder with the right parameters', () => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -48,10 +48,12 @@ describe('Sap Service', () => {
          */
         const clientMock = sinon.mock(clientStub);
 
-        SapService.sendOrder(order)
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync').once().withArgs(expectedRequest);
+
+        SapService.sendOrder(sampleOrder)
             .then(() => {
                 expect(createClientSpy).toHaveBeenCalled();
-                clientMock.expects('ZWS_GEN_PEDAsync').once();
+                soapMethodExpectation.verify();
             })
             .catch(fail);
     });
@@ -61,10 +63,11 @@ describe('Sap Service', () => {
          * @var {Sinon.SinonMock} clientMock
          */
         const clientMock = sinon.mock(clientStub);
+        const authorizationExpectation = clientMock.expects('addHttpHeader').atLeast(1).withArgs('Authorization');
 
-        SapService.sendOrder(order)
+        SapService.sendOrder(sampleOrder)
             .then(() => {
-                clientMock.expects('addHttpHeader').atLeast(1).withArgs('Authorization');
+                authorizationExpectation.verify();
             })
             .catch(fail);
     });

@@ -163,7 +163,6 @@ function formatItems(orderItems) {
         });
     });
 
-
     return {
         item: items
     };
