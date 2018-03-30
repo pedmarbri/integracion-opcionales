@@ -178,13 +178,17 @@ const formatRequest = order => ({
 exports.sendOrder = order => {
     const callSapService = client => {
         const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
+        const request = formatRequest(order);
         const options = {
             timeout: 10000
         };
 
         client.addHttpHeader('Authorization', auth);
-
-        return client.ZWS_GEN_PEDAsync(formatRequest(order), options);
+        console.log(request);
+        return client.ZWS_GEN_PEDAsync(request, options).then(result => {
+             console.log(result);
+            return Promise.resolve(result);
+        });
     };
 
     return soap.createClientAsync(WSDL_URI)

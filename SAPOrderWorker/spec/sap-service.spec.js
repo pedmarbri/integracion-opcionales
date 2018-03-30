@@ -2,6 +2,17 @@
 
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
+const JasmineConsoleReporter = require('jasmine-console-reporter');
+
+const reporter = new JasmineConsoleReporter({
+    colors: 1,           // (0|false)|(1|true)|2
+    cleanStack: 1,       // (0|false)|(1|true)|2|3
+    verbosity: 4,        // (0|false)|1|2|(3|true)|4
+    listStyle: 'indent', // "flat"|"indent"
+    activity: false
+});
+
+jasmine.getEnv().addReporter(reporter);
 
 describe('Sap Service', () => {
     let SapService;
@@ -48,7 +59,7 @@ describe('Sap Service', () => {
          */
         const clientMock = sinon.mock(clientStub);
 
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync').once().withArgs(expectedRequest);
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync').once().withArgs(expectedRequest).resolves({});
 
         SapService.sendOrder(sampleOrder)
             .then(() => {
