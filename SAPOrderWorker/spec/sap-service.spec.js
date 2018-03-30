@@ -21,10 +21,12 @@ describe('Sap Service', () => {
     let stubConfig;
     let sampleOrder;
     let expectedRequest;
+    let sampleResponse;
 
     beforeEach(() => {
         sampleOrder = require('./sample-order');
         expectedRequest = require('./sample-request');
+        sampleResponse = require('./sample-response');
 
         soapStub = {
             /**
@@ -34,7 +36,7 @@ describe('Sap Service', () => {
         };
 
         clientStub = {
-            ZWS_GEN_PEDAsync: () => Promise.resolve({}),
+            ZWS_GEN_PEDAsync: () => Promise.resolve(sampleResponse),
             addHttpHeader: () => { return this; }
         };
 
@@ -59,7 +61,10 @@ describe('Sap Service', () => {
          */
         const clientMock = sinon.mock(clientStub);
 
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync').once().withArgs(expectedRequest).resolves({});
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
 
         SapService.sendOrder(sampleOrder)
             .then(() => {
@@ -81,5 +86,24 @@ describe('Sap Service', () => {
                 authorizationExpectation.verify();
             })
             .catch(fail);
+    });
+
+    it('Rejects on error response', () => {
+        sampleResponse.VBELN = null;
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
+
+        SapService.sendOrder(sampleOrder)
+            .then(fail)
+            .catch(() => {
+                soapMethodExpectation.verify();
+            });
     });
 });

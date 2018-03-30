@@ -184,9 +184,14 @@ exports.sendOrder = order => {
         };
 
         client.addHttpHeader('Authorization', auth);
-        console.log(request);
+        console.log(JSON.stringify(request));
         return client.ZWS_GEN_PEDAsync(request, options).then(result => {
-             console.log(result);
+             console.log(JSON.stringify(result));
+
+             if (!result.VBELN) {
+                 throw new Error(result.T_RETURN.item[0].MESSAGE);
+             }
+
             return Promise.resolve(result);
         });
     };
