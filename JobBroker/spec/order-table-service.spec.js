@@ -12,10 +12,16 @@ describe('Order Table', () => {
 
     beforeEach(() => {
         dynamoDbRequestStub = { promise: sinon.stub() };
-        dynamoDbStub = { putItem: sinon.stub() };
+        dynamoDbStub = { put: sinon.stub() };
 
-        dynamoDbStub.putItem.returns(dynamoDbRequestStub);
-        AWSStub = { DynamoDB: sinon.stub().returns(dynamoDbStub) };
+        dynamoDbStub.put.returns(dynamoDbRequestStub);
+
+        AWSStub = {
+            DynamoDB: {
+                DocumentClient: sinon.stub().returns(dynamoDbStub),
+            }
+        };
+
         stubConfig = { 'aws-sdk': AWSStub };
         OrderTableService = proxyquire('../order-table-service', stubConfig);
     });
