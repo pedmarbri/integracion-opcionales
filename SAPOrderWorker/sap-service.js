@@ -185,15 +185,17 @@ exports.sendOrder = order => {
 
         client.addHttpHeader('Authorization', auth);
         console.log(JSON.stringify(request));
-        return client.ZWS_GEN_PEDAsync(request, options).then(result => {
-             console.log(JSON.stringify(result));
 
-             if (!result.VBELN) {
-                 throw new Error(result.T_RETURN.item[0].MESSAGE);
-             }
+        return client.ZWS_GEN_PEDAsync(request, options)
+            .then(result => {
+                console.log(JSON.stringify(result));
 
-            return Promise.resolve(result);
-        });
+                if (!result.VBELN) {
+                    return Promise.reject(Error(result.T_RETURN.item[0].MESSAGE));
+                }
+
+                return Promise.resolve(result);
+            });
     };
 
     return soap.createClientAsync(WSDL_URI)
