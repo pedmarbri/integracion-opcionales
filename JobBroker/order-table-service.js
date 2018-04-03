@@ -13,5 +13,23 @@ exports.saveMessage = message => {
         ConditionExpression: "attribute_not_exists(order_id)"
     };
 
+    const now = new Date().toISOString();
+
+    // Add an empty map to store integrations results
+    params.Item.integrations = {
+        sap: {
+            last_result: 'pending',
+            last_timestamp: now
+        },
+        crm: {
+            last_result: 'pending',
+            last_timestamp: now
+        },
+        bau: {
+            last_result: 'pending',
+            last_timestamp: now
+        }
+    };
+
     return table.put(params).promise().then(() => Promise.resolve(message));
 };

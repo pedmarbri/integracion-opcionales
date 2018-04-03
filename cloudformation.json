@@ -773,7 +773,7 @@
                     "dynamodb:PutItem",
                     "dynamodb:GetItem",
                     "dynamodb:Query",
-                    "dynamodb:Update"
+                    "dynamodb:UpdateItem"
                   ],
                   "Resource": {
                     "Fn::Join" : [
@@ -833,16 +833,7 @@
               "Ref": "LNStack"
             },
             "ORDER_TABLE": {
-              "Fn::Join": [
-                "",
-                [
-                  "IntegracionColecciones",
-                  "Order",
-                  {
-                    "Ref": "LNStack"
-                  }
-                ]
-              ]
+              "Ref": "OrderTable"
             }
           }
         },
@@ -1067,6 +1058,42 @@
                 }
               ]
             }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
           }
         ]
       }
@@ -1089,6 +1116,9 @@
             },
             "LN_STACK": {
               "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
             }
           }
         },

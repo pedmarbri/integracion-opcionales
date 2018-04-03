@@ -194,7 +194,10 @@ exports.sendOrder = order => {
                     return Promise.reject(Error(result.T_RETURN.item[0].MESSAGE));
                 }
 
-                return Promise.resolve(result);
+                return Promise.resolve({
+                    result: result,
+                    order: order
+                });
             });
     };
 
