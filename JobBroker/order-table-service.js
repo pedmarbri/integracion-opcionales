@@ -31,5 +31,7 @@ exports.saveMessage = message => {
         }
     };
 
+    console.log(JSON.stringify(params));
+
     return table.put(params).promise().then(() => Promise.resolve(message));
 };

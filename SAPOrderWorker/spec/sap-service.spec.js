@@ -49,6 +49,12 @@ describe('Sap Service', () => {
         SapService = proxyquire('../sap-service', stubConfig);
     });
 
+    afterEach(() => {
+        delete require.cache[require.resolve('./sample-order')];
+        delete require.cache[require.resolve('./sample-request')];
+        delete require.cache[require.resolve('./sample-response')];
+    });
+
     it('Returns a promise on sendOrder', () => {
         expect(SapService.sendOrder(sampleOrder)).toEqual(jasmine.any(Promise));
     });

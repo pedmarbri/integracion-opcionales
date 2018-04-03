@@ -20,5 +20,6 @@ exports.saveResult = sapResult => {
         }
     };
 
-    return table.update(params).promise().then(() => Promise.resolve(sapResult.order));
+    return table.update(params).promise()
+        .then(() => Promise.resolve(sapResult.order));
 };

@@ -9,12 +9,31 @@ describe('Order Table', () => {
     let AWSStub;
     let dynamoDbRequestStub;
     let dynamoDbStub;
+    let sampleOrder;
+    let sampleResponse;
+    let sampleResult;
 
     beforeEach(() => {
-        dynamoDbRequestStub = { promise: sinon.stub() };
-        dynamoDbStub = { put: sinon.stub() };
+        sampleOrder = require('./sample-order');
+        sampleResponse = require('./sample-response');
 
-        dynamoDbStub.put.returns(dynamoDbRequestStub);
+        sampleResult = {
+            order: sampleOrder,
+            result: sampleResponse
+        };
+
+        dynamoDbRequestStub = {
+            /**
+             * @var {Sinon.SinonStub}
+             */
+            promise: sinon.stub()
+        };
+
+        dynamoDbStub = {
+            update: sinon.stub()
+        };
+
+        dynamoDbStub.update.returns(dynamoDbRequestStub);
 
         AWSStub = {
             DynamoDB: {
@@ -26,37 +45,27 @@ describe('Order Table', () => {
         OrderTableService = proxyquire('../order-table-service', stubConfig);
     });
 
-    it('Returns a promise on saveMessage', () => {
-        const message = {
-            MessageId: '1234',
-            Body: '{"payload":{"order_id":"1234567890"}}',
-            json: {
-                payload: {
-                    order_id: '1234567890'
-                }
-            }
+    it('Returns a promise on saveResult', () => {
+        const result = {
+            order: sampleOrder,
+            result: sampleResponse
         };
 
         dynamoDbRequestStub.promise.resolves({});
 
-        expect(OrderTableService.saveMessage(message)).toEqual(jasmine.any(Promise));
+        expect(OrderTableService.saveResult(result)).toEqual(jasmine.any(Promise));
     });
 
-    it('Handles rejection on saveMessage', () => {
-        const message = {
-            MessageId: '1234',
-            Body: '{"payload":{"order_id":"1234567890"}}',
-            json: {
-                payload: {
-                    order_id: '1234567890'
-                }
-            }
+    it('Handles rejection on saveResult', () => {
+        const result = {
+            order: sampleOrder,
+            result: sampleResponse
         };
 
         let resultHandler = jasmine.createSpy('resultHandler');
         dynamoDbRequestStub.promise.rejects();
 
-        OrderTableService.saveMessage(message)
+        OrderTableService.saveResult(result)
             .then(resultHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
@@ -64,18 +73,9 @@ describe('Order Table', () => {
             });
     });
 
-    it('Resolves to the original message on saveMessage', () => {
-        const message = {
-            MessageId: '1234',
-            Body: '{"payload":{"order_id":"1234567890"}}',
-            json: {
-                payload: {
-                    order_id: '1234567890'
-                }
-            }
-        };
-
+    it('Resolves to the order on saveResult', () => {
         dynamoDbRequestStub.promise.resolves({});
-        OrderTableService.saveMessage(message).then(result => expect(result).toEqual(message));
+        OrderTableService.saveResult(sampleResult)
+            .then(result => expect(result).toEqual(sampleResult.order));
     });
 });
