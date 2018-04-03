@@ -42,7 +42,6 @@ const formatDate = isoDate => {
     ].join('');
 };
 
-const formatOrderNum = orderNum => orderNum.substr(0, 3) + orderNum.substr(orderNum.length - 8);
 const formatTransactionId = payment => payment.transaction_id;
 const formatCustomerName = customer => customer.first_name + ' ' + customer.last_name;
 const formatCustomerIdNumber = customer => customer.id_number;
@@ -139,7 +138,7 @@ const formatRequest = order => ({
     AUART: DOCUMENT_TYPE_ORDER,
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(order.timestamp),
-    BSTKD: formatOrderNum(order.order_id),
+    BSTKD: order.order_id,
     CITY: 'CABA',
     COUNTRY: 'AR',
     IHREZ: formatTransactionId(order.payment),

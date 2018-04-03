@@ -3,7 +3,7 @@ module.exports = {
     AUART: 'ZPSI',
     AUGRU: '001',
     BSTDK: '20180323', // !
-    BSTKD: '12700000065', // !
+    BSTKD: '12700000000065', // !
     CITY: 'CABA',
     COUNTRY: 'AR',
     IHREZ: '1234',
