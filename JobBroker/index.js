@@ -5,6 +5,7 @@ const SapOrderQueueService = require('./sap-order-queue-service');
 const SapCMQueueService = require('./sap-cm-queue-service');
 const OrderTableService = require('./order-table-service');
 const CrmQueueService = require('./crm-queue-service');
+const TIMEOUT_THRESHOLD = 10000;
 
 const processSingleMessage = message => {
     return new Promise((resolve, reject) => {
@@ -55,7 +56,7 @@ exports.handler = function (event, context, callback) {
 
     const work = previousBatch => {
 
-        if (previousBatch !== false && context.getRemainingTimeInMillis() > 20000) {
+        if (previousBatch !== false && context.getRemainingTimeInMillis() > TIMEOUT_THRESHOLD) {
             return JobQueueService.receiveMessages()
                 .then(processMessages)
                 .then(work);

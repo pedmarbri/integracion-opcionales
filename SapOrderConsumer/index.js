@@ -2,6 +2,7 @@
 
 const SapOrderQueueService = require('./sap-order-queue-service');
 const SapOrderWorker = require('./sap-order-worker-service');
+const TIMEOUT_THRESHOLD = 10000;
 
 const processMessages = messages => {
     if (messages && messages.length > 0) {
@@ -21,7 +22,8 @@ exports.handler = function (event, context, callback) {
 
     const work = previousBatch => {
         console.log('Batch ' + batch++);
-        if (previousBatch !== false && context.getRemainingTimeInMillis() > 20000) {
+
+        if (previousBatch !== false && context.getRemainingTimeInMillis() > TIMEOUT_THRESHOLD) {
             return SapOrderQueueService.receiveMessages()
                 .then(processMessages)
                 .then(work);
