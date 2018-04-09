@@ -1,7 +1,18 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const proxyquire = require( 'proxyquire' ).noCallThru();
+
+/**
+ * @var {Proxyquire|Function}
+ */
+const proxyquire = require( 'proxyquire' );
+
+proxyquire.noCallThru();
+
+/**
+ * Supress console output
+ */
+console.log = console.error = console.info = () => {};
 
 describe('Order Table', () => {
     let OrderTableService;
@@ -23,13 +34,13 @@ describe('Order Table', () => {
         };
 
         dynamoDbRequestStub = {
-            /**
-             * @var {Sinon.SinonStub}
-             */
-            promise: sinon.stub()
+            promise: () => Promise.resolve({})
         };
 
         dynamoDbStub = {
+            /**
+             * @var {Sinon.SinonStub}
+             */
             update: sinon.stub()
         };
 
@@ -37,35 +48,28 @@ describe('Order Table', () => {
 
         AWSStub = {
             DynamoDB: {
-                DocumentClient: sinon.stub().returns(dynamoDbStub),
+                /**
+                 * @var {Sinon.SinonStub}
+                 */
+                DocumentClient: sinon.stub(),
             }
         };
+
+        AWSStub.DynamoDB.DocumentClient.returns(dynamoDbStub);
 
         stubConfig = { 'aws-sdk': AWSStub };
         OrderTableService = proxyquire('../order-table-service', stubConfig);
     });
 
     it('Returns a promise on saveResult', () => {
-        const result = {
-            order: sampleOrder,
-            result: sampleResponse
-        };
-
-        dynamoDbRequestStub.promise.resolves({});
-
-        expect(OrderTableService.saveResult(result)).toEqual(jasmine.any(Promise));
+        expect(OrderTableService.saveResult(sampleResult)).toEqual(jasmine.any(Promise));
     });
 
     it('Handles rejection on saveResult', () => {
-        const result = {
-            order: sampleOrder,
-            result: sampleResponse
-        };
-
         let resultHandler = jasmine.createSpy('resultHandler');
-        dynamoDbRequestStub.promise.rejects();
+        dynamoDbRequestStub.promise = () => Promise.reject(new Error('Fake'));
 
-        OrderTableService.saveResult(result)
+        OrderTableService.saveResult(sampleResult)
             .then(resultHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
@@ -74,8 +78,62 @@ describe('Order Table', () => {
     });
 
     it('Resolves to the order on saveResult', () => {
-        dynamoDbRequestStub.promise.resolves({});
         OrderTableService.saveResult(sampleResult)
             .then(result => expect(result).toEqual(sampleResult.order));
+    });
+
+    it('Returns a promise on saveError', () => {
+        expect(OrderTableService.saveError(sampleResult)).toEqual(jasmine.any(Promise));
+    });
+
+    it('Handles rejection on saveError', () => {
+        dynamoDbRequestStub.promise = () => Promise.reject(new Error('Fake'));
+
+        OrderTableService.saveError(sampleResult)
+            .then(fail)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+            });
+    });
+
+    it('Resolves to the order on saveError', () => {
+        OrderTableService.saveError(sampleResult)
+            .then(result => expect(result).toEqual(sampleResult.order));
+    });
+
+    xit('Saves single error in error list', () => {
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const tableMock = sinon.mock(dynamoDbStub);
+
+        const updateExpectation = tableMock.expects('update')
+            .once()
+            .withArgs({})
+            .resolves(sampleResult);
+
+        dynamoDbRequestStub.promise.resolves({});
+
+        OrderTableService.saveError(sampleResult)
+            .then(() => {
+                updateExpectation.verify();
+            })
+            .catch(fail);
+    });
+
+    xit('Saves multiple errors in error list', () => {
+
+    });
+
+    xit('Filters out unwanted errors', () => {
+
+    });
+
+    xit('Row error message contains row numer', () => {
+
+    });
+
+    xit('Header error message does not contain row number', () => {
+
     });
 });

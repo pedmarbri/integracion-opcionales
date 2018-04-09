@@ -23,3 +23,9 @@ exports.saveResult = sapResult => {
     return table.update(params).promise()
         .then(() => Promise.resolve(sapResult.order));
 };
+
+exports.saveError = sapResult => {
+
+    return table.update().promise()
+        .then(() => Promise.resolve(sapResult.order));
+};
