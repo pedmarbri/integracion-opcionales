@@ -1,8 +1,8 @@
 'use strict';
 
-const SapService = require('sap-service');
-const SapOrderQueueService = require('sap-order-queue-service');
-const OrderTable = require('order-table-service');
+const SapService = require('./sap-service');
+const SapOrderQueueService = require('./sap-order-queue-service');
+const OrderTable = require('./order-table-service');
 
 exports.handler = function(event, context, callback) {
 
