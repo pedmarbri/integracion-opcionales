@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions targetNamespace="urn:sap-com:document:sap:rfc:functions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:tns="urn:sap-com:document:sap:rfc:functions"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <wsdl:documentation>
+        <sidl:sidl xmlns:sidl="http://www.sap.com/2007/03/sidl"/>
+    </wsdl:documentation>
+    <wsp:UsingPolicy wsdl:required="false"/>
+    <wsp:Policy wsu:Id="BN_ZWS_GEN_BINDING">
+        <wsaw:UsingAddressing xmlns:wsaw="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
+        <saptrnbnd:OptimizedXMLTransfer uri="http://xml.sap.com/2006/11/esi/esp/binxml"
+                                        xmlns:saptrnbnd="http://www.sap.com/webas/710/soap/features/transportbinding/"
+                                        wsp:Optional="true"/>
+        <sapattahnd:Enabled xmlns:sapattahnd="http://www.sap.com/710/features/attachment/">false</sapattahnd:Enabled>
+        <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                        xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
+                        xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                        xmlns:wsa="http://www.w3.org/2005/08/addressing"
+                        xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility">
+            <wsp:All>
+                <sp:TransportBinding>
+                    <wsp:Policy>
+                        <sp:TransportToken>
+                            <wsp:Policy>
+                                <sp:HttpsToken>
+                                    <wsp:Policy>
+                                        <sp:HttpBasicAuthentication/>
+                                    </wsp:Policy>
+                                </sp:HttpsToken>
+                            </wsp:Policy>
+                        </sp:TransportToken>
+                        <sp:AlgorithmSuite>
+                            <wsp:Policy>
+                                <sp:TripleDesRsa15/>
+                            </wsp:Policy>
+                        </sp:AlgorithmSuite>
+                        <sp:Layout>
+                            <wsp:Policy>
+                                <sp:Strict/>
+                            </wsp:Policy>
+                        </sp:Layout>
+                    </wsp:Policy>
+                </sp:TransportBinding>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="IF_ZWS_GEN">
+        <sapsession:Session xmlns:sapsession="http://www.sap.com/webas/630/soap/features/session/">
+            <sapsession:enableSession>false</sapsession:enableSession>
+        </sapsession:Session>
+        <wsp:ExactlyOne xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                        xmlns:sapsp="http://www.sap.com/webas/630/soap/features/security/policy"
+                        xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+                        xmlns:wsa="http://www.w3.org/2005/08/addressing"
+                        xmlns:wsu="http://schemas.xmlsoap.org/ws/2002/07/utility"/>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="OP_ZWS_GEN_PED">
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false
+        </sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true
+        </sapblock:enableBlocking>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no
+        </saptrhnw05:required>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="OP_ZWS_GEN_NC">
+        <sapcomhnd:enableCommit xmlns:sapcomhnd="http://www.sap.com/NW05/soap/features/commit/">false
+        </sapcomhnd:enableCommit>
+        <sapblock:enableBlocking xmlns:sapblock="http://www.sap.com/NW05/soap/features/blocking/">true
+        </sapblock:enableBlocking>
+        <saptrhnw05:required xmlns:saptrhnw05="http://www.sap.com/NW05/soap/features/transaction/">no
+        </saptrhnw05:required>
+        <saprmnw05:enableWSRM xmlns:saprmnw05="http://www.sap.com/NW05/soap/features/wsrm/">false</saprmnw05:enableWSRM>
+    </wsp:Policy>
+    <wsdl:types>
+        <xsd:schema attributeFormDefault="qualified" targetNamespace="urn:sap-com:document:sap:rfc:functions">
+            <xsd:simpleType name="char1">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="1"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char10">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="10"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char12">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="12"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char18">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="18"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char2">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="2"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char20">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="20"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char220">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="220"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char241">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="241"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char3">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="3"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char30">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="30"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char32">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="32"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char35">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="35"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char4">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="4"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char40">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="40"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char50">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="50"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char6">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="6"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="char8">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="8"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="cuky5">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="5"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="decimal28.9">
+                <xsd:restriction base="xsd:decimal">
+                    <xsd:totalDigits value="28"/>
+                    <xsd:fractionDigits value="9"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="numeric3">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="3"/>
+                    <xsd:pattern value="\d*"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="numeric6">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="6"/>
+                    <xsd:pattern value="\d*"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="quantum13.3">
+                <xsd:restriction base="xsd:decimal">
+                    <xsd:totalDigits value="13"/>
+                    <xsd:fractionDigits value="3"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="unit3">
+                <xsd:restriction base="xsd:string">
+                    <xsd:maxLength value="3"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="ZCONDITIONS_SALESORDER">
+                <xsd:sequence>
+                    <xsd:element name="KPOSN" type="tns:numeric6"/>
+                    <xsd:element name="KSCHL" type="tns:char4"/>
+                    <xsd:element name="KBETR" type="tns:decimal28.9"/>
+                    <xsd:element name="WAERS" type="tns:cuky5"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ZITEMS_SALESORDER">
+                <xsd:sequence>
+                    <xsd:element name="POSNR" type="tns:numeric6"/>
+                    <xsd:element name="MATNR" type="tns:char18"/>
+                    <xsd:element name="WERKS" type="tns:char4"/>
+                    <xsd:element name="LGORT" type="tns:char4"/>
+                    <xsd:element name="MENGE" type="tns:quantum13.3"/>
+                    <xsd:element name="MEINS" type="tns:unit3"/>
+                    <xsd:element name="MVGR5" type="tns:char3"/>
+                    <xsd:element name="KDMAT" type="tns:char35"/>
+                    <xsd:element name="POSEX" type="tns:char6"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="BAPIRET2">
+                <xsd:sequence>
+                    <xsd:element name="TYPE" type="tns:char1"/>
+                    <xsd:element name="ID" type="tns:char20"/>
+                    <xsd:element name="NUMBER" type="tns:numeric3"/>
+                    <xsd:element name="MESSAGE" type="tns:char220"/>
+                    <xsd:element name="LOG_NO" type="tns:char20"/>
+                    <xsd:element name="LOG_MSG_NO" type="tns:numeric6"/>
+                    <xsd:element name="MESSAGE_V1" type="tns:char50"/>
+                    <xsd:element name="MESSAGE_V2" type="tns:char50"/>
+                    <xsd:element name="MESSAGE_V3" type="tns:char50"/>
+                    <xsd:element name="MESSAGE_V4" type="tns:char50"/>
+                    <xsd:element name="PARAMETER" type="tns:char32"/>
+                    <xsd:element name="ROW" type="xsd:int"/>
+                    <xsd:element name="FIELD" type="tns:char30"/>
+                    <xsd:element name="SYSTEM" type="tns:char10"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TABLE_OF_ZCONDITIONS_SALESORDER">
+                <xsd:sequence>
+                    <xsd:element name="item" type="tns:ZCONDITIONS_SALESORDER" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TABLE_OF_ZITEMS_SALESORDER">
+                <xsd:sequence>
+                    <xsd:element name="item" type="tns:ZITEMS_SALESORDER" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="TABLE_OF_BAPIRET2">
+                <xsd:sequence>
+                    <xsd:element name="item" type="tns:BAPIRET2" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="ZWS_GEN_NC">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="AUART" type="tns:char4"/>
+                        <xsd:element name="AUGRU" type="tns:char3" minOccurs="0"/>
+                        <xsd:element name="BSTDK" type="tns:char8" minOccurs="0"/>
+                        <xsd:element name="BSTKD" type="tns:char35" minOccurs="0"/>
+                        <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
+                        <xsd:element name="T_CONDITIONS" type="tns:TABLE_OF_ZCONDITIONS_SALESORDER"/>
+                        <xsd:element name="T_ITEMS" type="tns:TABLE_OF_ZITEMS_SALESORDER"/>
+                        <xsd:element name="T_RETURN" type="tns:TABLE_OF_BAPIRET2"/>
+                        <xsd:element name="VBELN_REF" type="tns:char10"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ZWS_GEN_NCResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="T_CONDITIONS" type="tns:TABLE_OF_ZCONDITIONS_SALESORDER"/>
+                        <xsd:element name="T_ITEMS" type="tns:TABLE_OF_ZITEMS_SALESORDER"/>
+                        <xsd:element name="T_RETURN" type="tns:TABLE_OF_BAPIRET2"/>
+                        <xsd:element name="VBELN" type="tns:char10"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ZWS_GEN_PED">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="AD_SMTPADR" type="tns:char241" minOccurs="0"/>
+                        <xsd:element name="AUART" type="tns:char4"/>
+                        <xsd:element name="AUGRU" type="tns:char3" minOccurs="0"/>
+                        <xsd:element name="BSTDK" type="tns:char8" minOccurs="0"/>
+                        <xsd:element name="BSTKD" type="tns:char35" minOccurs="0"/>
+                        <xsd:element name="CITY" type="tns:char40"/>
+                        <xsd:element name="COUNTRY" type="tns:char3"/>
+                        <xsd:element name="IHREZ" type="tns:char12" minOccurs="0"/>
+                        <xsd:element name="KUNNR" type="tns:char10"/>
+                        <xsd:element name="LANGU" type="tns:char1"/>
+                        <xsd:element name="NAME1" type="tns:char30"/>
+                        <xsd:element name="NAME4" type="tns:char30" minOccurs="0"/>
+                        <xsd:element name="SPART" type="tns:char2"/>
+                        <xsd:element name="T_CONDITIONS" type="tns:TABLE_OF_ZCONDITIONS_SALESORDER"/>
+                        <xsd:element name="T_ITEMS" type="tns:TABLE_OF_ZITEMS_SALESORDER"/>
+                        <xsd:element name="T_RETURN" type="tns:TABLE_OF_BAPIRET2"/>
+                        <xsd:element name="VBELN_EXT" type="tns:char10"/>
+                        <xsd:element name="VKORG" type="tns:char4"/>
+                        <xsd:element name="VTWEG" type="tns:char2"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="ZWS_GEN_PEDResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="T_CONDITIONS" type="tns:TABLE_OF_ZCONDITIONS_SALESORDER"/>
+                        <xsd:element name="T_ITEMS" type="tns:TABLE_OF_ZITEMS_SALESORDER"/>
+                        <xsd:element name="T_RETURN" type="tns:TABLE_OF_BAPIRET2"/>
+                        <xsd:element name="VBELN" type="tns:char10"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="ZWS_GEN_NC">
+        <wsdl:part name="parameters" element="tns:ZWS_GEN_NC"/>
+    </wsdl:message>
+    <wsdl:message name="ZWS_GEN_NCResponse">
+        <wsdl:part name="parameter" element="tns:ZWS_GEN_NCResponse"/>
+    </wsdl:message>
+    <wsdl:message name="ZWS_GEN_PED">
+        <wsdl:part name="parameters" element="tns:ZWS_GEN_PED"/>
+    </wsdl:message>
+    <wsdl:message name="ZWS_GEN_PEDResponse">
+        <wsdl:part name="parameter" element="tns:ZWS_GEN_PEDResponse"/>
+    </wsdl:message>
+    <wsdl:portType name="ZWS_GEN">
+        <wsp:Policy>
+            <wsp:PolicyReference URI="#IF_ZWS_GEN"/>
+        </wsp:Policy>
+        <wsdl:operation name="ZWS_GEN_NC">
+            <wsp:Policy>
+                <wsp:PolicyReference URI="#OP_ZWS_GEN_NC"/>
+            </wsp:Policy>
+            <wsdl:input message="tns:ZWS_GEN_NC"/>
+            <wsdl:output message="tns:ZWS_GEN_NCResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="ZWS_GEN_PED">
+            <wsp:Policy>
+                <wsp:PolicyReference URI="#OP_ZWS_GEN_PED"/>
+            </wsp:Policy>
+            <wsdl:input message="tns:ZWS_GEN_PED"/>
+            <wsdl:output message="tns:ZWS_GEN_PEDResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="ZWS_GEN_BINDING" type="tns:ZWS_GEN">
+        <wsp:Policy>
+            <wsp:PolicyReference URI="#BN_ZWS_GEN_BINDING"/>
+        </wsp:Policy>
+        <wsa:EndpointReference xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+            <wsa:ReferenceParameters/>
+        </wsa:EndpointReference>
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="ZWS_GEN_NC">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ZWS_GEN_PED">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="ZWS_GEN">
+        <wsdl:port name="ZWS_GEN_BINDING" binding="tns:ZWS_GEN_BINDING">
+            <soap:address
+                    location="http://srvsappro.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zws_gen/zws_gen_binding"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
