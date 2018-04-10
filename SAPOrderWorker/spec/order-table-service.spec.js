@@ -79,11 +79,13 @@ describe('Order Table', () => {
             .then(result => expect(result).toEqual(sampleResult.order));
     });
 
-    it('Returns a promise on saveError', () => {
+    xit('Saves successful result to table', () => {});
+
+    xit('Returns a promise on saveError', () => {
         expect(OrderTableService.saveError(sampleResult)).toEqual(jasmine.any(Promise));
     });
 
-    it('Handles rejection on saveError', () => {
+    xit('Handles rejection on saveError', () => {
         dynamoDbRequestStub.promise = () => Promise.reject(new Error('Fake'));
 
         OrderTableService.saveError(sampleResult)
@@ -93,18 +95,21 @@ describe('Order Table', () => {
             });
     });
 
-    it('Resolves to the order on saveError', () => {
+    xit('Resolves to the order on saveError', () => {
         OrderTableService.saveError(sampleResult)
             .then(result => expect(result).toEqual(sampleResult.order));
     });
 
     it('Saves single error in error list', () => {
+        sampleResponse.VBELN = null;
+
         /**
          * @var {Sinon.SinonMock} clientMock
          */
         const tableMock = sinon.mock(dynamoDbStub);
 
         const errorMessage = 'There is an error';
+        sampleResponse.T_RETURN.item = [sampleResponse.T_RETURN.item[0]];
         sampleResponse.T_RETURN.item[0].MESSAGE = errorMessage;
 
         const expectedUpdateArgs = {
@@ -145,7 +150,9 @@ describe('Order Table', () => {
             .catch(fail);
     });
 
-    xit('Saves multiple errors in error list', () => {
+    it('Saves multiple errors in error list', () => {
+        sampleResponse.VBELN = null;
+
         /**
          * @var {Sinon.SinonMock} clientMock
          */

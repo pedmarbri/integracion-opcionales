@@ -7,6 +7,7 @@ const ORDER_TABLE = process.env.ORDER_TABLE;
 const table = new AWS.DynamoDB.DocumentClient();
 
 const saveError = sapResult => {
+    const now = new Date().toISOString();
     const params = {
         TableName: ORDER_TABLE,
         Key: {
@@ -23,16 +24,16 @@ const saveError = sapResult => {
         },
         ExpressionAttributeValues: {
             ':last_result': 'error',
-            ':now': new Date().toISOString(),
-            ':errors': [
-                {
-                    integration_timestamp: new Date().toISOString(),
-                    error_message: sapResult.result.T_RETURN.item[0].MESSAGE
-                }
-            ]
+            ':now': now,
+            ':errors': sapResult.result.T_RETURN.item.map(error => {
+                return {
+                    integration_timestamp: now,
+                    error_message: error.MESSAGE
+                };
+            })
         }
     };
-
+    
     return table.update(params).promise()
         .then(() => Promise.resolve(sapResult.order));
 };
