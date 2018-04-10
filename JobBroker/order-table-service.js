@@ -19,15 +19,18 @@ exports.saveMessage = message => {
     params.Item.integrations = {
         sap: {
             last_result: 'pending',
-            last_timestamp: now
+            last_timestamp: now,
+            error_history: []
         },
         crm: {
             last_result: 'pending',
-            last_timestamp: now
+            last_timestamp: now,
+            error_history: []
         },
         bau: {
             last_result: 'pending',
-            last_timestamp: now
+            last_timestamp: now,
+            error_history: []
         }
     };
 
