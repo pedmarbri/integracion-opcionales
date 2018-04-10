@@ -25,15 +25,17 @@ const saveError = sapResult => {
         ExpressionAttributeValues: {
             ':last_result': 'error',
             ':now': now,
-            ':errors': sapResult.result.T_RETURN.item.map(error => {
-                return {
-                    integration_timestamp: now,
-                    error_message: error.MESSAGE
-                };
-            })
+            ':errors': sapResult.result.T_RETURN.item
+                .filter(error => error.TYPE === 'E' && error.NUMBER !== '219')
+                .map(error => {
+                    return {
+                        integration_timestamp: now,
+                        error_message: error.MESSAGE
+                    };
+                })
         }
     };
-    
+
     return table.update(params).promise()
         .then(() => Promise.resolve(sapResult.order));
 };
