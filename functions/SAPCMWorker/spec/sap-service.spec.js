@@ -104,4 +104,31 @@ describe('Sap Service', () => {
                 soapMethodExpectation.verify();
             });
     });
+
+    it('Formats shipping condition correctly', () => {
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
+
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+        sampleCreditMemo.totals.shipping = 20;
+
+        expectedRequest.T_CONDITIONS.item[1] = {
+            KPOSN: null,
+            KBETR: 20,
+            KSCHL: 'ZCEI',
+            WAERS: 'ARK'
+        };
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
 });

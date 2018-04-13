@@ -7,7 +7,7 @@
     "test": "npm run-script jshint && npm run-script jasmine && npm run-script coverage",
     "jshint": "./node_modules/.bin/jshint .",
     "jasmine": "./node_modules/.bin/nyc jasmine",
-    "coverage": "./node_modules/.bin/nyc check-coverage --lines 90 --functions 90 --branches 30"
+    "coverage": "./node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
   },
   "dependencies": {
     "soap": "^0.23.0"
@@ -20,5 +20,10 @@
     "nyc": "^11.6.0",
     "proxyquire": "^2.0.1",
     "sinon": "^4.4.10"
+  },
+  "nyc": {
+    "exclude": [
+      "spec"
+    ]
   }
 }

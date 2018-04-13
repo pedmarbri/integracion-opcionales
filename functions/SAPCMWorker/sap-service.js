@@ -117,7 +117,9 @@ const formatConditions = (items, totals) => {
         conditions.push(shipping);
     }
 
-    return {item: conditions};
+    return {
+        item: conditions
+    };
 };
 
 const formatItems = orderItems => ({
