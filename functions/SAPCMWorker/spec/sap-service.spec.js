@@ -14,6 +14,11 @@ const reporter = new JasmineConsoleReporter({
 
 jasmine.getEnv().addReporter(reporter);
 
+/**
+ * Suppress console output
+ */
+console.log = console.error = console.info = () => {};
+
 describe('Sap Service', () => {
     let SapService;
     let soapStub;
@@ -24,7 +29,7 @@ describe('Sap Service', () => {
     let sampleResponse;
 
     beforeEach(() => {
-        sampleOrder = require('./sample-order');
+        sampleOrder = require('./sample-creditmemo');
         expectedRequest = require('./sample-request');
         sampleResponse = require('./sample-response');
 
@@ -36,7 +41,7 @@ describe('Sap Service', () => {
         };
 
         clientStub = {
-            ZWS_GEN_PEDAsync: () => Promise.resolve(sampleResponse),
+            ZWS_GEN_NCAsync: () => Promise.resolve(sampleResponse),
             addHttpHeader: () => { return this; }
         };
 
@@ -50,16 +55,16 @@ describe('Sap Service', () => {
     });
 
     afterEach(() => {
-        delete require.cache[require.resolve('./sample-order')];
+        delete require.cache[require.resolve('./sample-creditmemo')];
         delete require.cache[require.resolve('./sample-request')];
         delete require.cache[require.resolve('./sample-response')];
     });
 
-    it('Returns a promise on sendOrder', () => {
-        expect(SapService.sendOrder(sampleOrder)).toEqual(jasmine.any(Promise));
+    it('Returns a promise on sendCreditMemo', () => {
+        expect(SapService.sendCreditMemo(sampleOrder)).toEqual(jasmine.any(Promise));
     });
 
-    it('Calls the right soap function on sendOrder with the right parameters', () => {
+    it('Calls the right soap function on sendCreditMemo with the right parameters', () => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -67,12 +72,12 @@ describe('Sap Service', () => {
          */
         const clientMock = sinon.mock(clientStub);
 
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync')
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
             .once()
             .withArgs(expectedRequest)
             .resolves(sampleResponse);
 
-        SapService.sendOrder(sampleOrder)
+        SapService.sendCreditMemo(sampleOrder)
             .then(() => {
                 expect(createClientSpy).toHaveBeenCalled();
                 soapMethodExpectation.verify();
@@ -87,7 +92,7 @@ describe('Sap Service', () => {
         const clientMock = sinon.mock(clientStub);
         const authorizationExpectation = clientMock.expects('addHttpHeader').atLeast(1).withArgs('Authorization');
 
-        SapService.sendOrder(sampleOrder)
+        SapService.sendCreditMemo(sampleOrder)
             .then(() => {
                 authorizationExpectation.verify();
             })
@@ -101,12 +106,12 @@ describe('Sap Service', () => {
          * @var {Sinon.SinonMock} clientMock
          */
         const clientMock = sinon.mock(clientStub);
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_PEDAsync')
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
             .once()
             .withArgs(expectedRequest)
             .resolves(sampleResponse);
 
-        SapService.sendOrder(sampleOrder)
+        SapService.sendCreditMemo(sampleOrder)
             .then(fail)
             .catch(() => {
                 soapMethodExpectation.verify();
