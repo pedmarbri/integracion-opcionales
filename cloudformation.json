@@ -841,7 +841,7 @@
           "Timer": {
             "Type": "Schedule",
             "Properties": {
-              "Schedule": "rate(1 hour)"
+              "Schedule": "rate(5 minute)"
             }
           }
         },
@@ -979,7 +979,7 @@
           "Timer": {
             "Type": "Schedule",
             "Properties": {
-              "Schedule": "rate(30 minutes)"
+              "Schedule": "rate(5 minute)"
             }
           }
         },
