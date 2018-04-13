@@ -169,11 +169,11 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: sinon.match.regexp('/' + errorMessage + 1 + '/')
+                        error_message: sinon.match.string
                     },
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: sinon.match.regexp('/' + errorMessage + 2 + '/')
+                        error_message: sinon.match.string
                     }
                 ]
             }
@@ -228,11 +228,11 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: sinon.match.regexp('/' + errorMessage + 1 + '/')
+                        error_message: sinon.match.string
                     },
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: sinon.match.regexp('/' + errorMessage + 2 + '/')
+                        error_message: sinon.match.string
                     }
                 ]
             }
