@@ -85,7 +85,45 @@ describe('Order Table', () => {
             .then(result => expect(result).toEqual(sampleResult.order));
     });
 
-    xit('Saves successful result to table', () => {});
+    it('Saves successful result to table', () => {
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const tableMock = sinon.mock(dynamoDbStub);
+
+        sampleResponse.T_RETURN.item = [sampleResponse.T_RETURN.item[0]];
+
+        const expectedUpdateArgs = {
+            TableName: 'DevOrderTable',
+            Key: {
+                order_id: '12700000000065'
+            },
+            UpdateExpression: 'set ' + [
+                '#i.sap.last_result = :lr',
+                '#i.sap.last_timestamp = :now',
+                'sap_id = :si'
+            ].join(', '),
+            ExpressionAttributeNames: {
+                '#i': 'integrations'
+            },
+            ExpressionAttributeValues: {
+                ':lr': 'ok',
+                ':si': '1234567890',
+                ':now': sinon.match.string
+            }
+        };
+
+        const updateExpectation = tableMock.expects('update')
+            .once()
+            .withArgs(expectedUpdateArgs)
+            .returns(dynamoDbRequestStub);
+
+        OrderTableService.saveResult(sampleResult)
+            .then(() => {
+                updateExpectation.verify();
+            })
+            .catch(fail);
+    });
 
     it('Saves single error in error list', () => {
         sampleResponse.VBELN = null;
@@ -128,7 +166,7 @@ describe('Order Table', () => {
             .withArgs(expectedUpdateArgs)
             .returns(dynamoDbRequestStub);
 
-        OrderTableService.saveError(sampleResult)
+        OrderTableService.saveResult(sampleResult)
             .then(() => {
                 updateExpectation.verify();
             })
@@ -184,7 +222,7 @@ describe('Order Table', () => {
             .withArgs(expectedUpdateArgs)
             .returns(dynamoDbRequestStub);
 
-        OrderTableService.saveError(sampleResult)
+        OrderTableService.saveResult(sampleResult)
             .then(() => {
                 updateExpectation.verify();
             })
@@ -243,7 +281,7 @@ describe('Order Table', () => {
             .withArgs(expectedUpdateArgs)
             .returns(dynamoDbRequestStub);
 
-        OrderTableService.saveError(sampleResult)
+        OrderTableService.saveResult(sampleResult)
             .then(() => {
                 updateExpectation.verify();
             })
@@ -307,7 +345,7 @@ describe('Order Table', () => {
             .withArgs(expectedUpdateArgs)
             .returns(dynamoDbRequestStub);
 
-        OrderTableService.saveError(sampleResult)
+        OrderTableService.saveResult(sampleResult)
             .then(() => {
                 updateExpectation.verify();
             })
@@ -357,7 +395,7 @@ describe('Order Table', () => {
             .withArgs(expectedUpdateArgs)
             .returns(dynamoDbRequestStub);
 
-        OrderTableService.saveError(sampleResult)
+        OrderTableService.saveResult(sampleResult)
             .then(() => {
                 updateExpectation.verify();
             })

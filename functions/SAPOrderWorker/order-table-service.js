@@ -55,15 +55,19 @@ const saveError = sapResult => {
 exports.saveResult = sapResult => {
 
     if (!sapResult.result.VBELN) {
+        console.log("THIS IS AN ERROR");
         return saveError(sapResult);
     }
-
+console.log("THIS IS NOT AN ERROR");
     const params = {
         TableName: ORDER_TABLE,
         Key: {
             order_id: sapResult.order.order_id
         },
-        UpdateExpression: 'set integrations.sap.last_result = :lr, integrations.sap.last_timestamp = :now, sap_id = :si',
+        UpdateExpression: 'set #i.sap.last_result = :lr, #i.sap.last_timestamp = :now, sap_id = :si',
+        ExpressionAttributeNames: {
+            '#i': 'integrations'
+        },
         ExpressionAttributeValues: {
             ':lr': 'ok',
             ':si': sapResult.result.VBELN,
@@ -74,5 +78,3 @@ exports.saveResult = sapResult => {
     return table.update(params).promise()
         .then(() => Promise.resolve(sapResult.order));
 };
-
-exports.saveError = saveError;
