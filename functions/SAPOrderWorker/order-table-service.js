@@ -55,10 +55,9 @@ const saveError = sapResult => {
 exports.saveResult = sapResult => {
 
     if (!sapResult.result.VBELN) {
-        console.log("THIS IS AN ERROR");
         return saveError(sapResult);
     }
-console.log("THIS IS NOT AN ERROR");
+
     const params = {
         TableName: ORDER_TABLE,
         Key: {

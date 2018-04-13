@@ -9,11 +9,6 @@ const proxyquire = require( 'proxyquire' );
 
 proxyquire.noCallThru();
 
-/**
- * Suppress console output
- */
-console.log = console.error = console.info = () => {};
-
 process.env.ORDER_TABLE = 'DevOrderTable';
 
 describe('Order Table', () => {
