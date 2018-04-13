@@ -87,25 +87,6 @@ describe('Order Table', () => {
 
     xit('Saves successful result to table', () => {});
 
-    xit('Returns a promise on saveError', () => {
-        expect(OrderTableService.saveError(sampleResult)).toEqual(jasmine.any(Promise));
-    });
-
-    xit('Handles rejection on saveError', () => {
-        dynamoDbRequestStub.promise = () => Promise.reject(new Error('Fake'));
-
-        OrderTableService.saveError(sampleResult)
-            .then(fail)
-            .catch(err => {
-                expect(err).toEqual(jasmine.any(Error));
-            });
-    });
-
-    xit('Resolves to the order on saveError', () => {
-        OrderTableService.saveError(sampleResult)
-            .then(result => expect(result).toEqual(sampleResult.order));
-    });
-
     it('Saves single error in error list', () => {
         sampleResponse.VBELN = null;
 
@@ -271,7 +252,68 @@ describe('Order Table', () => {
             .catch(fail);
     });
 
-    xit('Row error message contains row numer', () => {
+    it('Row error message contains row numer', () => {
+        sampleResponse.VBELN = null;
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const tableMock = sinon.mock(dynamoDbStub);
+        sampleResponse.T_RETURN.item = [
+            {
+                "TYPE": "E",
+                "ID": "V1",
+                "NUMBER": "382",
+                "MESSAGE": "An error",
+                "LOG_NO": null,
+                "LOG_MSG_NO": "000000",
+                "MESSAGE_V1": "OPC110XXXX83000010",
+                "MESSAGE_V2": "0002",
+                "MESSAGE_V3": "02",
+                "MESSAGE_V4": "ES",
+                "PARAMETER": "SALES_ITEM_IN",
+                "ROW": 1,
+                "FIELD": null,
+                "SYSTEM": "ALE_ADM"
+            }
+        ];
+
+        const expectedUpdateArgs = {
+            TableName: 'DevOrderTable',
+            Key: {
+                order_id: '12700000000065'
+            },
+            UpdateExpression: 'set ' + [
+                '#i.sap.last_result = :last_result',
+                '#i.sap.last_timestamp = :now',
+                '#i.sap.#e = list_append(#i.sap.#e, :errors)'
+            ].join(', '),
+            ExpressionAttributeNames: {
+                '#i': 'integrations',
+                '#e': 'error_history'
+            },
+            ExpressionAttributeValues: {
+                ':last_result': 'error',
+                ':now': sinon.match.string,
+                ':errors': [
+                    {
+                        integration_timestamp: sinon.match.string,
+                        error_message: "An error"
+                    }
+                ]
+            }
+        };
+
+        const updateExpectation = tableMock.expects('update')
+            .once()
+            .withArgs(expectedUpdateArgs)
+            .returns(dynamoDbRequestStub);
+
+        OrderTableService.saveError(sampleResult)
+            .then(() => {
+                updateExpectation.verify();
+            })
+            .catch(fail);
 
     });
 
