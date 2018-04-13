@@ -95,9 +95,7 @@ describe('Order Table', () => {
          */
         const tableMock = sinon.mock(dynamoDbStub);
 
-        const errorMessage = 'There is an error';
         sampleResponse.T_RETURN.item = [sampleResponse.T_RETURN.item[0]];
-        sampleResponse.T_RETURN.item[0].MESSAGE = errorMessage;
 
         const expectedUpdateArgs = {
             TableName: 'DevOrderTable',
@@ -119,7 +117,7 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: errorMessage
+                        error_message: sinon.match.string
                     }
                 ]
             }
@@ -171,11 +169,11 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: errorMessage + 1
+                        error_message: sinon.match.regexp('/' + errorMessage + 1 + '/')
                     },
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: errorMessage + 2
+                        error_message: sinon.match.regexp('/' + errorMessage + 2 + '/')
                     }
                 ]
             }
@@ -230,11 +228,11 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: errorMessage + 1
+                        error_message: sinon.match.regexp('/' + errorMessage + 1 + '/')
                     },
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: errorMessage + 2
+                        error_message: sinon.match.regexp('/' + errorMessage + 2 + '/')
                     }
                 ]
             }
@@ -252,7 +250,7 @@ describe('Order Table', () => {
             .catch(fail);
     });
 
-    it('Row error message contains row numer', () => {
+   it('Row error message contains row numer', () => {
         sampleResponse.VBELN = null;
 
         /**
@@ -298,7 +296,7 @@ describe('Order Table', () => {
                 ':errors': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: "An error"
+                        error_message: "[V1-382] (SALES_ITEM_IN 1) An error"
                     }
                 ]
             }
@@ -318,6 +316,52 @@ describe('Order Table', () => {
     });
 
     xit('Header error message does not contain row number', () => {
+        sampleResponse.VBELN = null;
 
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const tableMock = sinon.mock(dynamoDbStub);
+
+        const errorMessage = 'There is an error';
+        sampleResponse.T_RETURN.item = [sampleResponse.T_RETURN.item[0]];
+        sampleResponse.T_RETURN.item[0].MESSAGE = errorMessage;
+
+        const expectedUpdateArgs = {
+            TableName: 'DevOrderTable',
+            Key: {
+                order_id: '12700000000065'
+            },
+            UpdateExpression: 'set ' + [
+                '#i.sap.last_result = :last_result',
+                '#i.sap.last_timestamp = :now',
+                '#i.sap.#e = list_append(#i.sap.#e, :errors)'
+            ].join(', '),
+            ExpressionAttributeNames: {
+                '#i': 'integrations',
+                '#e': 'error_history'
+            },
+            ExpressionAttributeValues: {
+                ':last_result': 'error',
+                ':now': sinon.match.string,
+                ':errors': [
+                    {
+                        integration_timestamp: sinon.match.string,
+                        error_message: "[V1-515] (SALES_HEADER_IN) " + errorMessage
+                    }
+                ]
+            }
+        };
+
+        const updateExpectation = tableMock.expects('update')
+            .once()
+            .withArgs(expectedUpdateArgs)
+            .returns(dynamoDbRequestStub);
+
+        OrderTableService.saveError(sampleResult)
+            .then(() => {
+                updateExpectation.verify();
+            })
+            .catch(fail);
     });
 });

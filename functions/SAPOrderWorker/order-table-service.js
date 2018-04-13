@@ -30,7 +30,7 @@ const saveError = sapResult => {
                 .map(error => {
                     return {
                         integration_timestamp: now,
-                        error_message: error.MESSAGE
+                        error_message: '[' + error.ID + '-' + error.NUMBER + ']' + ' (' + error.PARAMETER + ' ' + error.ROW + ') ' + error.MESSAGE
                     };
                 })
         }
