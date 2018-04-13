@@ -10,7 +10,7 @@ const SAP_HTTP_USER = 'webservice';
 const SAP_HTTP_PASS = '12345678';
 
 // Fixed Values
-const DOCUMENT_TYPE_CM_STOCK = 'ZCIR';
+const DOCUMENT_TYPE_CM_STOCK = 'ZCRI';
 const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
 const ORDER_REASON_CODE = '001';
 const LANGUAGE_CODE = 'S';
@@ -20,7 +20,7 @@ const SALES_CHANNEL = '02';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
 const MEASUREMENT_UNIT = 'EJE';
-const MATERIAL_GROUP_5 = 30;
+const MATERIAL_GROUP_5 = 31;
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -55,9 +55,9 @@ const formatPriceCondition = (item, index) => {
     }
 
     return {
-        KPOSN: (index + 1) * 10,
+        KPOSN: item.sap_row,
         KSCHL: priceType,
-        KBETR: item.list_price,
+        KBETR: item.refund_amount,
         WAERS: CONDITION_CURRENCY
     };
 };
@@ -80,7 +80,7 @@ const formatDiscountCondition = (item, index) => {
     }
 
     return {
-        KPOSN: (index + 1) * 10,
+        KPOSN: item.sap_row,
         KSCHL: discountType,
         KBETR: discountAmount,
         WAERS: discountIsPercent ? null : CONDITION_CURRENCY
@@ -122,7 +122,7 @@ const formatConditions = (items, totals) => {
 
 const formatItems = orderItems => ({
     item: orderItems.map((item, index) => ({
-        POSNR: (index + 1) * 10,
+        POSNR: item.sap_row,
         MATNR: item.sku,
         WERKS: CENTER_CODE,
         LGORT: WAREHOUSE,
@@ -130,16 +130,16 @@ const formatItems = orderItems => ({
         MEINS: MEASUREMENT_UNIT,
         MVGR5: MATERIAL_GROUP_5,
         KDMAT: item.name,
-        POSEX: (index + 1) * 10
+        POSEX: item.sap_row
     }))
 });
 
 const formatRequest = creditmemo => ({
-    AUART: DOCUMENT_TYPE_CM_STOCK,
+    AUART: DOCUMENT_TYPE_CM_STOCK, //DOCUMENT_TYPE_CM_FINANCE,
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(creditmemo.timestamp),
     BSTKD: creditmemo.creditmemo_id,
-    IHREZ: '123456', // Este dato no tiene sentido en una nota de credito
+    IHREZ: null,
     T_CONDITIONS: formatConditions(creditmemo.items, creditmemo.totals),
     T_ITEMS: formatItems(creditmemo.items),
     T_RETURN: {
@@ -162,7 +162,7 @@ const formatRequest = creditmemo => ({
             }
         ],
     },
-    VBELN_EXT: null,
+    VBELN_REF: creditmemo.sap_order_id,
     VKORG: SALES_ORGANIZATION,
     VTWEG: SALES_CHANNEL
 });
