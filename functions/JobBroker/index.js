@@ -9,12 +9,6 @@ const TIMEOUT_THRESHOLD = 10000;
 
 const processSingleMessage = message => {
     return new Promise((resolve, reject) => {
-        const acceptedTypes = ['order', 'creditmemo'];
-
-        if (acceptedTypes.indexOf(message.json.type) < 0) {
-            reject(new Error("Invalid message type"));
-            return;
-        }
 
         switch (message.json.type) {
             case 'order':
@@ -34,7 +28,7 @@ const processSingleMessage = message => {
                 break;
 
             default:
-                reject(new Error('Unexpected type case'));
+                reject(new Error('Invalid message type'));
         }
 
     });

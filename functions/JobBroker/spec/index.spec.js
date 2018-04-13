@@ -18,26 +18,28 @@ describe("Job Broker handler", () => {
     let SapCMQueueServiceStub = {};
     let OrderTableServiceStub = {};
     let CrmQueueServiceStub = {};
-
-    const orderMessage = {
-        json: {
-            type: 'order',
-            payload: {
-                order_id: '123456'
-            }
-        }
-    };
-
-    const cmMessage = {
-        json: {
-            type: 'creditmemo',
-            payload: {
-                order_id: '123456'
-            }
-        }
-    };
+    let orderMessage = {};
+    let cmMessage = {};
 
     beforeEach(() => {
+        orderMessage = {
+            json: {
+                type: 'order',
+                payload: {
+                    order_id: '123456'
+                }
+            }
+        };
+
+        cmMessage = {
+            json: {
+                type: 'creditmemo',
+                payload: {
+                    order_id: '123456'
+                }
+            }
+        };
+
         SapOrderQueueServiceStub = {
             /**
              * @var {SinonStub}
@@ -87,7 +89,7 @@ describe("Job Broker handler", () => {
         });
     });
 
-    it("is successful with no queued messages", done => {
+    it("Is successful with no queued messages", done => {
         JobQueueServiceStub.receiveMessages.resolves([]);
 
         spyOn(JobQueueServiceStub, 'receiveMessages').and.callThrough();
@@ -263,6 +265,24 @@ describe("Job Broker handler", () => {
                 expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(JobQueueServiceStub.deleteMessage).toHaveBeenCalled();
                 expect(SapCMQueueServiceStub.sendMessage).toHaveBeenCalled();
+            })
+            .verify(done);
+    });
+
+    it('Fails with the wrong type of message', done => {
+        cmMessage.json.type = 'wrong_type';
+
+        JobQueueServiceStub.receiveMessages.resolves([cmMessage]);
+        JobQueueServiceStub.deleteMessage.resolves(cmMessage);
+
+        spyOn(JobQueueServiceStub, 'receiveMessages').and.callThrough();
+        spyOn(JobQueueServiceStub, 'deleteMessage').and.callThrough();
+
+        return LambdaTester(JobBroker.handler)
+            .timeout(60)
+            .expectError(() => {
+                expect(JobQueueServiceStub.receiveMessages).toHaveBeenCalled();
+                expect(JobQueueServiceStub.deleteMessage).not.toHaveBeenCalled();
             })
             .verify(done);
     });
