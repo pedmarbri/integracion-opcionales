@@ -131,4 +131,33 @@ describe('Sap Service', () => {
             .then(() => soapMethodExpectation.verify())
             .catch(fail);
     });
+
+    it('Formats fixed discount condition correctly', () => {
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+
+        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
+
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+        sampleCreditMemo.items[0].discount_amount = 10;
+
+        expectedRequest.T_CONDITIONS.item[1] = {
+            KPOSN: 10,
+            KBETR: 10,
+            KSCHL: 'ZBP',
+            WAERS: 'ARK'
+        };
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
+
+    xit('Formats exclusive discount condition correctly', () => {});
 });
