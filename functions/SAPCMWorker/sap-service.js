@@ -138,7 +138,7 @@ const formatRequest = creditmemo => ({
     AUART: DOCUMENT_TYPE_CM_STOCK, //DOCUMENT_TYPE_CM_FINANCE,
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(creditmemo.timestamp),
-    BSTKD: creditmemo.creditmemo_id,
+    BSTKD: creditmemo.order_id,
     IHREZ: null,
     T_CONDITIONS: formatConditions(creditmemo.items, creditmemo.totals),
     T_ITEMS: formatItems(creditmemo.items),
