@@ -250,7 +250,7 @@ describe('Order Table', () => {
             .catch(fail);
     });
 
-   it('Row error message contains row numer', () => {
+    it('Row error message contains row numer', () => {
         sampleResponse.VBELN = null;
 
         /**
@@ -312,10 +312,9 @@ describe('Order Table', () => {
                 updateExpectation.verify();
             })
             .catch(fail);
-
     });
 
-    xit('Header error message does not contain row number', () => {
+    it('Header error message does not contain row number', () => {
         sampleResponse.VBELN = null;
 
         /**

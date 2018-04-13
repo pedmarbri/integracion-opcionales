@@ -6,6 +6,18 @@ const ORDER_TABLE = process.env.ORDER_TABLE;
 
 const table = new AWS.DynamoDB.DocumentClient();
 
+function formatErrorMessage(error) {
+    let message = '[' + error.ID + '-' + error.NUMBER + ']';
+    message += ' (' + error.PARAMETER;
+
+    if (error.PARAMETER !== 'SALES_HEADER_IN') {
+        message += ' ' + error.ROW;
+    }
+
+    message += ') ' + error.MESSAGE;
+    return message;
+}
+
 const saveError = sapResult => {
     const now = new Date().toISOString();
     const params = {
@@ -30,7 +42,7 @@ const saveError = sapResult => {
                 .map(error => {
                     return {
                         integration_timestamp: now,
-                        error_message: '[' + error.ID + '-' + error.NUMBER + ']' + ' (' + error.PARAMETER + ' ' + error.ROW + ') ' + error.MESSAGE
+                        error_message: formatErrorMessage(error)
                     };
                 })
         }
