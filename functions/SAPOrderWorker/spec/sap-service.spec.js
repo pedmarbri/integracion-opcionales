@@ -96,7 +96,7 @@ describe('Sap Service', () => {
 
     xit('Rejects on error response', () => {
 
-        // TODO Currently we a treating error resopnse as a valid result.
+        // TODO Currently we are treating error resopnse as a valid result.
 
         sampleResponse.VBELN = null;
 
