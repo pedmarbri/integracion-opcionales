@@ -4,4 +4,4 @@ node_js: "6.10.1"
 #install: for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm install ; done ;
 install: cd functions
 #script: for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm test || exit 1 ; done ;
-script: false
+script: cd . ; false
