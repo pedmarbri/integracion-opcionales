@@ -189,10 +189,6 @@ exports.sendOrder = order => {
             .then(result => {
                 console.log(JSON.stringify(result));
 
-                // if (!result.VBELN) {
-                //     return Promise.reject(Error(result.T_RETURN.item[0].MESSAGE));
-                // }
-
                 return Promise.resolve({
                     result: result,
                     order: order
