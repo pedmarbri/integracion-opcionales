@@ -804,7 +804,7 @@
     "JobBroker": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "CodeUri": "./JobBroker",
+        "CodeUri": "./functions/JobBroker",
         "Handler": "index.handler",
         "MemorySize": 128,
         "Role": {
@@ -841,7 +841,7 @@
           "Timer": {
             "Type": "Schedule",
             "Properties": {
-              "Schedule": "rate(5 minute)"
+              "Schedule": "rate(5 minutes)"
             }
           }
         },
@@ -954,7 +954,7 @@
     "SapOrderConsumer": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "CodeUri": "./SapOrderConsumer",
+        "CodeUri": "./functions/SapOrderConsumer",
         "Handler": "index.handler",
         "MemorySize": 128,
         "Role": {
@@ -979,7 +979,7 @@
           "Timer": {
             "Type": "Schedule",
             "Properties": {
-              "Schedule": "rate(5 minute)"
+              "Schedule": "rate(5 minutes)"
             }
           }
         },
@@ -1101,7 +1101,7 @@
     "SapOrderWorker": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "CodeUri": "./SAPOrderWorker",
+        "CodeUri": "./functions/SAPOrderWorker",
         "Handler": "index.handler",
         "MemorySize": 128,
         "Role": {
