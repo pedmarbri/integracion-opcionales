@@ -1,22 +1,14 @@
 module.exports = {
-    AD_SMTPADR: 'example@domain.com',
-    AUART: 'ZPSI',
+    AUART: 'ZCRI',
     AUGRU: '001',
-    BSTDK: '20180323', // !
-    BSTKD: '12700000000065', // !
-    CITY: 'CABA',
-    COUNTRY: 'AR',
-    IHREZ: '1234',
-    KUNNR: 'Y600099', // !
-    LANGU: 'S',
-    NAME1: 'Juan Perez',
-    NAME4: '12345678',
-    SPART: '02',
-    T_CONDITIONS: { // !
+    BSTDK: '20180323',
+    BSTKD: '12700000000065',
+    IHREZ: null,
+    T_CONDITIONS: {
         item: [
             {
                 KPOSN: 10,
-                KSCHL: 'ZPEE',
+                KSCHL: 'ZPBI',
                 KBETR: 249.9,
                 WAERS: 'ARK'
             }
@@ -31,7 +23,7 @@ module.exports = {
                 LGORT: 'GSTK',
                 MENGE: 6,
                 MEINS: 'EJE',
-                MVGR5: 30,
+                MVGR5: 31,
                 KDMAT: 'Londres',
                 POSEX: 10
             }
@@ -57,7 +49,5 @@ module.exports = {
             }
         ]
     },
-    VBELN_EXT: null,
-    VKORG: '0002',
-    VTWEG: '02'
+    VBELN_REF: '1234567890'
 };

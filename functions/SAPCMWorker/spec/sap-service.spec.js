@@ -24,12 +24,12 @@ describe('Sap Service', () => {
     let soapStub;
     let clientStub;
     let stubConfig;
-    let sampleOrder;
+    let sampleCreditMemo;
     let expectedRequest;
     let sampleResponse;
 
     beforeEach(() => {
-        sampleOrder = require('./sample-creditmemo');
+        sampleCreditMemo = require('./sample-creditmemo');
         expectedRequest = require('./sample-request');
         sampleResponse = require('./sample-response');
 
@@ -61,7 +61,7 @@ describe('Sap Service', () => {
     });
 
     it('Returns a promise on sendCreditMemo', () => {
-        expect(SapService.sendCreditMemo(sampleOrder)).toEqual(jasmine.any(Promise));
+        expect(SapService.sendCreditMemo(sampleCreditMemo)).toEqual(jasmine.any(Promise));
     });
 
     it('Calls the right soap function on sendCreditMemo with the right parameters', () => {
@@ -77,7 +77,10 @@ describe('Sap Service', () => {
             .withArgs(expectedRequest)
             .resolves(sampleResponse);
 
-        SapService.sendCreditMemo(sampleOrder)
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+
+        SapService.sendCreditMemo(sampleCreditMemo)
             .then(() => {
                 expect(createClientSpy).toHaveBeenCalled();
                 soapMethodExpectation.verify();
@@ -92,7 +95,7 @@ describe('Sap Service', () => {
         const clientMock = sinon.mock(clientStub);
         const authorizationExpectation = clientMock.expects('addHttpHeader').atLeast(1).withArgs('Authorization');
 
-        SapService.sendCreditMemo(sampleOrder)
+        SapService.sendCreditMemo(sampleCreditMemo)
             .then(() => {
                 authorizationExpectation.verify();
             })
@@ -111,7 +114,7 @@ describe('Sap Service', () => {
             .withArgs(expectedRequest)
             .resolves(sampleResponse);
 
-        SapService.sendCreditMemo(sampleOrder)
+        SapService.sendCreditMemo(sampleCreditMemo)
             .then(fail)
             .catch(() => {
                 soapMethodExpectation.verify();

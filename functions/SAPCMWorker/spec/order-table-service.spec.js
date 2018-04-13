@@ -14,7 +14,7 @@ describe('Order Table', () => {
     let sampleResult;
 
     beforeEach(() => {
-        sampleOrder = require('./sample-order');
+        sampleOrder = require('./sample-creditmemo');
         sampleResponse = require('./sample-response');
 
         sampleResult = {
@@ -43,6 +43,11 @@ describe('Order Table', () => {
 
         stubConfig = { 'aws-sdk': AWSStub };
         OrderTableService = proxyquire('../order-table-service', stubConfig);
+    });
+
+    afterEach(() => {
+        delete require.cache[require.resolve('./sample-creditmemo')];
+        delete require.cache[require.resolve('./sample-response')];
     });
 
     it('Returns a promise on saveResult', () => {

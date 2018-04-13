@@ -163,8 +163,6 @@ const formatRequest = creditmemo => ({
         ],
     },
     VBELN_REF: creditmemo.sap_order_id,
-    VKORG: SALES_ORGANIZATION,
-    VTWEG: SALES_CHANNEL
 });
 
 // exports.sendOrder = order => {
