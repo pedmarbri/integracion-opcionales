@@ -5,7 +5,7 @@ cache:
   directories:
     - functions/JobBroker/node_modules
     - functions/SAPCMWorker/node_modules
-    - functions/SAPOrderConsumer/node_modules
+    - functions/SapOrderConsumer/node_modules
     - functions/SapOrderWorker/node_modules
 install:
   - FAILED=0
