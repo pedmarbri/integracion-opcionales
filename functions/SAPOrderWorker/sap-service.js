@@ -75,7 +75,8 @@ const formatDiscountCondition = (item, index) => {
      */
     if (item.flags && item.flags.indexOf('exclusive') > -1) {
         discountType = EXCLUSIVE_DISCOUNT_CONDITION;
-        discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.list_price);
+        discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.list_price * 100);
+        discountIsPercent = true;
     }
 
     return {

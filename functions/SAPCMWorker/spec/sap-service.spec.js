@@ -170,7 +170,6 @@ describe('Sap Service', () => {
             .catch(fail);
     });
 
-
     it('Always treats exclusive items discounts as percent', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
