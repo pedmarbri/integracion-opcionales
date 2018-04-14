@@ -198,7 +198,7 @@ describe('Sap Service', () => {
 
         sampleCreditMemo.sap_order_id = '1234567890';
         sampleCreditMemo.items[0].sap_row = 10;
-        
+
         sampleCreditMemo.timestamp = '2018-01-23T18:49:03Z';
         expectedRequest.BSTDK = '20180123';
 
