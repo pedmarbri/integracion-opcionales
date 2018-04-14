@@ -176,6 +176,8 @@ const formatRequest = order => ({
 });
 
 exports.sendOrder = order => {
+    console.log('Sending order to SAP');
+
     const callSapService = client => {
         const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
         const request = formatRequest(order);

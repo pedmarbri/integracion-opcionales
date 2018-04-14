@@ -53,6 +53,7 @@ const saveError = sapResult => {
 };
 
 exports.saveResult = sapResult => {
+    console.log("Saving Result to DB");
 
     if (!sapResult.result.VBELN) {
         return saveError(sapResult);

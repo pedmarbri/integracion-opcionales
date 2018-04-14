@@ -7,7 +7,6 @@ const OrderTable = require('./order-table-service');
 exports.handler = function(event, context, callback) {
 
     SapService.sendOrder(JSON.parse(event.Body))
-    // .catch(OrderTable.saveError)
         .then(OrderTable.saveResult)
         .then(() => Promise.resolve(event))
         .then(SapOrderQueueService.deleteMessage)

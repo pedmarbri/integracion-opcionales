@@ -75,6 +75,8 @@ describe('Order Table', () => {
             });
     });
 
+    xit('Rejects the promise when after saving an error', () => {});
+
     it('Resolves to the order on saveResult', () => {
         OrderTableService.saveResult(sampleResult)
             .then(result => expect(result).toEqual(sampleResult.order));
