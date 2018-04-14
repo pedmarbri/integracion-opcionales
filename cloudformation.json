@@ -479,10 +479,12 @@
               ],
               "properties": {
                 "method": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 },
                 "transaction_id": {
-                  "type": "string"
+                  "type": "string",
+                  "minLength": 1
                 }
               }
             }
