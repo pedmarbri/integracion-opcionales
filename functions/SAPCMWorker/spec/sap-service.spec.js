@@ -155,7 +155,7 @@ describe('Sap Service', () => {
         sampleCreditMemo.items[0].sap_row = 10;
         sampleCreditMemo.items[0].flags = [ 'exclusive' ];
         sampleCreditMemo.items[0].discount_percent = 100;
-        sampleCreditMemo.items[0].discount_amount = 1499.4;
+        sampleCreditMemo.items[0].discount_amount = 249.9;
 
         expectedRequest.T_CONDITIONS.item[0].KSCHL = 'ZPEE';
         expectedRequest.T_CONDITIONS.item[1] = {
@@ -164,6 +164,43 @@ describe('Sap Service', () => {
             KSCHL: 'ZBEE',
             WAERS: null
         };
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
+
+
+    it('Always treats exclusive items discounts as percent', () => {
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+        sampleCreditMemo.items[0].flags = [ 'exclusive' ];
+        sampleCreditMemo.items[0].discount_percent = 0;
+        sampleCreditMemo.items[0].discount_amount = 249.9;
+
+        expectedRequest.T_CONDITIONS.item[0].KSCHL = 'ZPEE';
+        expectedRequest.T_CONDITIONS.item[1] = {
+            KPOSN: 10,
+            KBETR: 100,
+            KSCHL: 'ZBEE',
+            WAERS: null
+        };
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
+
+    it('Formats date correctly when padding is used in month', () => {
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+        
+        sampleCreditMemo.timestamp = '2018-01-23T18:49:03Z';
+        expectedRequest.BSTDK = '20180123';
 
         SapService.sendCreditMemo(sampleCreditMemo)
             .then(() => soapMethodExpectation.verify())

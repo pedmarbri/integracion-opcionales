@@ -1,7 +1,7 @@
 module.exports = {
     creditmemo_id: '23452345',
     order_id: '12700000000065',
-    timestamp: '2018-03-23T18:49:03Z',
+    timestamp: '2018-12-23T18:49:03Z',
     totals: {
         shipping: 0,
     },

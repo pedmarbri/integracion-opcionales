@@ -11,12 +11,8 @@ const SAP_HTTP_PASS = '12345678';
 
 // Fixed Values
 const DOCUMENT_TYPE_CM_STOCK = 'ZCRI';
-const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
+//const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
 const ORDER_REASON_CODE = '001';
-const LANGUAGE_CODE = 'S';
-const SECTOR_CODE = '02';
-const SALES_ORGANIZATION = '0002';
-const SALES_CHANNEL = '02';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
 const MEASUREMENT_UNIT = 'EJE';
@@ -43,11 +39,7 @@ const formatDate = isoDate => {
     ].join('');
 };
 
-const formatTransactionId = payment => payment.transaction_id;
-const formatCustomerName = customer => customer.first_name + ' ' + customer.last_name;
-const formatCustomerIdNumber = customer => customer.id_number;
-
-const formatPriceCondition = (item, index) => {
+const formatPriceCondition = item => {
     let priceType = UNIT_PRICE_CONDITION;
 
     if (item.flags && item.flags.indexOf('exclusive') > -1) {
@@ -62,7 +54,7 @@ const formatPriceCondition = (item, index) => {
     };
 };
 
-const formatDiscountCondition = (item, index) => {
+const formatDiscountCondition = item => {
     if (item.discount_percent === 0 && item.discount_amount === 0) {
         return null;
     }
@@ -76,7 +68,8 @@ const formatDiscountCondition = (item, index) => {
      */
     if (item.flags && item.flags.indexOf('exclusive') > -1) {
         discountType = EXCLUSIVE_DISCOUNT_CONDITION;
-        discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.list_price);
+        discountAmount = discountIsPercent ? item.discount_percent : Math.round(item.discount_amount / item.refund_amount * 100);
+        discountIsPercent = true;
     }
 
     return {
@@ -123,7 +116,7 @@ const formatConditions = (items, totals) => {
 };
 
 const formatItems = orderItems => ({
-    item: orderItems.map((item, index) => ({
+    item: orderItems.map(item => ({
         POSNR: item.sap_row,
         MATNR: item.sku,
         WERKS: CENTER_CODE,
@@ -166,36 +159,6 @@ const formatRequest = creditmemo => ({
     },
     VBELN_REF: creditmemo.sap_order_id,
 });
-
-// exports.sendOrder = order => {
-//     const callSapService = client => {
-//         const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
-//         const request = formatRequest(order);
-//         const options = {
-//             timeout: 10000
-//         };
-//
-//         client.addHttpHeader('Authorization', auth);
-//         console.log(JSON.stringify(request));
-//
-//         return client.ZWS_GEN_PEDAsync(request, options)
-//             .then(result => {
-//                 console.log(JSON.stringify(result));
-//
-//                 if (!result.VBELN) {
-//                     return Promise.reject(Error(result.T_RETURN.item[0].MESSAGE));
-//                 }
-//
-//                 return Promise.resolve({
-//                     result: result,
-//                     order: order
-//                 });
-//             });
-//     };
-//
-//     return soap.createClientAsync(WSDL_URI)
-//         .then(callSapService);
-// };
 
 exports.sendCreditMemo = creditmemo => {
     const callSapService = client => {

@@ -1,7 +1,7 @@
 module.exports = {
     AUART: 'ZCRI',
     AUGRU: '001',
-    BSTDK: '20180323',
+    BSTDK: '20181223',
     BSTKD: '12700000000065',
     IHREZ: null,
     T_CONDITIONS: {
