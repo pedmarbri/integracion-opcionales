@@ -56,7 +56,7 @@ exports.saveResult = sapResult => {
     console.log("Saving Result to DB");
 
     if (!sapResult.result.VBELN) {
-        return saveError(sapResult);
+        return saveError(sapResult).then(() => Promise.reject(new Error('The result was erroneous.')));
     }
 
     const params = {

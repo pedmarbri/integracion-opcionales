@@ -75,9 +75,17 @@ describe('Order Table', () => {
             });
     });
 
-    xit('Rejects the promise when after saving an error', () => {});
+    it('Rejects the promise after saving an error', () => {
+        sampleResponse.VBELN = null;
+
+        OrderTableService.saveResult(sampleResult)
+            .then(fail)
+            .catch(result => expect(result).toEqual(jasmine.any(Error)));
+    });
 
     it('Resolves to the order on saveResult', () => {
+        sampleResponse.VBELN = null;
+
         OrderTableService.saveResult(sampleResult)
             .then(result => expect(result).toEqual(sampleResult.order));
     });
@@ -164,10 +172,10 @@ describe('Order Table', () => {
             .returns(dynamoDbRequestStub);
 
         OrderTableService.saveResult(sampleResult)
-            .then(() => {
+            .then(fail)
+            .catch(() => {
                 updateExpectation.verify();
-            })
-            .catch(fail);
+            });
     });
 
     it('Saves multiple errors in error list', () => {
@@ -220,10 +228,10 @@ describe('Order Table', () => {
             .returns(dynamoDbRequestStub);
 
         OrderTableService.saveResult(sampleResult)
-            .then(() => {
+            .then(fail)
+            .catch(() => {
                 updateExpectation.verify();
-            })
-            .catch(fail);
+            });
     });
 
     it('Filters out unwanted errors', () => {
@@ -279,10 +287,10 @@ describe('Order Table', () => {
             .returns(dynamoDbRequestStub);
 
         OrderTableService.saveResult(sampleResult)
-            .then(() => {
+            .then(fail)
+            .catch(() => {
                 updateExpectation.verify();
-            })
-            .catch(fail);
+            });
     });
 
     it('Row error message contains row numer', () => {
@@ -343,10 +351,10 @@ describe('Order Table', () => {
             .returns(dynamoDbRequestStub);
 
         OrderTableService.saveResult(sampleResult)
-            .then(() => {
+            .then(fail)
+            .catch(() => {
                 updateExpectation.verify();
-            })
-            .catch(fail);
+            });
     });
 
     it('Header error message does not contain row number', () => {
@@ -393,9 +401,9 @@ describe('Order Table', () => {
             .returns(dynamoDbRequestStub);
 
         OrderTableService.saveResult(sampleResult)
-            .then(() => {
+            .then(fail)
+            .catch(() => {
                 updateExpectation.verify();
-            })
-            .catch(fail);
+            });
     });
 });
