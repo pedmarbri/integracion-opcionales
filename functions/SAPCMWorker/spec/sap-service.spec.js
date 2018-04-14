@@ -3,6 +3,18 @@
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 
+function setupServiceMocks(clientStub, expectedRequest, sampleResponse) {
+    /**
+     * @var {Sinon.SinonMock} clientMock
+     */
+    const clientMock = sinon.mock(clientStub);
+
+    return clientMock.expects('ZWS_GEN_NCAsync')
+        .once()
+        .withArgs(expectedRequest)
+        .resolves(sampleResponse);
+}
+
 describe('Sap Service', () => {
     let SapService;
     let soapStub;
@@ -87,16 +99,9 @@ describe('Sap Service', () => {
     });
 
     it('Rejects on error response', () => {
-        sampleResponse.VBELN = null;
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        /**
-         * @var {Sinon.SinonMock} clientMock
-         */
-        const clientMock = sinon.mock(clientStub);
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
-            .once()
-            .withArgs(expectedRequest)
-            .resolves(sampleResponse);
+        sampleResponse.VBELN = null;
 
         SapService.sendCreditMemo(sampleCreditMemo)
             .then(fail)
@@ -106,15 +111,7 @@ describe('Sap Service', () => {
     });
 
     it('Formats shipping condition correctly', () => {
-        /**
-         * @var {Sinon.SinonMock} clientMock
-         */
-        const clientMock = sinon.mock(clientStub);
-
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
-            .once()
-            .withArgs(expectedRequest)
-            .resolves(sampleResponse);
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
         sampleCreditMemo.sap_order_id = '1234567890';
         sampleCreditMemo.items[0].sap_row = 10;
@@ -133,15 +130,7 @@ describe('Sap Service', () => {
     });
 
     it('Formats fixed discount condition correctly', () => {
-        /**
-         * @var {Sinon.SinonMock} clientMock
-         */
-        const clientMock = sinon.mock(clientStub);
-
-        const soapMethodExpectation = clientMock.expects('ZWS_GEN_NCAsync')
-            .once()
-            .withArgs(expectedRequest)
-            .resolves(sampleResponse);
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
         sampleCreditMemo.sap_order_id = '1234567890';
         sampleCreditMemo.items[0].sap_row = 10;
@@ -159,5 +148,25 @@ describe('Sap Service', () => {
             .catch(fail);
     });
 
-    xit('Formats exclusive discount condition correctly', () => {});
+    it('Formats exclusive items condition correctly', () => {
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+        sampleCreditMemo.items[0].flags = [ 'exclusive' ];
+        sampleCreditMemo.items[0].discount_percent = 100;
+        sampleCreditMemo.items[0].discount_amount = 1499.4;
+
+        expectedRequest.T_CONDITIONS.item[0].KSCHL = 'ZPEE';
+        expectedRequest.T_CONDITIONS.item[1] = {
+            KPOSN: 10,
+            KBETR: 100,
+            KSCHL: 'ZBEE',
+            WAERS: null
+        };
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
 });
