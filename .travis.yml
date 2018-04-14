@@ -6,7 +6,7 @@ cache:
     - functions/JobBroker/node_modules
     - functions/SAPCMWorker/node_modules
     - functions/SapOrderConsumer/node_modules
-    - functions/SapOrderWorker/node_modules
+    - functions/SAPOrderWorker/node_modules
 install:
   - FAILED=0
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm install ; done ;
