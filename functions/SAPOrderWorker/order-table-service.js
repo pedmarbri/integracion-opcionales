@@ -19,6 +19,8 @@ function formatErrorMessage(error) {
 }
 
 const saveError = sapResult => {
+    console.log("Saving error to DB");
+
     const now = new Date().toISOString();
     const params = {
         TableName: ORDER_TABLE,
@@ -48,15 +50,15 @@ const saveError = sapResult => {
         }
     };
 
-    return table.update(params).promise()
-        .then(() => Promise.resolve(sapResult.order));
+    return table.update(params).promise();
 };
 
 exports.saveResult = sapResult => {
     console.log("Saving Result to DB");
 
     if (!sapResult.result.VBELN) {
-        return saveError(sapResult).then(() => Promise.reject(new Error('The result was erroneous.')));
+        return saveError(sapResult)
+            .then(() => Promise.reject(new Error('The result was erroneous.')));
     }
 
     const params = {
