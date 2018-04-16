@@ -1146,6 +1146,255 @@
     "SapCMDeadLetterQueue": {
       "Type": "AWS::SQS::Queue"
     },
+    "SapCMConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapCMConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SapCMConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapCMConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
+            "SAP_CM_WORKER": {
+              "Ref": "SapCMWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "SapCMWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapCMWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SAPCMWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapCMWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 15,
+        "Environment": {
+          "Variables": {
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
     "OrderTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {

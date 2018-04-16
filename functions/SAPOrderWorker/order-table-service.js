@@ -66,14 +66,15 @@ exports.saveResult = sapResult => {
         Key: {
             order_id: sapResult.order.order_id
         },
-        UpdateExpression: 'set #i.sap.last_result = :lr, #i.sap.last_timestamp = :now, sap_id = :si',
+        UpdateExpression: 'set #i.sap.last_result = :lr, #i.sap.last_timestamp = :now, sap_id = :si, sap_rows = :sr',
         ExpressionAttributeNames: {
             '#i': 'integrations'
         },
         ExpressionAttributeValues: {
             ':lr': 'ok',
             ':si': sapResult.result.VBELN,
-            ':now': new Date().toISOString()
+            ':now': new Date().toISOString(),
+            ':sr': sapResult.rows
         }
     };
 

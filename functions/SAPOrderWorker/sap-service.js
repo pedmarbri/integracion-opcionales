@@ -120,63 +120,70 @@ const formatConditions = (items, totals) => {
     return {item: conditions};
 };
 
-const formatItems = orderItems => ({
-    item: orderItems.map((item, index) => ({
-        POSNR: (index + 1) * 10,
-        MATNR: item.sku,
-        WERKS: CENTER_CODE,
-        LGORT: WAREHOUSE,
-        MENGE: item.qty,
-        MEINS: MEASUREMENT_UNIT,
-        MVGR5: MATERIAL_GROUP_5,
-        KDMAT: item.name,
-        POSEX: (index + 1) * 10
-    }))
-});
-
-const formatRequest = order => ({
-    AD_SMTPADR: order.customer.email,
-    AUART: DOCUMENT_TYPE_ORDER,
-    AUGRU: ORDER_REASON_CODE,
-    BSTDK: formatDate(order.timestamp),
-    BSTKD: order.order_id,
-    CITY: 'CABA',
-    COUNTRY: 'AR',
-    IHREZ: formatTransactionId(order.payment),
-    KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
-    LANGU: LANGUAGE_CODE,
-    NAME1: formatCustomerName(order.customer),
-    NAME4: formatCustomerIdNumber(order.customer),
-    SPART: SECTOR_CODE,
-    T_CONDITIONS: formatConditions(order.items, order.totals),
-    T_ITEMS: formatItems(order.items),
-    T_RETURN: {
-        item: [
-            {
-                TYPE: '?',
-                ID: '?',
-                NUMBER: null,
-                MESSAGE: null,
-                LOG_NO: null,
-                LOG_MSG_NO: null,
-                MESSAGE_V1: null,
-                MESSAGE_V2: null,
-                MESSAGE_V3: null,
-                MESSAGE_V4: null,
-                PARAMETER: null,
-                ROW: null,
-                FIELD: null,
-                SYSTEM: null
-            }
-        ],
-    },
-    VBELN_EXT: null,
-    VKORG: SALES_ORGANIZATION,
-    VTWEG: SALES_CHANNEL
-});
-
 exports.sendOrder = order => {
     console.log('Sending order to SAP');
+    const sapRows = {};
+
+    const formatItems = orderItems => ({
+        item: orderItems.map((item, index) => {
+            const sapRow = (index + 1) * 10;
+
+            sapRows[item.sku] = sapRow;
+
+            return {
+                POSNR: sapRow,
+                MATNR: item.sku,
+                WERKS: CENTER_CODE,
+                LGORT: WAREHOUSE,
+                MENGE: item.qty,
+                MEINS: MEASUREMENT_UNIT,
+                MVGR5: MATERIAL_GROUP_5,
+                KDMAT: item.name,
+                POSEX: sapRow
+            };
+        })
+    });
+
+    const formatRequest = order => ({
+        AD_SMTPADR: order.customer.email,
+        AUART: DOCUMENT_TYPE_ORDER,
+        AUGRU: ORDER_REASON_CODE,
+        BSTDK: formatDate(order.timestamp),
+        BSTKD: order.order_id,
+        CITY: 'CABA',
+        COUNTRY: 'AR',
+        IHREZ: formatTransactionId(order.payment),
+        KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
+        LANGU: LANGUAGE_CODE,
+        NAME1: formatCustomerName(order.customer),
+        NAME4: formatCustomerIdNumber(order.customer),
+        SPART: SECTOR_CODE,
+        T_CONDITIONS: formatConditions(order.items, order.totals),
+        T_ITEMS: formatItems(order.items),
+        T_RETURN: {
+            item: [
+                {
+                    TYPE: '?',
+                    ID: '?',
+                    NUMBER: null,
+                    MESSAGE: null,
+                    LOG_NO: null,
+                    LOG_MSG_NO: null,
+                    MESSAGE_V1: null,
+                    MESSAGE_V2: null,
+                    MESSAGE_V3: null,
+                    MESSAGE_V4: null,
+                    PARAMETER: null,
+                    ROW: null,
+                    FIELD: null,
+                    SYSTEM: null
+                }
+            ],
+        },
+        VBELN_EXT: null,
+        VKORG: SALES_ORGANIZATION,
+        VTWEG: SALES_CHANNEL
+    });
 
     const callSapService = client => {
         const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
@@ -194,7 +201,8 @@ exports.sendOrder = order => {
 
                 return Promise.resolve({
                     result: result,
-                    order: order
+                    order: order,
+                    rows: sapRows
                 });
             });
     };
