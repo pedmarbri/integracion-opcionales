@@ -650,6 +650,12 @@
                   "sku": {
                     "type": "string"
                   },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "return_stock": {
+                    "type": "boolean"
+                  },
                   "qty": {
                     "type": "number",
                     "minimum": 0,
@@ -663,6 +669,16 @@
                   "row_total": {
                     "type": "number",
                     "minimum": 0
+                  },
+                  "flags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "exclusive",
+                        "broken"
+                      ]
+                    }
                   }
                 }
               }
