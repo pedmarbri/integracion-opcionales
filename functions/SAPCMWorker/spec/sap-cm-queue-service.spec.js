@@ -6,9 +6,9 @@
 const sinon = require( 'sinon' );
 const proxyquire = require( 'proxyquire' ).noCallThru();
 
-describe('Sap Order Queue service', () => {
+describe('Sap Credit Memo Queue service', () => {
     let sqsRequestStub;
-    let sapOrderQueueService;
+    let sapCMQueueService;
     let stubConfig;
     let AWSStub;
     let sqsStub;
@@ -40,7 +40,7 @@ describe('Sap Order Queue service', () => {
         AWSStub.SQS.returns(sqsStub);
 
         stubConfig = { 'aws-sdk': AWSStub };
-        sapOrderQueueService = proxyquire('../sap-order-queue-service', stubConfig);
+        sapCMQueueService = proxyquire('../sap-cm-queue-service', stubConfig);
     });
 
     it('Returns a promise on deleteMessage', () => {
@@ -51,7 +51,7 @@ describe('Sap Order Queue service', () => {
         };
 
         sqsRequestStub.promise.resolves({});
-        expect(sapOrderQueueService.deleteMessage(message)).toEqual(jasmine.any(Promise));
+        expect(sapCMQueueService.deleteMessage(message)).toEqual(jasmine.any(Promise));
     });
 
     it('Handles rejection on deleteMessage', () => {
@@ -65,7 +65,7 @@ describe('Sap Order Queue service', () => {
 
         sqsRequestStub.promise.rejects();
 
-        sapOrderQueueService.deleteMessage(message)
+        sapCMQueueService.deleteMessage(message)
             .then(messagesHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
@@ -81,6 +81,6 @@ describe('Sap Order Queue service', () => {
         };
 
         sqsRequestStub.promise.resolves({});
-        sapOrderQueueService.deleteMessage(message).then(result => expect(result).toEqual(message));
+        sapCMQueueService.deleteMessage(message).then(result => expect(result).toEqual(message));
     });
 });
