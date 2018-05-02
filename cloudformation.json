@@ -642,12 +642,19 @@
                 "type": "object",
                 "required": [
                   "sku",
+                  "name",
+                  "reason",
                   "qty",
                   "refund_amount",
+                  "discount_percent",
+                  "discount_amount",
                   "row_total"
                 ],
                 "properties": {
                   "sku": {
+                    "type": "string"
+                  },
+                  "name": {
                     "type": "string"
                   },
                   "reason": {
@@ -665,6 +672,14 @@
                     "type": "number",
                     "minimum": 0,
                     "exclusiveMinimum": true
+                  },
+                  "discount_percent": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "discount_amount": {
+                    "type": "number",
+                    "minimum": 0
                   },
                   "row_total": {
                     "type": "number",
