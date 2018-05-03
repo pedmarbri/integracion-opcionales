@@ -1,24 +1,31 @@
 'use strict';
 
-const sinon = require( 'sinon' );
-const proxyquire = require( 'proxyquire' ).noCallThru();
+const sinon = require('sinon');
 
-describe('Order Table', () => {
+/**
+ * @var {Proxyquire}
+ */
+const proxyquire = require('proxyquire');
+proxyquire.noCallThru();
+
+describe('Order Table Service', () => {
     let OrderTableService;
     let stubConfig;
     let AWSStub;
     let dynamoDbRequestStub;
     let dynamoDbStub;
-    let sampleOrder;
+    let sampleCreditMemo;
     let sampleResponse;
     let sampleResult;
+    let sampleOrder;
 
     beforeEach(() => {
-        sampleOrder = require('./sample-creditmemo');
+        sampleCreditMemo = require('./sample-creditmemo');
         sampleResponse = require('./sample-response');
+        sampleOrder = require('./sample-order');
 
         sampleResult = {
-            order: sampleOrder,
+            order: sampleCreditMemo,
             result: sampleResponse
         };
 
@@ -30,16 +37,30 @@ describe('Order Table', () => {
         };
 
         dynamoDbStub = {
-            update: sinon.stub()
+            /**
+             * @var {Sinon.SinonStub}
+             */
+            update: sinon.stub(),
+
+            /**
+             * @var {Sinon.SinonStub}
+             */
+            get: sinon.stub()
         };
 
         dynamoDbStub.update.returns(dynamoDbRequestStub);
+        dynamoDbStub.get.returns(dynamoDbRequestStub);
 
         AWSStub = {
             DynamoDB: {
-                DocumentClient: sinon.stub().returns(dynamoDbStub),
+                /**
+                 * @var {Sinon.SinonStub}
+                 */
+                DocumentClient: sinon.stub()
             }
         };
+
+        AWSStub.DynamoDB.DocumentClient.returns(dynamoDbStub);
 
         stubConfig = { 'aws-sdk': AWSStub };
         OrderTableService = proxyquire('../order-table-service', stubConfig);
@@ -48,11 +69,12 @@ describe('Order Table', () => {
     afterEach(() => {
         delete require.cache[require.resolve('./sample-creditmemo')];
         delete require.cache[require.resolve('./sample-response')];
+        delete require.cache[require.resolve('./sample-order')];
     });
 
     it('Returns a promise on saveResult', () => {
         const result = {
-            order: sampleOrder,
+            order: sampleCreditMemo,
             result: sampleResponse
         };
 
@@ -63,7 +85,7 @@ describe('Order Table', () => {
 
     it('Handles rejection on saveResult', () => {
         const result = {
-            order: sampleOrder,
+            order: sampleCreditMemo,
             result: sampleResponse
         };
 
@@ -82,5 +104,30 @@ describe('Order Table', () => {
         dynamoDbRequestStub.promise.resolves({});
         OrderTableService.saveResult(sampleResult)
             .then(result => expect(result).toEqual(sampleResult.order));
+    });
+
+    it('Returns a promise on fetchOrderInfo', () => {
+        dynamoDbRequestStub.promise.resolves({});
+        expect(OrderTableService.fetchOrderInfo(sampleCreditMemo)).toEqual(jasmine.any(Promise));
+    });
+
+    it('Rejects if order is not found', () => {
+        dynamoDbRequestStub.promise.resolves({});
+
+        OrderTableService.fetchOrderInfo(sampleCreditMemo)
+            .then(fail)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+            });
+    });
+
+    it('Rejects if order is missing SAP ID', () => {
+        dynamoDbRequestStub.promise.resolves({ Item: sampleOrder });
+
+        OrderTableService.fetchOrderInfo(sampleCreditMemo)
+            .then(fail)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+            });
     });
 });

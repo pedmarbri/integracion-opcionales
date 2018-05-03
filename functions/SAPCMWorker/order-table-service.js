@@ -31,6 +31,9 @@ exports.saveResult = sapResult => {
 exports.fetchOrderInfo = creditmemo => {
 
     const populateSapOrderInfo = result => {
+        /**
+         * @var {opcionales.Order}
+         */
         const order = result.Item;
 
         console.log(JSON.stringify(result));
