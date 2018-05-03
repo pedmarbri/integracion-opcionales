@@ -130,4 +130,15 @@ describe('Order Table Service', () => {
                 expect(err).toEqual(jasmine.any(Error));
             });
     });
+
+    it('Rejects if a row is not mapped', () => {
+        sampleOrder.sap_id = '1234567';
+        dynamoDbRequestStub.promise.resolves({ Item: sampleOrder });
+
+        OrderTableService.fetchOrderInfo(sampleCreditMemo)
+            .then(fail)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+            });
+    });
 });
