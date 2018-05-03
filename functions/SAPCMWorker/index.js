@@ -5,8 +5,14 @@ const SapCMQueueService = require('./sap-cm-queue-service');
 const OrderTable = require('./order-table-service');
 
 exports.handler = function(event, context, callback) {
+    let creditmemo;
 
-    const creditmemo = JSON.parse(event.Body);
+    try {
+        creditmemo = JSON.parse(event.Body);
+    } catch (formatError) {
+        callback(formatError);
+        return;
+    }
 
     console.log(JSON.stringify(creditmemo));
 
