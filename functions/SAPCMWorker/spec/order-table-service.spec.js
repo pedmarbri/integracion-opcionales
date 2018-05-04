@@ -131,7 +131,7 @@ describe('Order Table Service', () => {
             });
     });
 
-    it('Rejects if a row is not mapped', () => {
+    it('Rejects if rows are not mapped', () => {
         sampleOrder.sap_id = '1234567';
         dynamoDbRequestStub.promise.resolves({ Item: sampleOrder });
 
@@ -140,5 +140,36 @@ describe('Order Table Service', () => {
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
             });
+    });
+
+    it('Rejects if a row is not mapped', () => {
+        sampleOrder.sap_id = '1234567';
+        sampleOrder.sap_rows = {
+            'fake_sku': 10
+        };
+
+        dynamoDbRequestStub.promise.resolves({ Item: sampleOrder });
+
+        OrderTableService.fetchOrderInfo(sampleCreditMemo)
+            .then(fail)
+            .catch(err => {
+                expect(err).toEqual(jasmine.any(Error));
+            });
+    });
+
+    it('Fills credit memo with order info when data is available', () => {
+        sampleOrder.sap_id = '1234567';
+        sampleOrder.sap_rows = {
+            'OPC11086300001': 10
+        };
+
+        dynamoDbRequestStub.promise.resolves({ Item: sampleOrder });
+
+        OrderTableService.fetchOrderInfo(sampleCreditMemo)
+            .then(creditMemo => {
+                expect(creditMemo.sap_order_id).toEqual('1234567');
+                expect(creditMemo.items[0].sap_row).toEqual(10);
+            })
+            .catch(fail);
     });
 });
