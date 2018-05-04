@@ -27,7 +27,10 @@ describe('Order Table', () => {
 
         sampleResult = {
             order: sampleOrder,
-            result: sampleResponse
+            result: sampleResponse,
+            rows: {
+                'OPC11086300001': 10
+            }
         };
 
         dynamoDbRequestStub = {
@@ -106,7 +109,8 @@ describe('Order Table', () => {
             UpdateExpression: 'set ' + [
                 '#i.sap.last_result = :lr',
                 '#i.sap.last_timestamp = :now',
-                'sap_id = :si'
+                'sap_id = :si',
+                'sap_rows = :sr'
             ].join(', '),
             ExpressionAttributeNames: {
                 '#i': 'integrations'
@@ -114,7 +118,10 @@ describe('Order Table', () => {
             ExpressionAttributeValues: {
                 ':lr': 'ok',
                 ':si': '1234567890',
-                ':now': sinon.match.string
+                ':now': sinon.match.string,
+                ':sr': {
+                    'OPC11086300001': 10
+                }
             }
         };
 
