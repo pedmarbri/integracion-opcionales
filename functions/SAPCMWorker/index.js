@@ -5,18 +5,18 @@ const SapCMQueueService = require('./sap-cm-queue-service');
 const OrderTable = require('./order-table-service');
 
 exports.handler = function(event, context, callback) {
-    let creditmemo;
+    let creditMemo;
 
     try {
-        creditmemo = JSON.parse(event.Body);
+        creditMemo = JSON.parse(event.Body);
     } catch (formatError) {
         callback(formatError);
         return;
     }
 
-    console.log(JSON.stringify(creditmemo));
+    console.log(event.Body);
 
-    OrderTable.fetchOrderInfo(creditmemo)
+    OrderTable.fetchOrderInfo(creditMemo)
         .then(SapService.sendCreditMemo)
         .then(SapCMQueueService.deleteMessage)
         .then(result => callback(null, result))
