@@ -23,7 +23,7 @@ fi
 
 for d in ./functions/* ;
 do
-    cd $BASEDIR/$d && npm install --production ;
+    cd $BASEDIR/$d && rm -rf node_modules && npm install --production ;
 done
 
 cd $BASEDIR;
