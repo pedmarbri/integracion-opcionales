@@ -1,13 +1,15 @@
 'use strict';
 
-const SapCMQueueService = require('./sap-cm-queue-service');
-const SapCMWorker = require('./sap-cm-worker-service');
+const CRMQueueService = require('./crm-queue-service');
+const CRMWorker = require('./crm-worker-service');
+
 const TIMEOUT_THRESHOLD = 10000;
 
 const processMessages = messages => {
+
     if (messages && messages.length > 0) {
         console.log('Processing ' + messages.length + ' messages');
-        return Promise.all(messages.map(message => SapCMWorker.process(message)));
+        return Promise.all(messages.map(message => CRMWorker.process(message)));
     }
 
     /**
@@ -16,15 +18,14 @@ const processMessages = messages => {
     return Promise.resolve(false);
 };
 
-exports.handler = function (event, context, callback) {
-
+exports.handler = (event, context, callback) => {
     let batch = 1;
 
     const work = previousBatch => {
         console.log('Batch ' + batch++);
 
         if (previousBatch !== false && context.getRemainingTimeInMillis() > TIMEOUT_THRESHOLD) {
-            return SapCMQueueService.receiveMessages()
+            return CRMQueueService.receiveMessages()
                 .then(processMessages)
                 .then(work);
         }
