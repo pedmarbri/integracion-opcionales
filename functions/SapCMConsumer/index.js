@@ -32,7 +32,7 @@ exports.handler = function (event, context, callback) {
         return Promise.resolve("Done");
     };
 
-    work(true, context)
+    work(true)
         .then(result => callback(null, result))
         .catch(callback);
 };
