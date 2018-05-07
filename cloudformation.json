@@ -886,20 +886,6 @@
         }
       }
     },
-    "CrmQueue": {
-      "Type": "AWS::SQS::Queue",
-      "Properties": {
-        "RedrivePolicy": {
-          "deadLetterTargetArn": {
-            "Fn::Sub": "${CrmDeadLetterQueue.Arn}"
-          },
-          "maxReceiveCount": 10
-        }
-      }
-    },
-    "CrmDeadLetterQueue": {
-      "Type": "AWS::SQS::Queue"
-    },
     "SapOrderQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -1409,6 +1395,269 @@
           "Variables": {
             "SAP_CM_QUEUE_URL": {
               "Ref": "SapCMQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "CrmQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${CrmDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "CrmDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "CRMConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CrmQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CRMWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CRMConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/CRMConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${CRMConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
+            },
+            "CRM_WORKER": {
+              "Ref": "CRMWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "CRMWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CrmQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CRMWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/CRMWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${CRMWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 15,
+        "Environment": {
+          "Variables": {
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
             },
             "LN_STACK": {
               "Ref": "LNStack"
