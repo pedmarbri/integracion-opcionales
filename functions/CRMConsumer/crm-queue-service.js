@@ -12,6 +12,18 @@ exports.receiveMessages = () => {
         MaxNumberOfMessages: 10
     };
 
-    return sqs.receiveMessage(params).promise();
+    return sqs.receiveMessage(params).promise()
+        .then(result => {
+            let messages = result.Messages;
+
+            if (!messages || messages.length === 0) {
+                return Promise.resolve([]);
+            }
+
+            return Promise.resolve(messages.map(message => {
+                message.json = JSON.parse(message.Body);
+                return message;
+            }));
+        });
 
 };
