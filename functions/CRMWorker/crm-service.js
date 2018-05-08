@@ -20,7 +20,9 @@ exports.fetchContact = order => {
             .then(result => {
                 let contact = null;
 
+                console.log('XML Request', client.lastRequest);
                 console.log(JSON.stringify(result));
+                console.log('XML Response', client.lastResponse);
 
                 if (result.Consulta_ContactoPorDocumentoResult.Contactos) {
                     contact = result.Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];

@@ -3828,7 +3828,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorDocumento">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorDocumento" style="document" />
+      <soap:operation soapAction="http://demo2042536.mockable.io/integracion-opcionales/Consulta_ContactoPorDocumento" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4911,7 +4911,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorDocumento">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorDocumento" style="document" />
+      <soap12:operation soapAction="http://demo2042536.mockable.io/Consulta_ContactoPorDocumento" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5732,10 +5732,10 @@
   </wsdl:binding>
   <wsdl:service name="WS_SLX">
     <wsdl:port name="WS_SLXSoap" binding="tns:WS_SLXSoap">
-      <soap:address location="http://slxwsdes/WS-SLX.asmx" />
+      <soap:address location="https://demo2042536.mockable.io/integracion-opcionales/" />
     </wsdl:port>
     <wsdl:port name="WS_SLXSoap12" binding="tns:WS_SLXSoap12">
-      <soap12:address location="http://slxwsdes/WS-SLX.asmx" />
+      <soap12:address location="https://demo2042536.mockable.io/integracion-opcionales/" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
