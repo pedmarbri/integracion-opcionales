@@ -155,4 +155,70 @@ describe('CRM Service', () => {
             })
             .catch(fail);
     });
+
+    it('Resolves a full result after insert', () => {
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        const sampleContact = {
+            "EntreCalle1":"J RAMIREZ DE VELASCO",
+            "EntreCalle2":"F DE AGUIRRE",
+            "Torre":"",
+            "TipoPropiedad":"",
+            "NombrePropiedad":"",
+            "Escalera":"",
+            "Cuerpo":"",
+            "CRMIDEmpresa":"A04008602",
+            "CondicionIVA":"No Responsable",
+            "PrimerNombre":"CARLOS",
+            "SegundoNombre":"",
+            "Apellido":"RUIZ",
+            "TelCasa":"1525659874",
+            "TelTrabajo":"1525659874",
+            "TelCelular":"0",
+            "TipoCalle":"CALLE",
+            "Calle":"FITZ ROY",
+            "Numero":"930",
+            "Piso":"2",
+            "Dpto":"F",
+            "CodigoPostal":"C1414CHJ",
+            "Localidad":"CIUDAD AUTONOMA BUENOS AIRES",
+            "Barrio":"CHACARITA",
+            "UP":false,
+            "Provincia":"CAPITAL FEDERAL",
+            "Pais":"ARGENTINA",
+            "ObsDomicilio":"",
+            "VinculoLN":"PROSPECT",
+            "Origen":"BANCO GALICIA",
+            "TipoDoc":"DNI",
+            "NumeroDoc":"789456456",
+            "Sexo":"M",
+            "Email":"matias4@semexpert.com.ar",
+            "CRMID":"A04008603",
+            "AddressId":"aQF8AA00S1DC",
+            "Normalizada":true,
+            "TipoError":"CampoVacioONulo",
+            "IdTabla":"CQF8AA00BEIT",
+            "Resultado":true
+        };
+
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
+            Alta_Masiva_ContactoResult: {
+                RespuestaMasiva: [
+                    sampleContact
+                ]
+            }
+        });
+
+        CRMService.insertContact(result)
+            .then(insertResult => {
+                console.log(insertResult);
+                expect(insertResult).toEqual({
+                    order: sampleOrder,
+                    contact: sampleContact
+                });
+            });
+    });
 });
