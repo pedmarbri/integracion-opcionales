@@ -29,4 +29,4 @@ done
 cd $BASEDIR;
 
 aws cloudformation package --template-file cloudformation.json --s3-bucket $BUCKET --output-template-file output.yml &&\
-  aws cloudformation deploy --template-file output.yml --stack-name integracion-opcionales-dev --capabilities CAPABILITY_IAM --parameter-overrides LNStack=Dev
+  aws cloudformation deploy --template-file output.yml --stack-name $STACK_NAME --capabilities CAPABILITY_IAM --parameter-overrides LNStack=$LN_STACK
