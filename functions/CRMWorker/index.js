@@ -9,7 +9,7 @@ exports.handler = function (event, context, callback) {
 
     const processCRMContactResult = result => {
         if (!result.contact) {
-            return CRMService.insertContact()
+            return CRMService.insertContact(result)
                 .then(OrderTableService.saveResult);
         }
 

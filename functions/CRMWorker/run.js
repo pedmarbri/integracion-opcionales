@@ -2,7 +2,7 @@
 
 const soap = require('soap');
 
-soap.createClientAsync('./service.wsdl')
+soap.createClientAsync('./crm-service-dev.wsdl')
     .then(client => {
         // const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
 
@@ -38,22 +38,29 @@ soap.createClientAsync('./service.wsdl')
                         VinculoLN: 'PROSPECT',
                         Origen: 'BANCO GALICIA',
                         TipoDoc: 'DNI',
-                        NumeroDoc: '456456123',
+                        NumeroDoc: '789456456',
                         Sexo: 'M',
-                        Email: 'matias3@semexpert.com.ar'
+                        Email: 'matias4@semexpert.com.ar'
                     }
                 ]
             },
+        };
+
+        const request2 = {
+            numDoc: '456123123',
+            pagina: 1,
+            filasXPagina: 1,
+            tipoDoc: 'DNI'
         };
 
         const options = {
             timeout: 10000
         };
 
-        // client.addHttpHeader('Authorization', auth);
-        // console.log(JSON.stringify(request));
-
         return client.Alta_Masiva_ContactoAsync(request, options);
+
+        // return client.Consulta_ContactoPorDocumentoAsync(request2, options);
+
     })
     .then(response => console.log(JSON.stringify(response)))
     .catch(console.log);

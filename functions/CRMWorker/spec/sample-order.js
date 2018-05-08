@@ -10,7 +10,7 @@ module.exports = {
         last_name: 'Perez',
         id_type: 'DNI',
         id_number: '12345678',
-        gender: 0
+        gender: 'M'
     },
     totals: {
         subtotal: 1499.4,
@@ -45,7 +45,7 @@ module.exports = {
         first_name: 'Juan',
         last_name: 'Perez',
         email: 'example@domain.com',
-        telephone: '15-1234-5678',
+        telephone: '15-1234-1111',
     },
     items: [
         {
