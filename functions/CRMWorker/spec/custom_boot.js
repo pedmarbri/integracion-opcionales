@@ -17,6 +17,6 @@
     /**
      * Suppress console output
      */
-    // console.log = console.error = console.info = () => {};
+    console.log = console.error = console.info = () => {};
 
 })();

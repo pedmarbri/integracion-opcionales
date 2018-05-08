@@ -90,6 +90,31 @@ describe('CRM Service', () => {
             .catch(fail);
     });
 
+    it('Returns a full result when contact is found', () => {
+        const sampleContact = {
+            CRMID: '1234'
+        };
+
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
+            Consulta_ContactoPorDocumentoResult: {
+                Contactos: {
+                    Contacto: [
+                        sampleContact
+                    ]
+                }
+            }
+        });
+
+        CRMService.fetchContact(sampleOrder)
+            .then(fetchResult => {
+                expect(fetchResult).toEqual({
+                    order: sampleOrder,
+                    contact: sampleContact
+                });
+            });
+
+    });
+
     it('Returns a promise on insertContact', () => {
         const result = {
             order: sampleOrder,
@@ -204,7 +229,7 @@ describe('CRM Service', () => {
             "Resultado":true
         };
 
-        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
+        clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve({
             Alta_Masiva_ContactoResult: {
                 RespuestaMasiva: [
                     sampleContact
@@ -214,7 +239,6 @@ describe('CRM Service', () => {
 
         CRMService.insertContact(result)
             .then(insertResult => {
-                console.log(insertResult);
                 expect(insertResult).toEqual({
                     order: sampleOrder,
                     contact: sampleContact
