@@ -142,7 +142,6 @@ describe('CRM Service', () => {
                         PrimerNombre: 'Juan',
                         Apellido: 'Perez',
                         TelCasa: '15-1234-5678',
-                        TelTrabajo: '15-1234-1111',
                         Calle: 'Cabildo',
                         Numero: 2779,
                         Piso: '10',
@@ -171,6 +170,65 @@ describe('CRM Service', () => {
             order: sampleOrder,
             contact: null
         };
+
+        CRMService.insertContact(result)
+            .then(() => {
+                expect(createClientSpy).toHaveBeenCalled();
+                expect(queryContactMethodSpy).not.toHaveBeenCalled();
+                soapMethodExpectation.verify();
+            })
+            .catch(fail);
+    });
+
+    it('Uses shipping phone for work phone', () => {
+        const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+
+        const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+
+        const expectedRequest = {
+            listaContactos: {
+                ContactoMasivo: [
+                    {
+                        CondicionIVA: 'No Responsable',
+                        PrimerNombre: 'Juan',
+                        Apellido: 'Perez',
+                        TelCasa: '15-1234-5678',
+                        TelTrabajo: '11111111',
+                        Calle: 'Cabildo',
+                        Numero: 2779,
+                        Piso: '10',
+                        Dpto: 'A',
+                        CodigoPostal: '1428',
+                        Localidad: 'Capital Federal',
+                        UP: false,
+                        Provincia: 'Capital Federal',
+                        Pais: 'AR',
+                        VinculoLN: 'PROSPECT',
+                        TipoDoc: 'DNI',
+                        NumeroDoc: '12345678',
+                        Sexo: 'M',
+                        Email: 'example@domain.com'
+                    }
+                ]
+            },
+        };
+
+        const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
+
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        sampleOrder.shipping_address.telephone = '11111111';
 
         CRMService.insertContact(result)
             .then(() => {

@@ -45,7 +45,7 @@ module.exports = {
         first_name: 'Juan',
         last_name: 'Perez',
         email: 'example@domain.com',
-        telephone: '15-1234-1111',
+        telephone: '15-1234-5678',
     },
     items: [
         {
