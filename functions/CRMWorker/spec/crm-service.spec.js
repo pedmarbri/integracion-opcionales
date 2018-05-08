@@ -90,6 +90,22 @@ describe('CRM Service', () => {
             .catch(fail);
     });
 
+    it('Returns a result when contact is not found', () => {
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
+            Consulta_ContactoPorDocumentoResult: {
+                Contactos: null
+            }
+        });
+
+        CRMService.fetchContact(sampleOrder)
+            .then(fetchResult => {
+                expect(fetchResult).toEqual({
+                    order: sampleOrder,
+                    contact: null
+                });
+            });
+    });
+
     it('Returns a full result when contact is found', () => {
         const sampleContact = {
             CRMID: '1234'

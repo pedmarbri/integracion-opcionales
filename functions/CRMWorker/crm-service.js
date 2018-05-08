@@ -18,7 +18,7 @@ exports.fetchContact = order => {
 
         return client.Consulta_ContactoPorDocumentoAsync(request, { timeout: 3000 })
             .then(result => {
-                let contact;
+                let contact = null;
 
                 console.log(JSON.stringify(result));
 
