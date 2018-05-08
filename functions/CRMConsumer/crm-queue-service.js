@@ -1,6 +1,6 @@
 'use strict';
 
-const TASK_QUEUE_URL = process.env.SAP_CM_QUEUE_URL;
+const TASK_QUEUE_URL = process.env.CRM_QUEUE_URL;
 const AWS_REGION = process.env.AWS_REGION;
 
 const AWS = require('aws-sdk');

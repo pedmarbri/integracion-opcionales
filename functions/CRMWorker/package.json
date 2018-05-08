@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run-script jshint",
+    "test": "npm run-script jshint && npm run-script jasmine && npm run-script coverage",
     "jshint": "./node_modules/.bin/jshint .",
     "jasmine": "./node_modules/.bin/nyc --all jasmine",
     "coverage": "./node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
