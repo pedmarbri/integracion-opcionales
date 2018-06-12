@@ -18,6 +18,7 @@ exports.handler = function(event, context, callback) {
 
     OrderTable.fetchOrderInfo(creditMemo)
         .then(SapService.sendCreditMemo)
+        .then(() => Promise.resolve(event))
         .then(SapCMQueueService.deleteMessage)
         .then(result => callback(null, result))
         .catch(callback);
