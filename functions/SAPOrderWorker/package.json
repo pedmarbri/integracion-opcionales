@@ -10,7 +10,7 @@
     "coverage": "./node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
   },
   "dependencies": {
-    "soap": "^0.23.0"
+    "soap": "^0.24.0"
   },
   "devDependencies": {
     "aws-sdk": "^2.222.1",
