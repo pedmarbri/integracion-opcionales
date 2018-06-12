@@ -11,7 +11,5 @@ install:
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm install ; done ;
 script:
   - FAILED=0
-  - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm audit --json | grep 'critical\": 0' || FAILED=1 ; done ;
-  - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm audit --json | grep 'high\": 0' || FAILED=1 ; done ;
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm test || FAILED=1 ; done ;
   - test $FAILED -eq 0
