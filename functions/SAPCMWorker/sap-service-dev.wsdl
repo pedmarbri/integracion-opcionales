@@ -15,6 +15,9 @@
             <xsd:element name="ZWS_GEN_PEDRequest" type="xsd:anyType"/>
             <xsd:element name="ZWS_GEN_PEDResponse" type="xsd:anyType"/>
             
+            <xsd:element name="ZWS_GEN_NCRequest" type="xsd:anyType"/>
+            <xsd:element name="ZWS_GEN_NCResponse" type="xsd:anyType"/>
+            
         </xsd:schema>
     </wsdl:types>
 
@@ -26,6 +29,13 @@
         <wsdl:part name="ZWS_GEN_PEDOutputPart" element="mio:ZWS_GEN_PEDResponse"/>
     </wsdl:message>
     
+    <wsdl:message name="ZWS_GEN_NCInputMessage">
+        <wsdl:part name="ZWS_GEN_NCInputPart" element="mio:ZWS_GEN_NCRequest"/>
+    </wsdl:message>
+    <wsdl:message name="ZWS_GEN_NCOutputMessage">
+        <wsdl:part name="ZWS_GEN_NCOutputPart" element="mio:ZWS_GEN_NCResponse"/>
+    </wsdl:message>
+    
 
     <wsdl:portType name="integracion-opcionalesPortType">
         
@@ -34,6 +44,13 @@
                         message="mio:ZWS_GEN_PEDInputMessage"/>
             <wsdl:output name="ZWS_GEN_PEDOutput"
                          message="mio:ZWS_GEN_PEDOutputMessage"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="ZWS_GEN_NC">
+            <wsdl:input name="ZWS_GEN_NCInput"
+                        message="mio:ZWS_GEN_NCInputMessage"/>
+            <wsdl:output name="ZWS_GEN_NCOutput"
+                         message="mio:ZWS_GEN_NCOutputMessage"/>
         </wsdl:operation>
         
     </wsdl:portType>
@@ -48,6 +65,17 @@
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="ZWS_GEN_PEDOutput">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="ZWS_GEN_NC">
+            <soap:operation
+                    soapAction="ZWS_GEN_NC"/>
+            <wsdl:input name="ZWS_GEN_NCInput">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="ZWS_GEN_NCOutput">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
