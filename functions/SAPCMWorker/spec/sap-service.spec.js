@@ -205,4 +205,5 @@ describe('Sap Service', () => {
             .then(() => soapMethodExpectation.verify())
             .catch(fail);
     });
+
 });

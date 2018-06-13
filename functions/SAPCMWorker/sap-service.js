@@ -11,7 +11,7 @@ const SAP_HTTP_PASS = '12345678';
 
 // Fixed Values
 const DOCUMENT_TYPE_CM_STOCK = 'ZCRI';
-//const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
+const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
 const ORDER_REASON_CODE = '001';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
@@ -130,7 +130,7 @@ const formatItems = orderItems => ({
 });
 
 const formatRequest = creditmemo => ({
-    AUART: DOCUMENT_TYPE_CM_STOCK, //DOCUMENT_TYPE_CM_FINANCE,
+    AUART: DOCUMENT_TYPE_CM_FINANCE, //DOCUMENT_TYPE_CM_STOCK,
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(creditmemo.timestamp),
     BSTKD: creditmemo.order_id,
