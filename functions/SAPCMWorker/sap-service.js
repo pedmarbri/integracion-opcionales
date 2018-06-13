@@ -129,8 +129,16 @@ const formatItems = orderItems => ({
     }))
 });
 
+const formatDocumentType = creditmemo => {
+    const returnsStock = creditmemo.items.find(item => {
+        console.log(item);
+        return item.hasOwnProperty('return_stock') && item.return_stock;
+    });
+    return returnsStock ? DOCUMENT_TYPE_CM_STOCK : DOCUMENT_TYPE_CM_FINANCE;
+};
+
 const formatRequest = creditmemo => ({
-    AUART: DOCUMENT_TYPE_CM_FINANCE, //DOCUMENT_TYPE_CM_STOCK,
+    AUART: formatDocumentType(creditmemo),
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(creditmemo.timestamp),
     BSTKD: creditmemo.order_id,
