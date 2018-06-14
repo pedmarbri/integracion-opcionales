@@ -83,7 +83,8 @@ exports.insertContact = result => {
             }
         };
 
-        if (result.order.shipping_address.telephone && result.order.billing_address.telephone !== result.order.shipping_address.telephone) {
+        if (result.order.shipping_address.telephone &&
+            result.order.billing_address.telephone !== result.order.shipping_address.telephone) {
             request.listaContactos.ContactoMasivo[0].TelTrabajo = result.order.shipping_address.telephone;
         }
 
@@ -91,15 +92,29 @@ exports.insertContact = result => {
 
         return client.Alta_Masiva_ContactoAsync(request, { timeout: 5000 })
             .then(insertResult => {
+                let respuestaMasiva;
 
                 console.log('[insertContact] XML Request', client.lastRequest);
-                console.log('[insertContact] Result', JSON.stringify(result));
+                console.log('[insertContact] Result', JSON.stringify(insertResult));
                 console.log('[insertContact] XML Response', client.lastResponse);
 
-                return Promise.resolve({
-                   order: result.order,
-                   contact: insertResult.Alta_Masiva_ContactoResult.RespuestaMasiva[0]
-                });
+                if (insertResult.length > 0 && insertResult[0].hasOwnProperty('Alta_Masiva_ContactoResult') &&
+                    insertResult[0].Alta_Masiva_ContactoResult.hasOwnProperty('RespuestaMasiva')
+                ) {
+
+                    respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva;
+                    if (respuestaMasiva.Resultado === 'false') {
+                        return Promise.reject(new Error(respuestaMasiva.MensajeError));
+                    }
+
+                    return Promise.resolve({
+                       order: result.order,
+                       contact: respuestaMasiva
+                    });
+                }
+
+                return Promise.reject(new Error("An error ocurred"));
+
             })
             .catch(error => {
                 console.log('[insertContact] Catched error', JSON.stringify(error));
