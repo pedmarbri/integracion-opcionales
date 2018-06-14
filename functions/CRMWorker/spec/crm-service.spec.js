@@ -108,18 +108,41 @@ describe('CRM Service', () => {
 
     it('Returns a full result when contact is found', () => {
         const sampleContact = {
-            CRMID: '1234'
+            "ID": "CQF8AA00BEDE",
+            "VinculoConLN": "Suscriptor",
+            "IdCuenta": "AQF8AA00BR4Y",
+            "NombreCuenta": "papo, pape",
+            "Apellido": "papo",
+            "PrimerNombre": "pape",
+            "IdDomicilioPrincipal": "aQF8AA00S0YC",
+            "TelLaboral": null,
+            "TelParticular": "987324623564",
+            "TelCelular": "34567654323",
+            "Interno": null,
+            "TelDirecto": null,
+            "EMail": null,
+            "FechaCumpleaños": "2005-09-16T09:00:00Z",
+            "FechaCreacion": "2017-09-18T23:34:38.123Z",
+            "IdUsuarioCreador": "ADMIN",
+            "FechaModificacion": "2017-09-18T23:36:29.533Z",
+            "IdUsuarioModificador": "ADMIN",
+            "CRMID": "1234",
+            "TipoDocumento": "DNI",
+            "NumDocumento": "123123123",
+            "Sexo": "M",
+            "CondicionIVA": "Consumidor Final",
+            "SinMail": "true"
         };
 
-        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
-            Consulta_ContactoPorDocumentoResult: {
-                Contactos: {
-                    Contacto: [
-                        sampleContact
-                    ]
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve([
+            {
+                Consulta_ContactoPorDocumentoResult: {
+                    Contactos: {
+                        Contacto: sampleContact
+                    }
                 }
             }
-        });
+        ]);
 
         CRMService.fetchContact(sampleOrder)
             .then(fetchResult => {
