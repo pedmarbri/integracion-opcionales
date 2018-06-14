@@ -72,7 +72,7 @@ describe('Order Table Service', () => {
             .then(result => expect(result).toEqual(sampleResult));
     });
 
-    xit('Saves the error in history', () => {
+    it('Saves the error in history', () => {
         /**
          * @var {Sinon.SinonMock} tableMock
          */
@@ -86,7 +86,7 @@ describe('Order Table Service', () => {
             UpdateExpression: 'set ' + [
                 '#i.crm.last_result = :last_result',
                 '#i.crm.last_timestamp = :now',
-                '#i.crm.#e = list_append(#i.crm.#e, :errors)'
+                '#i.crm.#e = list_append(#i.crm.#e, :error)'
             ].join(', '),
             ExpressionAttributeNames: {
                 '#i': 'integrations',
@@ -95,10 +95,10 @@ describe('Order Table Service', () => {
             ExpressionAttributeValues: {
                 ':last_result': 'error',
                 ':now': sinon.match.string,
-                ':errors': [
+                ':error': [
                     {
                         integration_timestamp: sinon.match.string,
-                        error_message: 'This is an error'
+                        error_message: 'Error: This is an error'
                     }
                 ]
             }
