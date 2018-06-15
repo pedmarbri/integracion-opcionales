@@ -38,12 +38,13 @@ exports.saveResult = result => {
         };
     } else {
         params.UpdateExpression = 'set ' + [
-            'integrations.crm.last_result = ok',
+            'integrations.crm.last_result = :res',
             'integrations.crm.last_timestamp = :now',
             'crm_contact_id = if_not_exists(crm_contact_id, :ccid)'
         ].join(', ');
 
         params.ExpressionAttributeValues = {
+            ':res': 'ok',
             ':now': timestamp,
             ':ccid': result.contact.CRMID
         };
@@ -54,6 +55,7 @@ exports.saveResult = result => {
         }
     }
 
+    console.log('[saveResult] Parameters', params);
 
     return table.update(params).promise()
         .then(() => {

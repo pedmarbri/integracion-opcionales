@@ -143,4 +143,41 @@ describe('CRM Worker', () => {
             })
             .verify(done);
     });
+
+    it('Sends the original event to deleteMessage', done => {
+        const sampleEvent = {
+            Body: JSON.stringify(sampleOrder),
+            ReceiptHandle: 'this-is-a-receipt-handle'
+        };
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        let SapCMQueueServiceMock;
+        let deleteMessageExpectation;
+
+        CRMQueueServiceStub.deleteMessage = () => {};
+        SapCMQueueServiceMock = sinon.mock(CRMQueueServiceStub);
+
+        deleteMessageExpectation = SapCMQueueServiceMock.expects('deleteMessage')
+            .once()
+            .withArgs(sampleEvent)
+            .resolves(sampleEvent);
+
+        CRMServiceStub.fetchContact.resolves({
+            order: sampleOrder,
+            contact: {
+                CRMID: '12456789'
+            }
+        });
+
+        return LambdaTester(CRMWorker.handler)
+            .timeout(60)
+            .event(sampleEvent)
+            .expectResult(() => {
+                deleteMessageExpectation.verify();
+            })
+            .verify(done);
+    });
+
 });
