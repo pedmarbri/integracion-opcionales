@@ -2,7 +2,7 @@
 
 const SapCMQueueService = require('./sap-cm-queue-service');
 const SapCMWorker = require('./sap-cm-worker-service');
-const TIMEOUT_THRESHOLD = 10000;
+const TIMEOUT_THRESHOLD = 120000;
 
 const processMessages = messages => {
     if (messages && messages.length > 0) {
