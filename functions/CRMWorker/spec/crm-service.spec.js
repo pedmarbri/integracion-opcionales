@@ -373,8 +373,8 @@ describe('CRM Service', () => {
             "Sexo": "F",
             "Email": "davascf@gmail.com",
             "Normalizada": "true",
-            "MensajeError": "El tipo de documento es invalido, fuera de Argentina debe ser EXTER",
-            "TipoError": "TipoDocInvalidoExter",
+            "MensajeError": "Crm Error",
+            "TipoError": "TipoErrorCrm",
             "CampoError": "TIPODOC",
             "Resultado": "false"
         };
@@ -392,7 +392,7 @@ describe('CRM Service', () => {
                 expect(insertResult).toEqual({
                     order: sampleOrder,
                     contact: null,
-                    error: new Error('El tipo de documento es invalido, fuera de Argentina debe ser EXTER')
+                    error: new Error('[TipoErrorCrm] Crm Error')
                 });
             })
             .catch(fail);
