@@ -141,7 +141,7 @@ describe('Order Table', () => {
         sampleResponse.VBELN = null;
 
         /**
-         * @var {Sinon.SinonMock} clientMock
+         * @var {Sinon.SinonMock} tableMock
          */
         const tableMock = sinon.mock(dynamoDbStub);
 

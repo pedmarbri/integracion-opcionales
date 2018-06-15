@@ -24,6 +24,11 @@ describe('Sap Service', () => {
     let expectedRequest;
     let sampleResponse;
 
+    const setupCreditMemoWithSapInfo = () => {
+        sampleCreditMemo.sap_order_id = '1234567890';
+        sampleCreditMemo.items[0].sap_row = 10;
+    };
+
     beforeEach(() => {
         sampleCreditMemo = require('./sample-creditmemo');
         expectedRequest = require('./sample-request');
@@ -73,8 +78,7 @@ describe('Sap Service', () => {
             .withArgs(expectedRequest)
             .resolves(sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
 
         SapService.sendCreditMemo(sampleCreditMemo)
             .then(() => {
@@ -113,8 +117,8 @@ describe('Sap Service', () => {
     it('Formats shipping condition correctly', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
+
         sampleCreditMemo.totals.shipping = 20;
 
         expectedRequest.T_CONDITIONS.item[1] = {
@@ -132,8 +136,8 @@ describe('Sap Service', () => {
     it('Formats fixed discount condition correctly', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
+
         sampleCreditMemo.items[0].discount_amount = 10;
 
         expectedRequest.T_CONDITIONS.item[1] = {
@@ -151,8 +155,8 @@ describe('Sap Service', () => {
     it('Formats exclusive items condition correctly', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
+
         sampleCreditMemo.items[0].flags = [ 'exclusive' ];
         sampleCreditMemo.items[0].discount_percent = 100;
         sampleCreditMemo.items[0].discount_amount = 249.9;
@@ -173,8 +177,8 @@ describe('Sap Service', () => {
     it('Always treats exclusive items discounts as percent', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
+
         sampleCreditMemo.items[0].flags = [ 'exclusive' ];
         sampleCreditMemo.items[0].discount_percent = 0;
         sampleCreditMemo.items[0].discount_amount = 249.9;
@@ -195,8 +199,7 @@ describe('Sap Service', () => {
     it('Formats date correctly when padding is used in month', () => {
         const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
 
-        sampleCreditMemo.sap_order_id = '1234567890';
-        sampleCreditMemo.items[0].sap_row = 10;
+        setupCreditMemoWithSapInfo();
 
         sampleCreditMemo.timestamp = '2018-01-23T18:49:03Z';
         expectedRequest.BSTDK = '20180123';
@@ -205,4 +208,18 @@ describe('Sap Service', () => {
             .then(() => soapMethodExpectation.verify())
             .catch(fail);
     });
+
+    it('Distinguishes Credit Memos that return stock', () => {
+        const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+
+        setupCreditMemoWithSapInfo();
+
+        expectedRequest.AUART = 'ZCRI';
+        sampleCreditMemo.items[0].return_stock = true;
+
+        SapService.sendCreditMemo(sampleCreditMemo)
+            .then(() => soapMethodExpectation.verify())
+            .catch(fail);
+    });
+
 });

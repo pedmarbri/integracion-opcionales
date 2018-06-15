@@ -1,5 +1,5 @@
 module.exports = {
-    AUART: 'ZCRI',
+    AUART: 'ZCI',
     AUGRU: '001',
     BSTDK: '20181223',
     BSTKD: '12700000000065',

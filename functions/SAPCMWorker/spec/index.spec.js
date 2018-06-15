@@ -17,9 +17,11 @@ describe('Sap CM Worker', () => {
     let SapCMQueueServiceStub = {};
     let OrderTableServiceStub = {};
     let sampleCreditMemo;
+    let sampleOrder;
 
     beforeEach(() => {
         sampleCreditMemo = require('./sample-creditmemo');
+        sampleOrder = require('./sample-order');
 
         OrderTableServiceStub = {
             /**
@@ -51,6 +53,7 @@ describe('Sap CM Worker', () => {
 
     afterEach(() => {
         delete require.cache[require.resolve('./sample-creditmemo')];
+        delete require.cache[require.resolve('./sample-order')];
     });
 
     it('Fails if body is not JSON', done => {
@@ -82,4 +85,42 @@ describe('Sap CM Worker', () => {
             })
             .verify(done);
     });
+
+    it('Sends the original event to deleteMessage', done => {
+        const sampleEvent = {
+            Body: JSON.stringify(sampleCreditMemo),
+            ReceiptHandle: 'this-is-a-receipt-handle'
+        };
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        let SapCMQueueServiceMock;
+        let deleteMessageExpectation;
+
+        SapCMQueueServiceStub.deleteMessage = () => {};
+        SapCMQueueServiceMock = sinon.mock(SapCMQueueServiceStub);
+
+        deleteMessageExpectation = SapCMQueueServiceMock.expects('deleteMessage')
+            .once()
+            .withArgs(sampleEvent)
+            .resolves(sampleEvent);
+
+        OrderTableServiceStub.fetchOrderInfo.resolves(sampleOrder);
+        SapServiceStub.sendCreditMemo.resolves({});
+
+        spyOn(OrderTableServiceStub, 'fetchOrderInfo').and.callThrough();
+        spyOn(SapServiceStub, 'sendCreditMemo').and.callThrough();
+
+        return LambdaTester(SapCMWorker.handler)
+            .timeout(60)
+            .event(sampleEvent)
+            .expectResult(() => {
+                expect(OrderTableServiceStub.fetchOrderInfo).toHaveBeenCalled();
+                expect(SapServiceStub.sendCreditMemo).toHaveBeenCalled();
+                deleteMessageExpectation.verify();
+            })
+            .verify(done);
+    });
+
 });
