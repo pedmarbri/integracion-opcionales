@@ -11,7 +11,7 @@ const SAP_HTTP_PASS = '12345678';
 
 // Fixed Values
 const DOCUMENT_TYPE_CM_STOCK = 'ZCRI';
-//const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
+const DOCUMENT_TYPE_CM_FINANCE = 'ZCI';
 const ORDER_REASON_CODE = '001';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
@@ -129,8 +129,16 @@ const formatItems = orderItems => ({
     }))
 });
 
+const formatDocumentType = creditmemo => {
+    const returnsStock = creditmemo.items.find(item => {
+        console.log(item);
+        return item.hasOwnProperty('return_stock') && item.return_stock;
+    });
+    return returnsStock ? DOCUMENT_TYPE_CM_STOCK : DOCUMENT_TYPE_CM_FINANCE;
+};
+
 const formatRequest = creditmemo => ({
-    AUART: DOCUMENT_TYPE_CM_STOCK, //DOCUMENT_TYPE_CM_FINANCE,
+    AUART: formatDocumentType(creditmemo),
     AUGRU: ORDER_REASON_CODE,
     BSTDK: formatDate(creditmemo.timestamp),
     BSTKD: creditmemo.order_id,

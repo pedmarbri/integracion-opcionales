@@ -27,6 +27,7 @@ exports.handler = function (event, context, callback) {
 
     CRMService.fetchContact(order)
         .then(processCRMContactResult)
+        .then(() => Promise.resolve(event))
         .then(CRMQueueService.deleteMessage)
         .then(result => callback(null, result))
         .catch(callback);

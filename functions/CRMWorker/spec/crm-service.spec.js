@@ -108,18 +108,41 @@ describe('CRM Service', () => {
 
     it('Returns a full result when contact is found', () => {
         const sampleContact = {
-            CRMID: '1234'
+            "ID": "CQF8AA00BEDE",
+            "VinculoConLN": "Suscriptor",
+            "IdCuenta": "AQF8AA00BR4Y",
+            "NombreCuenta": "papo, pape",
+            "Apellido": "papo",
+            "PrimerNombre": "pape",
+            "IdDomicilioPrincipal": "aQF8AA00S0YC",
+            "TelLaboral": null,
+            "TelParticular": "987324623564",
+            "TelCelular": "34567654323",
+            "Interno": null,
+            "TelDirecto": null,
+            "EMail": null,
+            "FechaCumpleaños": "2005-09-16T09:00:00Z",
+            "FechaCreacion": "2017-09-18T23:34:38.123Z",
+            "IdUsuarioCreador": "ADMIN",
+            "FechaModificacion": "2017-09-18T23:36:29.533Z",
+            "IdUsuarioModificador": "ADMIN",
+            "CRMID": "1234",
+            "TipoDocumento": "DNI",
+            "NumDocumento": "123123123",
+            "Sexo": "M",
+            "CondicionIVA": "Consumidor Final",
+            "SinMail": "true"
         };
 
-        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
-            Consulta_ContactoPorDocumentoResult: {
-                Contactos: {
-                    Contacto: [
-                        sampleContact
-                    ]
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve([
+            {
+                Consulta_ContactoPorDocumentoResult: {
+                    Contactos: {
+                        Contacto: sampleContact
+                    }
                 }
             }
-        });
+        ]);
 
         CRMService.fetchContact(sampleOrder)
             .then(fetchResult => {
@@ -303,13 +326,13 @@ describe('CRM Service', () => {
             "Resultado":true
         };
 
-        clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve({
-            Alta_Masiva_ContactoResult: {
-                RespuestaMasiva: [
-                    sampleContact
-                ]
+        clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
+            {
+                Alta_Masiva_ContactoResult: {
+                    RespuestaMasiva: sampleContact
+                }
             }
-        });
+        ]);
 
         CRMService.insertContact(result)
             .then(insertResult => {
@@ -317,6 +340,80 @@ describe('CRM Service', () => {
                     order: sampleOrder,
                     contact: sampleContact
                 });
-            });
+            })
+            .catch(fail);
+    });
+
+    it('Resolves a full result when insert fails', () => {
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        const failedContact = {
+            "EntreCalle1": null,
+            "EntreCalle2": null,
+            "CondicionIVA": "No Responsable",
+            "PrimerNombre": "Andres",
+            "Apellido": "Arroyo",
+            "TelCasa": "2613336886",
+            "Calle": "25 DE MAYO OESTE",
+            "Numero": "620",
+            "Piso": null,
+            "Dpto": null,
+            "CodigoPostal": "M5515GHN",
+            "Localidad": "MAIPU",
+            "Barrio": null,
+            "UP": "false",
+            "Provincia": "MENDOZA",
+            "Pais": "AR",
+            "VinculoLN": "PROSPECT",
+            "TipoDoc": "DNI",
+            "NumeroDoc": "95608523",
+            "Sexo": "F",
+            "Email": "davascf@gmail.com",
+            "Normalizada": "true",
+            "MensajeError": "El tipo de documento es invalido, fuera de Argentina debe ser EXTER",
+            "TipoError": "TipoDocInvalidoExter",
+            "CampoError": "TIPODOC",
+            "Resultado": "false"
+        };
+
+        clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
+            {
+                Alta_Masiva_ContactoResult: {
+                    RespuestaMasiva: failedContact
+                }
+            }
+        ]);
+
+        CRMService.insertContact(result)
+            .then(insertResult => {
+                expect(insertResult).toEqual({
+                    order: sampleOrder,
+                    contact: null,
+                    error: new Error('El tipo de documento es invalido, fuera de Argentina debe ser EXTER')
+                });
+            })
+            .catch(fail);
+    });
+
+    it('Resolves a full result when insert has invalid response', () => {
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve('Invalid answer');
+
+        CRMService.insertContact(result)
+            .then(insertResult => {
+                expect(insertResult).toEqual({
+                    order: sampleOrder,
+                    contact: null,
+                    error: jasmine.any(Error)
+                });
+            })
+            .catch(fail);
     });
 });

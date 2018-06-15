@@ -631,8 +631,7 @@
               "properties": {
                 "shipping": {
                   "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
+                  "minimum": 0
                 }
               }
             },

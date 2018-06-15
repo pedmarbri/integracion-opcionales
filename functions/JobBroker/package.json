@@ -16,7 +16,7 @@
     "jasmine-console-reporter": "^3.0.0",
     "jshint": "^2.9.5",
     "lambda-tester": "^3.2.0",
-    "nyc": "^11.6.0",
+    "nyc": "^13.0.0",
     "proxyquire": "^2.0.0",
     "sinon": "^4.4.5"
   },
