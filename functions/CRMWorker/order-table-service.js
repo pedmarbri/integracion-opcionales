@@ -40,16 +40,18 @@ exports.saveResult = result => {
         params.UpdateExpression = 'set ' + [
             'integrations.crm.last_result = ok',
             'integrations.crm.last_timestamp = :now',
-            'crm_contact_id = :ccid',
-            'crm_address_id = :caid'
+            'crm_contact_id = if_not_exists(crm_contact_id, :ccid)'
         ].join(', ');
 
         params.ExpressionAttributeValues = {
             ':now': timestamp,
-            ':ccid': result.contact.CRMID,
-            ':caid': result.contact.AddressId
+            ':ccid': result.contact.CRMID
         };
 
+        if (result.contact.AddressId) {
+            params.UpdateExpression += ', crm_address_id = if_not_exists(crm_address_id, :caid)';
+            params.ExpressionAttributeValues[':caid'] = result.contact.AddressId;
+        }
     }
 
 
