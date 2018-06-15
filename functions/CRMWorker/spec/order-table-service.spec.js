@@ -17,16 +17,19 @@ describe('Order Table Service', () => {
     let AWSStub;
     let dynamoDbRequestStub;
     let dynamoDbStub;
-    let sampleResult = {
-        order: {
-            order_id: '1234'
-        },
-        contact: {
-            CRMID: '1234'
-        }
-    };
+    let sampleResult;
 
     beforeEach(() => {
+
+        sampleResult = {
+            order: {
+                order_id: '1234'
+            },
+            contact: {
+                CRMID: '1234'
+            }
+        };
+
         dynamoDbRequestStub = {
             promise: () => Promise.resolve({})
         };
@@ -48,9 +51,6 @@ describe('Order Table Service', () => {
 
         stubConfig = { 'aws-sdk': AWSStub };
         OrderTableService = proxyquire('../order-table-service', stubConfig);
-    });
-
-    afterEach(() => {
     });
 
     it('Returns a promise on saveResult', () => {
