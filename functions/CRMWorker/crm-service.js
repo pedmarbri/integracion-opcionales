@@ -113,7 +113,9 @@ exports.insertContact = result => {
 
                     respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva;
                     if (respuestaMasiva.Resultado === 'false') {
-                        return Promise.reject(new Error(respuestaMasiva.MensajeError));
+                        return Promise.reject(
+                            new Error('[' + respuestaMasiva.TipoError + '] ' + respuestaMasiva.MensajeError)
+                        );
                     }
 
                     return Promise.resolve({
