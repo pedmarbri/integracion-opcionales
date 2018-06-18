@@ -49,7 +49,7 @@ describe("Sap CM Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapCMConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectResult(() => {
                 expect(SapCMQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapCMWorkerServiceStub.process).not.toHaveBeenCalled();
@@ -63,7 +63,7 @@ describe("Sap CM Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapCMConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectError(() => {
                 expect(SapCMQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapCMWorkerServiceStub.process).not.toHaveBeenCalled();
@@ -78,7 +78,7 @@ describe("Sap CM Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapCMConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectError(() => {
                 expect(SapCMQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapCMWorkerServiceStub.process).toHaveBeenCalled();
