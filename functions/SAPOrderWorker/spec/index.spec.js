@@ -106,4 +106,24 @@ describe('Sap Order Worker Handler', () => {
             })
             .verify(done);
     });
+
+    it('Saves result when SAP request fails', done => {
+        SapServiceStub.sendOrder.rejects(new Error('ESOCKETTIMEDOUT'));
+        OrderTableStub.saveResult.rejects(new Error('Saved an error'));
+
+        spyOn(SapServiceStub, 'sendOrder').and.callThrough();
+        spyOn(OrderTableStub, 'saveResult').and.callThrough();
+        spyOn(SapOrderQueueServiceStub, 'deleteMessage').and.callThrough();
+
+        return LambdaTester(SapOrderWorker.handler)
+            .event(sampleMessage)
+            .timeout(60)
+            .expectError(() => {
+                expect(SapServiceStub.sendOrder).toHaveBeenCalled();
+                expect(OrderTableStub.saveResult).toHaveBeenCalled();
+                expect(SapOrderQueueServiceStub.deleteMessage).not.toHaveBeenCalled();
+            })
+            .verify(done);
+    });
+
 });
