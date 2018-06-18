@@ -56,6 +56,15 @@ exports.fetchContact = order => {
 
 exports.insertContact = result => {
     const createContact = client => {
+        const formatIdType = customer => {
+
+            if (customer.id_type.toLowerCase() === 'dni' && customer.id_number.match(/^9/)) {
+                return 'EXTER';
+            }
+
+            return customer.id_type;
+        };
+
         const request = {
             listaContactos: {
                 ContactoMasivo: [
@@ -63,7 +72,7 @@ exports.insertContact = result => {
                         UP: false,
                         VinculoLN: 'PROSPECT',
                         CondicionIVA: 'No Responsable',
-                        TipoDoc: result.order.customer.id_type,
+                        TipoDoc: formatIdType(result.order.customer),
                         NumeroDoc: result.order.customer.id_number,
                         PrimerNombre: result.order.customer.first_name,
                         Apellido: result.order.customer.last_name,
