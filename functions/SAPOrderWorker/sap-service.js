@@ -189,7 +189,7 @@ exports.sendOrder = order => {
         const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
         const request = formatRequest(order);
         const options = {
-            timeout: 10000
+            timeout: 60000
         };
 
         client.addHttpHeader('Authorization', auth);
