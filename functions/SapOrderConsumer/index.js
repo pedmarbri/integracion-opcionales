@@ -2,7 +2,7 @@
 
 const SapOrderQueueService = require('./sap-order-queue-service');
 const SapOrderWorker = require('./sap-order-worker-service');
-const TIMEOUT_THRESHOLD = 1200000;
+const TIMEOUT_THRESHOLD = 120000;
 
 const processMessages = messages => {
     if (messages && messages.length > 0) {

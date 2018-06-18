@@ -50,7 +50,7 @@ describe("Sap Order Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapOrderConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectResult(() => {
                 expect(SapOrderQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapOrderWorkerServiceStub.process).not.toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe("Sap Order Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapOrderConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectError(() => {
                 expect(SapOrderQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapOrderWorkerServiceStub.process).not.toHaveBeenCalled();
@@ -79,7 +79,7 @@ describe("Sap Order Consumer", () => {
         setupSpies();
 
         return LambdaTester(SapOrderConsumer.handler)
-            .timeout(60)
+            .timeout(300)
             .expectError(() => {
                 expect(SapOrderQueueServiceStub.receiveMessages).toHaveBeenCalled();
                 expect(SapOrderWorkerServiceStub.process).toHaveBeenCalled();
