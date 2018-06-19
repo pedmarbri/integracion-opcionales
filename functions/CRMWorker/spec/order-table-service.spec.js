@@ -25,9 +25,11 @@ describe('Order Table Service', () => {
             order: {
                 order_id: '1234'
             },
-            contact: {
-                CRMID: '1234'
-            }
+            contact: [
+                {
+                    CRMID: '1234'
+                }
+            ]
         };
 
         dynamoDbRequestStub = {
