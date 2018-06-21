@@ -38,7 +38,9 @@ exports.fetchContact = order => {
                 });
             })
             .catch(error => {
+                console.log('[fetchContact] XML Request', client.lastRequest);
                 console.log('[fetchContact] Catched error', JSON.stringify(error));
+                console.log('[fetchContact] XML Response', client.lastResponse);
 
                 return Promise.resolve({
                     order: order,
