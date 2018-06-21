@@ -27,6 +27,7 @@ exports.fetchContact = order => {
 
                 if (result.length > 0 && result[0].hasOwnProperty("Consulta_ContactoPorDocumentoResult") &&
                     result[0].Consulta_ContactoPorDocumentoResult.hasOwnProperty("Contactos") &&
+                    result[0].Consulta_ContactoPorDocumentoResult.Contactos &&
                     result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty("Contacto")
                 ) {
                     contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto;

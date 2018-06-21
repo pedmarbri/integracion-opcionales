@@ -91,11 +91,13 @@ describe('CRM Service', () => {
     });
 
     it('Returns a result when contact is not found', () => {
-        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
-            Consulta_ContactoPorDocumentoResult: {
-                Contactos: null
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve([
+            {
+                Consulta_ContactoPorDocumentoResult: {
+                    Contactos: null
+                }
             }
-        });
+        ]);
 
         CRMService.fetchContact(sampleOrder)
             .then(fetchResult => {
