@@ -331,7 +331,9 @@ describe('CRM Service', () => {
         clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
             {
                 Alta_Masiva_ContactoResult: {
-                    RespuestaMasiva: sampleContact
+                    RespuestaMasiva: [
+                        sampleContact
+                    ]
                 }
             }
         ]);
@@ -384,7 +386,9 @@ describe('CRM Service', () => {
         clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
             {
                 Alta_Masiva_ContactoResult: {
-                    RespuestaMasiva: failedContact
+                    RespuestaMasiva: [
+                        failedContact
+                    ]
                 }
             }
         ]);

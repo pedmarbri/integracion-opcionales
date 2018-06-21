@@ -114,10 +114,16 @@ exports.insertContact = result => {
                     insertResult[0].Alta_Masiva_ContactoResult.hasOwnProperty('RespuestaMasiva')
                 ) {
 
-                    respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva;
-                    if (respuestaMasiva.Resultado === 'false') {
-                        return Promise.reject(
-                            new Error('[' + respuestaMasiva.TipoError + '] ' + respuestaMasiva.MensajeError)
+                    respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva[0];
+                    console.log('[insertContact] Respuesta Masiva', respuestaMasiva);
+
+                    if (!respuestaMasiva.Resultado || respuestaMasiva.Resultado === 'false') {
+                        return Promise.resolve(
+                            {
+                                order: result.order,
+                                contact: null,
+                                error: new Error('[' + respuestaMasiva.TipoError + '] ' + respuestaMasiva.MensajeError)
+                            }
                         );
                     }
 
