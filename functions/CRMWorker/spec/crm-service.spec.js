@@ -140,7 +140,9 @@ describe('CRM Service', () => {
             {
                 Consulta_ContactoPorDocumentoResult: {
                     Contactos: {
-                        Contacto: sampleContact
+                        Contacto: [
+                            sampleContact
+                        ]
                     }
                 }
             }

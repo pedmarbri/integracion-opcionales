@@ -30,7 +30,7 @@ exports.fetchContact = order => {
                     result[0].Consulta_ContactoPorDocumentoResult.Contactos &&
                     result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty("Contacto")
                 ) {
-                    contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto;
+                    contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];
                 }
 
                 return Promise.resolve({
