@@ -1,8 +1,16 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+
 const ORDER_TABLE = process.env.ORDER_TABLE;
-const table = new AWS.DynamoDB.DocumentClient();
+let table;
+let dynamoDBOptions = {};
+
+if (process.env.DYNAMODB_ENDPOINT) {
+    dynamoDBOptions.endpoint = process.env.DYNAMODB_ENDPOINT
+}
+
+table = new AWS.DynamoDB.DocumentClient();
 
 exports.saveResult = result => {
     let params = {
