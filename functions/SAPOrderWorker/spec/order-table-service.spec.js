@@ -413,4 +413,52 @@ describe('Order Table', () => {
                 updateExpectation.verify();
             });
     });
+
+    it('Handles SAP connection error as a single error', () => {
+        sampleResult.result = {
+            error: new Error('This is an error')
+        };
+
+        /**
+         * @var {Sinon.SinonMock} tableMock
+         */
+        const tableMock = sinon.mock(dynamoDbStub);
+
+        const expectedUpdateArgs = {
+            TableName: 'DevOrderTable',
+            Key: {
+                order_id: '12700000000065'
+            },
+            UpdateExpression: 'set ' + [
+                '#i.sap.last_result = :last_result',
+                '#i.sap.last_timestamp = :now',
+                '#i.sap.#e = list_append(#i.sap.#e, :errors)'
+            ].join(', '),
+            ExpressionAttributeNames: {
+                '#i': 'integrations',
+                '#e': 'error_history'
+            },
+            ExpressionAttributeValues: {
+                ':last_result': 'error',
+                ':now': sinon.match.string,
+                ':errors': [
+                    {
+                        integration_timestamp: sinon.match.string,
+                        error_message: sinon.match.string
+                    }
+                ]
+            }
+        };
+
+        const updateExpectation = tableMock.expects('update')
+            .once()
+            .withArgs(expectedUpdateArgs)
+            .returns(dynamoDbRequestStub);
+
+        OrderTableService.saveResult(sampleResult)
+            .then(fail)
+            .catch(() => {
+                updateExpectation.verify();
+            });
+    });
 });

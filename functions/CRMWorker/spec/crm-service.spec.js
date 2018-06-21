@@ -373,8 +373,8 @@ describe('CRM Service', () => {
             "Sexo": "F",
             "Email": "davascf@gmail.com",
             "Normalizada": "true",
-            "MensajeError": "El tipo de documento es invalido, fuera de Argentina debe ser EXTER",
-            "TipoError": "TipoDocInvalidoExter",
+            "MensajeError": "Crm Error",
+            "TipoError": "TipoErrorCrm",
             "CampoError": "TIPODOC",
             "Resultado": "false"
         };
@@ -392,7 +392,7 @@ describe('CRM Service', () => {
                 expect(insertResult).toEqual({
                     order: sampleOrder,
                     contact: null,
-                    error: new Error('El tipo de documento es invalido, fuera de Argentina debe ser EXTER')
+                    error: new Error('[TipoErrorCrm] Crm Error')
                 });
             })
             .catch(fail);
@@ -416,4 +416,66 @@ describe('CRM Service', () => {
             })
             .catch(fail);
     });
+
+    it('Recognizes foreign ID numbers', () => {
+        const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
+
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
+
+        const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+
+        const expectedRequest = {
+            listaContactos: {
+                ContactoMasivo: [
+                    {
+                        CondicionIVA: 'No Responsable',
+                        PrimerNombre: 'Juan',
+                        Apellido: 'Perez',
+                        TelCasa: '15-1234-5678',
+                        Calle: 'Cabildo',
+                        Numero: 2779,
+                        Piso: '10',
+                        Dpto: 'A',
+                        CodigoPostal: '1428',
+                        Localidad: 'Capital Federal',
+                        UP: false,
+                        Provincia: 'Capital Federal',
+                        Pais: 'AR',
+                        VinculoLN: 'PROSPECT',
+                        TipoDoc: 'EXTER',
+                        NumeroDoc: '912345678',
+                        Sexo: 'M',
+                        Email: 'example@domain.com'
+                    }
+                ]
+            },
+        };
+
+        const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
+
+
+        sampleOrder.customer.id_type = 'DNI';
+        sampleOrder.customer.id_number = '912345678';
+
+
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        CRMService.insertContact(result)
+            .then(() => {
+                expect(createClientSpy).toHaveBeenCalled();
+                expect(queryContactMethodSpy).not.toHaveBeenCalled();
+                soapMethodExpectation.verify();
+            })
+            .catch(fail);
+    });
+
 });

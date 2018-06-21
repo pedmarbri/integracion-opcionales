@@ -262,7 +262,11 @@
                   "type": "string"
                 },
                 "gender": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "F",
+                    "M"
+                  ]
                 }
               }
             },
@@ -979,7 +983,7 @@
           "Fn::Sub": "${SapOrderConsumerRole.Arn}"
         },
         "Runtime": "nodejs6.10",
-        "Timeout": 60,
+        "Timeout": 300,
         "Environment": {
           "Variables": {
             "SAP_ORDER_QUEUE_URL": {
@@ -1126,7 +1130,7 @@
           "Fn::Sub": "${SapOrderWorkerRole.Arn}"
         },
         "Runtime": "nodejs6.10",
-        "Timeout": 15,
+        "Timeout": 90,
         "Environment": {
           "Variables": {
             "SAP_ORDER_QUEUE_URL": {
@@ -1242,7 +1246,7 @@
           "Fn::Sub": "${SapCMConsumerRole.Arn}"
         },
         "Runtime": "nodejs6.10",
-        "Timeout": 60,
+        "Timeout": 300,
         "Environment": {
           "Variables": {
             "SAP_CM_QUEUE_URL": {
@@ -1389,7 +1393,7 @@
           "Fn::Sub": "${SapCMWorkerRole.Arn}"
         },
         "Runtime": "nodejs6.10",
-        "Timeout": 15,
+        "Timeout": 90,
         "Environment": {
           "Variables": {
             "SAP_CM_QUEUE_URL": {

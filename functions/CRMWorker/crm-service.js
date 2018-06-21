@@ -38,7 +38,9 @@ exports.fetchContact = order => {
                 });
             })
             .catch(error => {
+                console.log('[fetchContact] XML Request', client.lastRequest);
                 console.log('[fetchContact] Catched error', JSON.stringify(error));
+                console.log('[fetchContact] XML Response', client.lastResponse);
 
                 return Promise.resolve({
                     order: order,
@@ -56,6 +58,15 @@ exports.fetchContact = order => {
 
 exports.insertContact = result => {
     const createContact = client => {
+        const formatIdType = customer => {
+
+            if (customer.id_type.toLowerCase() === 'dni' && customer.id_number.match(/^9/)) {
+                return 'EXTER';
+            }
+
+            return customer.id_type;
+        };
+
         const request = {
             listaContactos: {
                 ContactoMasivo: [
@@ -63,7 +74,7 @@ exports.insertContact = result => {
                         UP: false,
                         VinculoLN: 'PROSPECT',
                         CondicionIVA: 'No Responsable',
-                        TipoDoc: result.order.customer.id_type,
+                        TipoDoc: formatIdType(result.order.customer),
                         NumeroDoc: result.order.customer.id_number,
                         PrimerNombre: result.order.customer.first_name,
                         Apellido: result.order.customer.last_name,
@@ -104,7 +115,9 @@ exports.insertContact = result => {
 
                     respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva;
                     if (respuestaMasiva.Resultado === 'false') {
-                        return Promise.reject(new Error(respuestaMasiva.MensajeError));
+                        return Promise.reject(
+                            new Error('[' + respuestaMasiva.TipoError + '] ' + respuestaMasiva.MensajeError)
+                        );
                     }
 
                     return Promise.resolve({

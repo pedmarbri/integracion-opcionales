@@ -39,16 +39,32 @@ const saveError = sapResult => {
         ExpressionAttributeValues: {
             ':last_result': 'error',
             ':now': now,
-            ':errors': sapResult.result.T_RETURN.item
-                .filter(error => error.TYPE === 'E' && error.NUMBER !== '219')
-                .map(error => {
-                    return {
-                        integration_timestamp: now,
-                        error_message: formatErrorMessage(error)
-                    };
-                })
+            ':errors': []
         }
     };
+
+    if (sapResult.result.error) {
+        params.ExpressionAttributeValues[':errors'].push({
+            integration_timestamp: now,
+            error_message: sapResult.result.error.toString()
+        });
+    }
+
+    if (sapResult.result.T_RETURN && sapResult.result.T_RETURN.item) {
+        sapResult.result.T_RETURN.item
+            .filter(error => error.TYPE === 'E' && error.NUMBER !== '219')
+            .map(error => {
+                return {
+                    integration_timestamp: now,
+                    error_message: formatErrorMessage(error)
+                };
+            })
+            .forEach(error => {
+                params.ExpressionAttributeValues[':errors'].push(error);
+            });
+
+    }
+
 
     return table.update(params).promise();
 };
@@ -56,7 +72,7 @@ const saveError = sapResult => {
 exports.saveResult = sapResult => {
     console.log("Saving Result to DB");
 
-    if (!sapResult.result.VBELN) {
+    if (sapResult.result.error || !sapResult.result.VBELN) {
         return saveError(sapResult)
             .then(() => Promise.reject(new Error('The result was erroneous.')));
     }

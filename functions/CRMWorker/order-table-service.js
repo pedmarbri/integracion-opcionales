@@ -43,10 +43,12 @@ exports.saveResult = result => {
             'crm_contact_id = if_not_exists(crm_contact_id, :ccid)'
         ].join(', ');
 
+        console.log(JSON.stringify(result.contact[0]));
+
         params.ExpressionAttributeValues = {
             ':res': 'ok',
             ':now': timestamp,
-            ':ccid': result.contact.CRMID
+            ':ccid': result.contact[0].CRMID
         };
 
         if (result.contact.AddressId) {
