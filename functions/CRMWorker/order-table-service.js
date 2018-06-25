@@ -7,7 +7,7 @@ let table;
 let dynamoDBOptions = {};
 
 if (process.env.DYNAMODB_ENDPOINT) {
-    dynamoDBOptions.endpoint = process.env.DYNAMODB_ENDPOINT
+    dynamoDBOptions.endpoint = process.env.DYNAMODB_ENDPOINT;
 }
 
 table = new AWS.DynamoDB.DocumentClient();
