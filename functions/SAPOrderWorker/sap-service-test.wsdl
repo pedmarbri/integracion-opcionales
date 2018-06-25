@@ -375,7 +375,7 @@
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
-    <wsdl:service name="ZSW_GEN">
+    <wsdl:service name="ZWS_GEN">
         <wsdl:port name="ZWS_GEN_BINDING" binding="tns:ZWS_GEN_BINDING">
             <soap:address
                     location="http://srvsapqas1.lanacion.com.ar:8000/sap/bc/srt/rfc/sap/zws_gen/100/zws_gen/zws_gen_binding"/>

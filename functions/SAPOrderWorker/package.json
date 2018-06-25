@@ -20,6 +20,8 @@
     "lambda-tester": "^3.3.0",
     "nyc": "^13.0.0",
     "proxyquire": "^2.0.1",
+    "serverless": "^1.27.3",
+    "serverless-offline": "^3.25.4",
     "sinon": "^4.4.10"
   },
   "nyc": {
