@@ -91,11 +91,13 @@ describe('CRM Service', () => {
     });
 
     it('Returns a result when contact is not found', () => {
-        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve({
-            Consulta_ContactoPorDocumentoResult: {
-                Contactos: null
+        clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve([
+            {
+                Consulta_ContactoPorDocumentoResult: {
+                    Contactos: null
+                }
             }
-        });
+        ]);
 
         CRMService.fetchContact(sampleOrder)
             .then(fetchResult => {
@@ -138,7 +140,9 @@ describe('CRM Service', () => {
             {
                 Consulta_ContactoPorDocumentoResult: {
                     Contactos: {
-                        Contacto: sampleContact
+                        Contacto: [
+                            sampleContact
+                        ]
                     }
                 }
             }
@@ -329,7 +333,9 @@ describe('CRM Service', () => {
         clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
             {
                 Alta_Masiva_ContactoResult: {
-                    RespuestaMasiva: sampleContact
+                    RespuestaMasiva: [
+                        sampleContact
+                    ]
                 }
             }
         ]);
@@ -382,7 +388,9 @@ describe('CRM Service', () => {
         clientStub.Alta_Masiva_ContactoAsync = () => Promise.resolve([
             {
                 Alta_Masiva_ContactoResult: {
-                    RespuestaMasiva: failedContact
+                    RespuestaMasiva: [
+                        failedContact
+                    ]
                 }
             }
         ]);

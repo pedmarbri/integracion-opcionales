@@ -193,17 +193,25 @@ exports.sendOrder = order => {
         };
 
         client.addHttpHeader('Authorization', auth);
-        console.log(JSON.stringify(request));
+        console.log('[sendOrder] Request Parameters', JSON.stringify(request));
 
         return client.ZWS_GEN_PEDAsync(request, options)
             .then(result => {
-                console.log(JSON.stringify(result));
+                console.log('[sendOrder] XML Request', client.lastRequest);
+                console.log('[sendOrder] Result', JSON.stringify(result));
+                console.log('[sendOrder] XML Response', client.lastResponse);
 
                 return Promise.resolve({
-                    result: result,
+                    result: result[0],
                     order: order,
                     rows: sapRows
                 });
+            })
+            .catch(error => {
+                console.log('[sendOrder] XML Request', client.lastRequest);
+                console.log('[sendOrder] Error', JSON.stringify(error));
+                console.log('[sendOrder] XML Response', client.lastResponse);
+                return Promise.reject(error);
             });
     };
 

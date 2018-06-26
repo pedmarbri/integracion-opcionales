@@ -25,11 +25,9 @@ describe('Order Table Service', () => {
             order: {
                 order_id: '1234'
             },
-            contact: [
-                {
-                    CRMID: '1234'
-                }
-            ]
+            contact: {
+                CRMID: '1234'
+            }
         };
 
         dynamoDbRequestStub = {
@@ -115,6 +113,43 @@ describe('Order Table Service', () => {
         OrderTableService.saveResult(sampleResult)
             .then(fail)
             .catch(() => updateExpectation.verify());
+    });
+
+    it('Saves Address ID when available', () => {
+      /**
+       * @var {Sinon.SinonMock} tableMock
+       */
+      const tableMock = sinon.mock(dynamoDbStub);
+
+      const expectedUpdateArgs = {
+        TableName: 'DevOrderTable',
+        Key: {
+          order_id: '1234'
+        },
+        UpdateExpression: 'set ' + [
+          'integrations.crm.last_result = :res',
+          'integrations.crm.last_timestamp = :now',
+          'crm_contact_id = if_not_exists(crm_contact_id, :ccid)',
+          'crm_address_id = if_not_exists(crm_address_id, :caid)'
+        ].join(', '),
+        ExpressionAttributeValues: {
+          ':res': 'ok',
+          ':now': sinon.match.string,
+          ':ccid': sinon.match.string,
+          ':caid': '333555777'
+        }
+      };
+
+      const updateExpectation = tableMock.expects('update')
+        .once()
+        .withArgs(expectedUpdateArgs)
+        .returns(dynamoDbRequestStub);
+
+      sampleResult.contact.AddressId = '333555777';
+
+      OrderTableService.saveResult(sampleResult)
+        .then(() => updateExpectation.verify())
+        .catch(fail);
     });
 
 });

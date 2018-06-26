@@ -1,8 +1,16 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+
 const ORDER_TABLE = process.env.ORDER_TABLE;
-const table = new AWS.DynamoDB.DocumentClient();
+let table;
+let dynamoDBOptions = {};
+
+if (process.env.DYNAMODB_ENDPOINT) {
+    dynamoDBOptions.endpoint = process.env.DYNAMODB_ENDPOINT;
+}
+
+table = new AWS.DynamoDB.DocumentClient();
 
 exports.saveResult = result => {
     let params = {
@@ -43,12 +51,12 @@ exports.saveResult = result => {
             'crm_contact_id = if_not_exists(crm_contact_id, :ccid)'
         ].join(', ');
 
-        console.log(JSON.stringify(result.contact[0]));
+        console.log(JSON.stringify(result.contact));
 
         params.ExpressionAttributeValues = {
             ':res': 'ok',
             ':now': timestamp,
-            ':ccid': result.contact[0].CRMID
+            ':ccid': result.contact.CRMID
         };
 
         if (result.contact.AddressId) {
