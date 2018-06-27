@@ -1,6 +1,7 @@
 'use strict';
 
 const soap = require('soap');
+const isoCountries = require('./iso-countries');
 
 const LN_STACK = String(process.env.LN_STACK);
 const WSDL_URI = './crm-service-' + LN_STACK.toLowerCase() + '.wsdl';
