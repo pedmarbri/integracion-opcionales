@@ -8,7 +8,7 @@ cache:
     - functions/SapOrderConsumer/node_modules
     - functions/SAPOrderWorker/node_modules
 install:
-  - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm install ; done ;
+  - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && travis_wait npm install ; done ;
 script:
   - FAILED=0
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && npm test || FAILED=1 ; done ;
