@@ -319,8 +319,8 @@
               "properties": {
                 "country": {
                   "type": "string",
-                  "minLength": "2",
-                  "maxLength": "2"
+                  "minLength": 2,
+                  "maxLength": 2
                 },
                 "region": {
                   "type": "string"
@@ -375,8 +375,8 @@
               "properties": {
                 "country": {
                   "type": "string",
-                  "minLength": "2",
-                  "maxLength": "2"
+                  "minLength": 2,
+                  "maxLength": 2
                 },
                 "region": {
                   "type": "string"
