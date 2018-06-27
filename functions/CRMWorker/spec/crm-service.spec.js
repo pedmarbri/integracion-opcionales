@@ -10,6 +10,7 @@ describe('CRM Service', () => {
     let stubConfig;
     let sampleOrder;
     let sampleResponse;
+    let isoStub;
 
     beforeEach(() => {
         sampleOrder = require('./sample-order');
@@ -28,8 +29,13 @@ describe('CRM Service', () => {
 
         soapStub.createClientAsync.resolves(clientStub);
 
+        isoStub = {
+          getCountryName: countryCode => countryCode
+        };
+
         stubConfig = {
-            'soap': soapStub
+          'soap': soapStub,
+          './iso-countries': isoStub
         };
 
         CRMService = proxyquire('../crm-service', stubConfig);
