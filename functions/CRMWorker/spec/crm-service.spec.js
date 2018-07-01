@@ -30,7 +30,7 @@ describe('CRM Service', () => {
         soapStub.createClientAsync.resolves(clientStub);
 
         isoStub = {
-          getCountryName: countryCode => countryCode
+          getCountryName: countryCode => 'Argentina'
         };
 
         stubConfig = {
@@ -199,7 +199,7 @@ describe('CRM Service', () => {
                         Localidad: 'Capital Federal',
                         UP: false,
                         Provincia: 'Capital Federal',
-                        Pais: 'AR',
+                        Pais: 'Argentina',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'DNI',
                         NumeroDoc: '12345678',
@@ -256,7 +256,7 @@ describe('CRM Service', () => {
                         Localidad: 'Capital Federal',
                         UP: false,
                         Provincia: 'Capital Federal',
-                        Pais: 'AR',
+                        Pais: 'Argentina',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'DNI',
                         NumeroDoc: '12345678',
@@ -378,7 +378,7 @@ describe('CRM Service', () => {
             "Barrio": null,
             "UP": "false",
             "Provincia": "MENDOZA",
-            "Pais": "AR",
+            "Pais": "Argentina",
             "VinculoLN": "PROSPECT",
             "TipoDoc": "DNI",
             "NumeroDoc": "95608523",
@@ -457,7 +457,7 @@ describe('CRM Service', () => {
                         Localidad: 'Capital Federal',
                         UP: false,
                         Provincia: 'Capital Federal',
-                        Pais: 'AR',
+                        Pais: 'Argentina',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'EXTER',
                         NumeroDoc: '912345678',
