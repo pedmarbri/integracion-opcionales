@@ -82,7 +82,7 @@ exports.insertContact = result => {
                         Apellido: result.order.customer.last_name,
                         Sexo: result.order.customer.gender,
                         Email: result.order.customer.email,
-                        Pais: result.order.billing_address.country,
+                        Pais: isoCountries.getCountryName(result.order.billing_address.country),
                         Provincia: result.order.billing_address.region,
                         Localidad: result.order.billing_address.city,
                         CodigoPostal: result.order.billing_address.post_code,
