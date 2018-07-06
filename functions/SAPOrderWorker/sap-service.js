@@ -121,7 +121,7 @@ const formatConditions = (items, totals) => {
 };
 
 exports.sendOrder = order => {
-    console.log('Sending order to SAP');
+    console.log('[sendOrder' + ' - ' + order.order_id + '] Sending order to SAP');
     const sapRows = {};
 
     const formatItems = orderItems => ({
@@ -193,13 +193,13 @@ exports.sendOrder = order => {
         };
 
         client.addHttpHeader('Authorization', auth);
-        console.log('[sendOrder] Request Parameters', JSON.stringify(request));
+        console.log('[sendOrder' + ' - ' + order.order_id + '] Request Parameters', JSON.stringify(request));
 
         return client.ZWS_GEN_PEDAsync(request, options)
             .then(result => {
-                console.log('[sendOrder] XML Request', client.lastRequest);
-                console.log('[sendOrder] Result', JSON.stringify(result));
-                console.log('[sendOrder] XML Response', client.lastResponse);
+                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
+                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
                 return Promise.resolve({
                     result: result[0],
@@ -208,9 +208,9 @@ exports.sendOrder = order => {
                 });
             })
             .catch(error => {
-                console.log('[sendOrder] XML Request', client.lastRequest);
-                console.log('[sendOrder] Error', JSON.stringify(error));
-                console.log('[sendOrder] XML Response', client.lastResponse);
+                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                console.log('[sendOrder' + ' - ' + order.order_id + '] Error', JSON.stringify(error));
+                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
                 return Promise.reject(error);
             });
     };

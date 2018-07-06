@@ -36,7 +36,7 @@ exports.fetchOrderInfo = creditmemo => {
          */
         const order = result.Item;
 
-        console.log(JSON.stringify(result));
+        console.log('[fetchOrderInfo' + ' - ' + order.order_id + ']', JSON.stringify(result));
 
         if (!order) {
             return Promise.reject(new Error("Order not found."));

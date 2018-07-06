@@ -237,8 +237,7 @@
                 "first_name",
                 "last_name",
                 "id_type",
-                "id_number",
-                "gender"
+                "id_number"
               ],
               "properties": {
                 "birth_date": {
@@ -262,10 +261,14 @@
                   "type": "string"
                 },
                 "gender": {
-                  "type": "string",
+                  "type": [
+                    "string",
+                    "null"
+                  ],
                   "enum": [
                     "F",
-                    "M"
+                    "M",
+                    "null"
                   ]
                 }
               }

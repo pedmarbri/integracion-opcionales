@@ -19,7 +19,7 @@ function formatErrorMessage(error) {
 }
 
 const saveError = sapResult => {
-    console.log("Saving error to DB");
+    console.log('[saveError' + ' - ' + sapResult.order.order_id + '] Saving error to DB');
 
     const now = new Date().toISOString();
     const params = {
@@ -70,7 +70,7 @@ const saveError = sapResult => {
 };
 
 exports.saveResult = sapResult => {
-    console.log("Saving Result to DB");
+    console.log('[saveResult' + ' - ' + sapResult.order.order_id + '] Saving Result to DB');
 
     if (sapResult.result.error || !sapResult.result.VBELN) {
         return saveError(sapResult)

@@ -51,7 +51,7 @@ exports.saveResult = result => {
             'crm_contact_id = if_not_exists(crm_contact_id, :ccid)'
         ].join(', ');
 
-        console.log(JSON.stringify(result.contact));
+        console.log('[saveResult - ' + ' - ' + result.order.order_id + ']', JSON.stringify(result.contact));
 
         params.ExpressionAttributeValues = {
             ':res': 'ok',
@@ -65,7 +65,7 @@ exports.saveResult = result => {
         }
     }
 
-    console.log('[saveResult] Parameters', params);
+    console.log('[saveResult' + ' - ' + result.order.order_id + '] Parameters', params);
 
     return table.update(params).promise()
         .then(() => {
