@@ -15,15 +15,15 @@ exports.fetchContact = order => {
             tipoDoc: order.customer.id_type
         };
 
-        console.log('[fetchContact] Request parameters', JSON.stringify(request));
+        console.log('[fetchContact' + ' - ' + order.order_id + '] Request parameters', JSON.stringify(request));
 
         return client.Consulta_ContactoPorDocumentoAsync(request, { timeout: 3000 })
             .then(result => {
                 let contact = null;
 
-                console.log('[fetchContact] XML Request', client.lastRequest);
-                console.log('[fetchContact] Result', JSON.stringify(result));
-                console.log('[fetchContact] XML Response', client.lastResponse);
+                console.log('[fetchContact' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                console.log('[fetchContact' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
+                console.log('[fetchContact' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
 
                 if (result.length > 0 && result[0].hasOwnProperty("Consulta_ContactoPorDocumentoResult") &&
@@ -40,9 +40,9 @@ exports.fetchContact = order => {
                 });
             })
             .catch(error => {
-                console.log('[fetchContact] XML Request', client.lastRequest);
-                console.log('[fetchContact] Catched error', JSON.stringify(error));
-                console.log('[fetchContact] XML Response', client.lastResponse);
+                console.log('[fetchContact' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                console.log('[fetchContact' + ' - ' + order.order_id + '] Catched error', JSON.stringify(error));
+                console.log('[fetchContact' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
                 return Promise.resolve({
                     order: order,
@@ -52,7 +52,7 @@ exports.fetchContact = order => {
             });
     };
 
-    console.log('[fetchContact] Fetching contact from CRM');
+    console.log('[fetchContact' + ' - ' + order.order_id + '] Fetching contact from CRM');
 
     return soap.createClientAsync(WSDL_URI)
         .then(queryContact);
@@ -101,22 +101,22 @@ exports.insertContact = result => {
             request.listaContactos.ContactoMasivo[0].TelTrabajo = result.order.shipping_address.telephone;
         }
 
-        console.log('[insertContact] Request parameters', JSON.stringify(request));
+        console.log('[insertContact' + ' - ' + result.order.order_id + '] Request parameters', JSON.stringify(request));
 
         return client.Alta_Masiva_ContactoAsync(request, { timeout: 5000 })
             .then(insertResult => {
                 let respuestaMasiva;
 
-                console.log('[insertContact] XML Request', client.lastRequest);
-                console.log('[insertContact] Result', JSON.stringify(insertResult));
-                console.log('[insertContact] XML Response', client.lastResponse);
+                console.log('[insertContact' + ' - ' + result.order.order_id + '] XML Request', client.lastRequest);
+                console.log('[insertContact' + ' - ' + result.order.order_id + '] Result', JSON.stringify(insertResult));
+                console.log('[insertContact' + ' - ' + result.order.order_id + '] XML Response', client.lastResponse);
 
                 if (insertResult.length > 0 && insertResult[0].hasOwnProperty('Alta_Masiva_ContactoResult') &&
                     insertResult[0].Alta_Masiva_ContactoResult.hasOwnProperty('RespuestaMasiva')
                 ) {
 
                     respuestaMasiva = insertResult[0].Alta_Masiva_ContactoResult.RespuestaMasiva[0];
-                    console.log('[insertContact] Respuesta Masiva', respuestaMasiva);
+                    console.log('[insertContact' + ' - ' + result.order.order_id + '] Respuesta Masiva', respuestaMasiva);
 
                     if (!respuestaMasiva.Resultado || respuestaMasiva.Resultado === 'false') {
                         return Promise.resolve(
@@ -138,7 +138,7 @@ exports.insertContact = result => {
 
             })
             .catch(error => {
-                console.log('[insertContact] Catched error', JSON.stringify(error));
+                console.log('[insertContact' + ' - ' + result.order.order_id + '] Catched error', JSON.stringify(error));
 
                 return Promise.resolve({
                    order: result.order,
@@ -149,7 +149,7 @@ exports.insertContact = result => {
 
     };
 
-    console.log('[insertContact] Creating new contact in CRM');
+    console.log('[insertContact' + ' - ' + result.order.order_id + '] Creating new contact in CRM');
 
     return soap.createClientAsync(WSDL_URI)
         .then(createContact);
