@@ -177,7 +177,7 @@ exports.sendCreditMemo = creditmemo => {
         };
 
         client.addHttpHeader('Authorization', auth);
-        console.log(JSON.stringify(request));
+        console.log('[sendCreditMemo' + ' - ' + creditmemo.order_id + ']', JSON.stringify(request));
 
         return client.ZWS_GEN_NCAsync(request, options);
     };
