@@ -10,7 +10,7 @@ module.exports = {
         last_name: 'Perez',
         id_type: 'DNI',
         id_number: '12345678',
-        gender: 0
+        gender: 'M'
     },
     totals: {
         subtotal: 1499.4,

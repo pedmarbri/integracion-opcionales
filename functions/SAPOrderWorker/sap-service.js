@@ -19,7 +19,7 @@ const SALES_CHANNEL = '02';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
 const MEASUREMENT_UNIT = 'EJE';
-const MATERIAL_GROUP_5 = 30;
+const MATERIAL_GROUP_5 = '30';
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -42,9 +42,14 @@ const formatDate = isoDate => {
     ].join('');
 };
 
-const formatTransactionId = payment => payment.transaction_id;
-const formatCustomerName = customer => customer.first_name + ' ' + customer.last_name;
-const formatCustomerIdNumber = customer => customer.id_number;
+// Avoid huge numbers
+const restrictNumber = function (num) {
+  return Math.min(num, Math.pow(10, 10));
+};
+
+const formatTransactionId = payment => payment.transaction_id.substr(0, 12);
+const formatCustomerName = customer => (customer.first_name + ' ' + customer.last_name).substr(0, 30);
+const formatCustomerIdNumber = customer => customer.id_number.substr(0, 30);
 
 const formatPriceCondition = (item, index) => {
     let priceType = UNIT_PRICE_CONDITION;
@@ -56,7 +61,7 @@ const formatPriceCondition = (item, index) => {
     return {
         KPOSN: (index + 1) * 10,
         KSCHL: priceType,
-        KBETR: item.list_price,
+        KBETR: restrictNumber(item.list_price),
         WAERS: CONDITION_CURRENCY
     };
 };
@@ -82,7 +87,7 @@ const formatDiscountCondition = (item, index) => {
     return {
         KPOSN: (index + 1) * 10,
         KSCHL: discountType,
-        KBETR: discountAmount,
+        KBETR: restrictNumber(discountAmount),
         WAERS: discountIsPercent ? null : CONDITION_CURRENCY
     };
 };
@@ -95,7 +100,7 @@ const formatShippingCondition = totals => {
     return {
         KPOSN: null,
         KSCHL: SHIPPING_CONDITION,
-        KBETR: totals.shipping,
+        KBETR: restrictNumber(totals.shipping),
         WAERS: CONDITION_CURRENCY
     };
 };
@@ -132,24 +137,24 @@ exports.sendOrder = order => {
 
             return {
                 POSNR: sapRow,
-                MATNR: item.sku,
+                MATNR: item.sku.substr(0, 18),
                 WERKS: CENTER_CODE,
                 LGORT: WAREHOUSE,
-                MENGE: item.qty,
+                MENGE: restrictNumber(item.qty),
                 MEINS: MEASUREMENT_UNIT,
                 MVGR5: MATERIAL_GROUP_5,
-                KDMAT: item.name,
-                POSEX: sapRow
+                KDMAT: item.name.substr(0, 35),
+                POSEX: String(sapRow)
             };
         })
     });
 
     const formatRequest = order => ({
-        AD_SMTPADR: order.customer.email,
+        AD_SMTPADR: order.customer.email.substr(0, 241),
         AUART: DOCUMENT_TYPE_ORDER,
         AUGRU: ORDER_REASON_CODE,
         BSTDK: formatDate(order.timestamp),
-        BSTKD: order.order_id,
+        BSTKD: order.order_id.substr(0, 35),
         CITY: 'CABA',
         COUNTRY: 'AR',
         IHREZ: formatTransactionId(order.payment),

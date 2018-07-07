@@ -31,9 +31,9 @@ module.exports = {
                 LGORT: 'GSTK',
                 MENGE: 6,
                 MEINS: 'EJE',
-                MVGR5: 30,
+                MVGR5: '30',
                 KDMAT: 'Londres',
-                POSEX: 10
+                POSEX: '10'
             }
         ]
     },
