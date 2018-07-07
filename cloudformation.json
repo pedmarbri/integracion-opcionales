@@ -434,7 +434,8 @@
                 ],
                 "properties": {
                   "sku": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                   },
                   "name": {
                     "type": "string"
@@ -662,7 +663,8 @@
                 ],
                 "properties": {
                   "sku": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 1
                   },
                   "name": {
                     "type": "string"
