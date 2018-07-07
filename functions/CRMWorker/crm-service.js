@@ -59,7 +59,11 @@ exports.fetchContact = order => {
 };
 
 exports.insertContact = result => {
-    const createContact = client => {
+  const getGenderFromCustomer = function (customer) {
+    return customer.gender ? customer.gender : null;
+  };
+
+  const createContact = client => {
         const formatIdType = customer => {
 
             if (customer.id_type.toLowerCase() === 'dni' && customer.id_number.match(/^9/)) {
@@ -80,7 +84,7 @@ exports.insertContact = result => {
                         NumeroDoc: result.order.customer.id_number,
                         PrimerNombre: result.order.customer.first_name,
                         Apellido: result.order.customer.last_name,
-                        Sexo: result.order.customer.gender,
+                        Sexo: getGenderFromCustomer(result.order.customer),
                         Email: result.order.customer.email,
                         Pais: isoCountries.getCountryName(result.order.billing_address.country),
                         Provincia: result.order.billing_address.region,

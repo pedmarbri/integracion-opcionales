@@ -492,4 +492,62 @@ describe('CRM Service', () => {
             .catch(fail);
     });
 
+    it('Allows for gender to be missing', () => {
+      const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
+
+      /**
+       * @var {Sinon.SinonMock} clientMock
+       */
+      const clientMock = sinon.mock(clientStub);
+
+      const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+
+      const expectedRequest = {
+        listaContactos: {
+          ContactoMasivo: [
+            {
+              CondicionIVA: 'No Responsable',
+              PrimerNombre: 'Juan',
+              Apellido: 'Perez',
+              TelCasa: '15-1234-5678',
+              Calle: 'Cabildo',
+              Numero: 2779,
+              Piso: '10',
+              Dpto: 'A',
+              CodigoPostal: '1428',
+              Localidad: 'Capital Federal',
+              UP: false,
+              Provincia: 'Capital Federal',
+              Pais: 'Argentina',
+              VinculoLN: 'PROSPECT',
+              TipoDoc: 'DNI',
+              NumeroDoc: '12345678',
+              Sexo: null,
+              Email: 'example@domain.com'
+            }
+          ]
+        },
+      };
+
+      const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+        .once()
+        .withArgs(expectedRequest)
+        .resolves(sampleResponse);
+
+      const result = {
+        order: sampleOrder,
+        contact: null
+      };
+
+      delete result.order.customer.gender;
+
+      CRMService.insertContact(result)
+        .then(() => {
+          expect(createClientSpy).toHaveBeenCalled();
+          expect(queryContactMethodSpy).not.toHaveBeenCalled();
+          soapMethodExpectation.verify();
+        })
+        .catch(fail);
+    });
+
 });
