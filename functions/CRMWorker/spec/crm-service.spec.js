@@ -30,7 +30,7 @@ describe('CRM Service', () => {
         soapStub.createClientAsync.resolves(clientStub);
 
         isoStub = {
-          getCountryName: countryCode => 'Argentina'
+          getCountryName: countryCode => countryCode === 'AR' ? 'Argentina' : 'United States'
         };
 
         stubConfig = {
@@ -431,7 +431,7 @@ describe('CRM Service', () => {
             .catch(fail);
     });
 
-    it('Recognizes foreign ID numbers', () => {
+    it('Recognizes foreign IDs', () => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -457,10 +457,10 @@ describe('CRM Service', () => {
                         Localidad: 'Capital Federal',
                         UP: false,
                         Provincia: 'Capital Federal',
-                        Pais: 'Argentina',
+                        Pais: 'United States',
                         VinculoLN: 'PROSPECT',
-                        TipoDoc: 'EXTER',
-                        NumeroDoc: '912345678',
+                        TipoDoc: 'PAS',
+                        NumeroDoc: '12345678',
                         Sexo: 'M',
                         Email: 'example@domain.com'
                     }
@@ -475,7 +475,7 @@ describe('CRM Service', () => {
 
 
         sampleOrder.customer.id_type = 'DNI';
-        sampleOrder.customer.id_number = '912345678';
+        sampleOrder.billing_address.country = 'US';
 
 
         const result = {
@@ -549,5 +549,66 @@ describe('CRM Service', () => {
         })
         .catch(fail);
     });
+
+  it('Converts Passport ID type to API code', () => {
+    const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
+
+    /**
+     * @var {Sinon.SinonMock} clientMock
+     */
+    const clientMock = sinon.mock(clientStub);
+
+    const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+
+    const expectedRequest = {
+      listaContactos: {
+        ContactoMasivo: [
+          {
+            CondicionIVA: 'No Responsable',
+            PrimerNombre: 'Juan',
+            Apellido: 'Perez',
+            TelCasa: '15-1234-5678',
+            Calle: 'Cabildo',
+            Numero: 2779,
+            Piso: '10',
+            Dpto: 'A',
+            CodigoPostal: '1428',
+            Localidad: 'Capital Federal',
+            UP: false,
+            Provincia: 'Capital Federal',
+            Pais: 'United States',
+            VinculoLN: 'PROSPECT',
+            TipoDoc: 'PAS',
+            NumeroDoc: '12345678',
+            Sexo: 'M',
+            Email: 'example@domain.com'
+          }
+        ]
+      },
+    };
+
+    const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+      .once()
+      .withArgs(expectedRequest)
+      .resolves(sampleResponse);
+
+
+    sampleOrder.customer.id_type = 'PASAPORTE';
+    sampleOrder.billing_address.country = 'US';
+
+
+    const result = {
+      order: sampleOrder,
+      contact: null
+    };
+
+    CRMService.insertContact(result)
+      .then(() => {
+        expect(createClientSpy).toHaveBeenCalled();
+        expect(queryContactMethodSpy).not.toHaveBeenCalled();
+        soapMethodExpectation.verify();
+      })
+      .catch(fail);
+  });
 
 });

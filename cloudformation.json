@@ -255,7 +255,19 @@
                   "type": "string"
                 },
                 "id_type": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "DNI",
+                    "CI",
+                    "LC",
+                    "LE",
+                    "PASAPORTE",
+                    "dni",
+                    "ci",
+                    "lc",
+                    "le",
+                    "pasaporte"
+                  ]
                 },
                 "id_number": {
                   "type": "string"
