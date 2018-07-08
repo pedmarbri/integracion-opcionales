@@ -6,6 +6,10 @@ const isoCountries = require('./iso-countries');
 const LN_STACK = String(process.env.LN_STACK);
 const WSDL_URI = './crm-service-' + LN_STACK.toLowerCase() + '.wsdl';
 
+const ID_TYPE_DNI = 'DNI';
+const ID_TYPE_PASSPORT = 'PAS';
+const ID_TYPE_PASSPORT_LONG = 'PASAPORTE';
+
 exports.fetchContact = order => {
     const queryContact = client => {
         const request = {
@@ -65,9 +69,12 @@ exports.insertContact = result => {
 
   const createContact = client => {
         const formatIdType = (customer, address) => {
+            if (customer.id_type.toUpperCase() === ID_TYPE_PASSPORT_LONG) {
+                return ID_TYPE_PASSPORT;
+            }
 
-            if (customer.id_type.toLowerCase() === 'dni' && address.country.toUpperCase() !== 'AR') {
-                return 'PAS';
+            if (customer.id_type.toUpperCase() === ID_TYPE_DNI && address.country.toUpperCase() !== 'AR') {
+                return ID_TYPE_PASSPORT;
             }
 
             return customer.id_type;
