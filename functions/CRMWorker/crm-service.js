@@ -64,10 +64,10 @@ exports.insertContact = result => {
   };
 
   const createContact = client => {
-        const formatIdType = customer => {
+        const formatIdType = (customer, address) => {
 
-            if (customer.id_type.toLowerCase() === 'dni' && customer.id_number.match(/^9/)) {
-                return 'EXTER';
+            if (customer.id_type.toLowerCase() === 'dni' && address.country.toUpperCase() !== 'AR') {
+                return 'PAS';
             }
 
             return customer.id_type;
@@ -80,7 +80,7 @@ exports.insertContact = result => {
                         UP: false,
                         VinculoLN: 'PROSPECT',
                         CondicionIVA: 'No Responsable',
-                        TipoDoc: formatIdType(result.order.customer),
+                        TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
                         NumeroDoc: result.order.customer.id_number,
                         PrimerNombre: result.order.customer.first_name,
                         Apellido: result.order.customer.last_name,
