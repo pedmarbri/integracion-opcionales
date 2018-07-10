@@ -1,7 +1,6 @@
 'use strict';
 
 const JobQueueService = require('./job-queue-service');
-const SapOrderQueueService = require('./sap-order-queue-service');
 const SapCMQueueService = require('./sap-cm-queue-service');
 const OrderTableService = require('./order-table-service');
 const CrmQueueService = require('./crm-queue-service');
@@ -15,7 +14,6 @@ const processSingleMessage = message => {
                 OrderTableService.saveMessage(message)
                     .then(CrmQueueService.sendMessage)
                     .then(JobQueueService.deleteMessage)
-                    .then(SapOrderQueueService.sendMessage)
                     .then(resolve)
                     .catch(reject);
                 break;
