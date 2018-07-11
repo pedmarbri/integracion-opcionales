@@ -806,9 +806,6 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "${SapOrderQueue.Arn}"
-                    },
-                    {
                       "Fn::Sub": "${CrmQueue.Arn}"
                     },
                     {
@@ -1630,6 +1627,24 @@
             }
           },
           {
+            "PolicyName": "sqsSendMessage",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${SapOrderQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
             "PolicyName": "dynamodb",
             "PolicyDocument": {
               "Statement": [
@@ -1683,6 +1698,9 @@
           "Variables": {
             "CRM_QUEUE_URL": {
               "Ref": "CrmQueue"
+            },
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
             },
             "LN_STACK": {
               "Ref": "LNStack"
