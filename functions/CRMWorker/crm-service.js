@@ -140,6 +140,8 @@ exports.insertContact = result => {
                         );
                     }
 
+                    result.order.crm_contact_id = respuestaMasiva.CRMID;
+
                     return Promise.resolve({
                        order: result.order,
                        contact: respuestaMasiva

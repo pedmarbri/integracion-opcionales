@@ -228,6 +228,7 @@ describe('CRM Service', () => {
                 expect(createClientSpy).toHaveBeenCalled();
                 expect(queryContactMethodSpy).not.toHaveBeenCalled();
                 soapMethodExpectation.verify();
+
             })
             .catch(fail);
     });
@@ -355,6 +356,9 @@ describe('CRM Service', () => {
                     order: sampleOrder,
                     contact: sampleContact
                 });
+
+                // Order should container the created contact CRMID
+                expect(insertResult.order.crm_contact_id).toEqual('A04008603');
             })
             .catch(fail);
     });
