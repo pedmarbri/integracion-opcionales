@@ -36,6 +36,7 @@ exports.fetchContact = order => {
                     result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty("Contacto")
                 ) {
                     contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];
+                    order.crm_contact_id = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0].CRMID;
                 }
 
                 return Promise.resolve({

@@ -160,8 +160,11 @@ describe('CRM Service', () => {
                     order: sampleOrder,
                     contact: sampleContact
                 });
-            });
 
+                // CRMID Should be added in the order as well
+                expect(fetchResult.order.crm_contact_id).toEqual('1234');
+            })
+          .catch(fail);
     });
 
     it('Returns a promise on insertContact', () => {
@@ -550,65 +553,65 @@ describe('CRM Service', () => {
         .catch(fail);
     });
 
-  it('Converts Passport ID type to API code', () => {
-    const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
+    it('Converts Passport ID type to API code', () => {
+        const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
-    /**
-     * @var {Sinon.SinonMock} clientMock
-     */
-    const clientMock = sinon.mock(clientStub);
+        /**
+         * @var {Sinon.SinonMock} clientMock
+         */
+        const clientMock = sinon.mock(clientStub);
 
-    const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+        const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
 
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: 'No Responsable',
-            PrimerNombre: 'Juan',
-            Apellido: 'Perez',
-            TelCasa: '15-1234-5678',
-            Calle: 'Cabildo',
-            Numero: 2779,
-            Piso: '10',
-            Dpto: 'A',
-            CodigoPostal: '1428',
-            Localidad: 'Capital Federal',
-            UP: false,
-            Provincia: 'Capital Federal',
-            Pais: 'United States',
-            VinculoLN: 'PROSPECT',
-            TipoDoc: 'PAS',
-            NumeroDoc: '12345678',
-            Sexo: 'M',
-            Email: 'example@domain.com'
-          }
-        ]
-      },
-    };
+        const expectedRequest = {
+            listaContactos: {
+                ContactoMasivo: [
+                    {
+                        CondicionIVA: 'No Responsable',
+                        PrimerNombre: 'Juan',
+                        Apellido: 'Perez',
+                        TelCasa: '15-1234-5678',
+                        Calle: 'Cabildo',
+                        Numero: 2779,
+                        Piso: '10',
+                        Dpto: 'A',
+                        CodigoPostal: '1428',
+                        Localidad: 'Capital Federal',
+                        UP: false,
+                        Provincia: 'Capital Federal',
+                        Pais: 'United States',
+                        VinculoLN: 'PROSPECT',
+                        TipoDoc: 'PAS',
+                        NumeroDoc: '12345678',
+                        Sexo: 'M',
+                        Email: 'example@domain.com'
+                    }
+                ]
+            },
+        };
 
-    const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
-      .once()
-      .withArgs(expectedRequest)
-      .resolves(sampleResponse);
-
-
-    sampleOrder.customer.id_type = 'PASAPORTE';
-    sampleOrder.billing_address.country = 'US';
+        const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+            .once()
+            .withArgs(expectedRequest)
+            .resolves(sampleResponse);
 
 
-    const result = {
-      order: sampleOrder,
-      contact: null
-    };
+        sampleOrder.customer.id_type = 'PASAPORTE';
+        sampleOrder.billing_address.country = 'US';
 
-    CRMService.insertContact(result)
-      .then(() => {
-        expect(createClientSpy).toHaveBeenCalled();
-        expect(queryContactMethodSpy).not.toHaveBeenCalled();
-        soapMethodExpectation.verify();
-      })
-      .catch(fail);
-  });
+
+        const result = {
+            order: sampleOrder,
+            contact: null
+        };
+
+        CRMService.insertContact(result)
+            .then(() => {
+                expect(createClientSpy).toHaveBeenCalled();
+                expect(queryContactMethodSpy).not.toHaveBeenCalled();
+                soapMethodExpectation.verify();
+            })
+            .catch(fail);
+    });
 
 });
