@@ -913,6 +913,7 @@
     "SapOrderQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
+        "DelaySeconds": 900,
         "RedrivePolicy": {
           "deadLetterTargetArn": {
             "Fn::Sub": "${SapOrderDeadLetterQueue.Arn}"
