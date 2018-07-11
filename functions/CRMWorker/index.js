@@ -3,6 +3,7 @@
 const CRMService = require('./crm-service');
 const OrderTableService = require('./order-table-service');
 const CRMQueueService = require('./crm-queue-service');
+const SapOrderQueueService = require('./sap-order-queue-service');
 
 exports.handler = function (event, context, callback) {
     let order;
@@ -27,6 +28,7 @@ exports.handler = function (event, context, callback) {
 
     CRMService.fetchContact(order)
         .then(processCRMContactResult)
+        .then(SapOrderQueueService.sendMessage)
         .then(() => Promise.resolve(event))
         .then(CRMQueueService.deleteMessage)
         .then(result => callback(null, result))
