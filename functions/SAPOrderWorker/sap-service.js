@@ -158,7 +158,7 @@ exports.sendOrder = order => {
         CITY: 'CABA',
         COUNTRY: 'AR',
         IHREZ: formatTransactionId(order.payment),
-        KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
+        KUNNR: order.crm_contact_id,
         LANGU: LANGUAGE_CODE,
         NAME1: formatCustomerName(order.customer),
         NAME4: formatCustomerIdNumber(order.customer),
