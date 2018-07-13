@@ -498,8 +498,7 @@
             "payment": {
               "type": "object",
               "required": [
-                "method",
-                "transaction_id"
+                "method"
               ],
               "properties": {
                 "method": {

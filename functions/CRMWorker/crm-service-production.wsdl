@@ -5732,10 +5732,10 @@
   </wsdl:binding>
   <wsdl:service name="WS_SLX">
     <wsdl:port name="WS_SLXSoap" binding="tns:WS_SLXSoap">
-      <soap:address location="http://lnws.lanacion.com.ar/WS-SLX.asmx" />
+      <soap:address location="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx" />
     </wsdl:port>
     <wsdl:port name="WS_SLXSoap12" binding="tns:WS_SLXSoap12">
-      <soap12:address location="http://lnws.lanacion.com.ar/WS-SLX.asmx" />
+      <soap12:address location="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
