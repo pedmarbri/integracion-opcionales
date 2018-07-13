@@ -313,4 +313,14 @@ describe('Sap Service', () => {
         .then(() => soapMethodExpectation.verify())
         .catch(fail);
     });
+
+    it('Handles missing transaction ID as null', () => {
+      const soapMethodExpectation = setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+      delete sampleOrder.payment.transaction_id;
+      expectedRequest.IHREZ = null;
+
+      SapService.sendOrder(sampleOrder)
+        .then(() => soapMethodExpectation.verify())
+        .catch(fail);
+    });
 });
