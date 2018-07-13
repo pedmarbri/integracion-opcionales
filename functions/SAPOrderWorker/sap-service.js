@@ -47,7 +47,14 @@ const restrictNumber = function (num) {
   return Math.min(num, Math.pow(10, 10));
 };
 
-const formatTransactionId = payment => payment.transaction_id.substr(0, 12);
+const formatTransactionId = payment => {
+    if (!payment.transaction_id) {
+        return null;
+    }
+
+    return payment.transaction_id.substr(0, 12);
+};
+
 const formatCustomerName = customer => (customer.first_name + ' ' + customer.last_name).substr(0, 30);
 const formatCustomerIdNumber = customer => customer.id_number.substr(0, 30);
 
