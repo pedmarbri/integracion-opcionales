@@ -1717,6 +1717,20 @@
         }
       }
     },
+    "BauQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${BauDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "BauDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
     "OrderTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
