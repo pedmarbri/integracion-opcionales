@@ -213,6 +213,10 @@ exports.sendOrder = order => {
                 console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
                 console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
+                if (result[0] && result[0].VBELN) {
+                  order.sap_id = result[0].VBELN;
+                }
+
                 return Promise.resolve({
                     result: result[0],
                     order: order,

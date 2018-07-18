@@ -3,6 +3,7 @@
 const SapService = require('./sap-service');
 const SapOrderQueueService = require('./sap-order-queue-service');
 const OrderTable = require('./order-table-service');
+const BauQueueService = require('./bau-queue-service');
 
 exports.handler = function(event, context, callback) {
 
@@ -16,6 +17,7 @@ exports.handler = function(event, context, callback) {
             };
         })
         .then(OrderTable.saveResult)
+        .then(BauQueueService.sendMessage)
         .then(() => Promise.resolve(event))
         .then(SapOrderQueueService.deleteMessage)
         .then(result => callback(null, result))

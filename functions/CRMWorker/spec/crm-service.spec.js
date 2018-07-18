@@ -357,7 +357,7 @@ describe('CRM Service', () => {
                     contact: sampleContact
                 });
 
-                // Order should container the created contact CRMID
+                // Order should contain the created contact CRMID
                 expect(insertResult.order.crm_contact_id).toEqual('A04008603');
             })
             .catch(fail);

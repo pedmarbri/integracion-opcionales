@@ -1100,6 +1100,24 @@
             }
           },
           {
+            "PolicyName": "sqsSendMessage",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${BauQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
             "PolicyName": "dynamodb",
             "PolicyDocument": {
               "Statement": [
@@ -1153,6 +1171,9 @@
           "Variables": {
             "SAP_ORDER_QUEUE_URL": {
               "Ref": "SapOrderQueue"
+            },
+            "BAU_QUEUE_URL": {
+              "Ref": "BauQueue"
             },
             "LN_STACK": {
               "Ref": "LNStack"
