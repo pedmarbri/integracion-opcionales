@@ -80,7 +80,14 @@ exports.insertContact = result => {
             return customer.id_type;
         };
 
-        const request = {
+    const formatStreetNumber = function (number) {
+      if (parseInt(number) > 0) {
+        return number;
+      }
+      return 'N/A';
+    };
+
+    const request = {
             listaContactos: {
                 ContactoMasivo: [
                     {
@@ -99,7 +106,7 @@ exports.insertContact = result => {
                         Barrio: 'No Informa',
                         CodigoPostal: result.order.billing_address.post_code,
                         Calle: result.order.billing_address.street,
-                        Numero: result.order.billing_address.number,
+                        Numero: formatStreetNumber(result.order.billing_address.number),
                         Piso: result.order.billing_address.floor,
                         Dpto: result.order.billing_address.apartment,
                         TipoPropiedad: 'No Informa',

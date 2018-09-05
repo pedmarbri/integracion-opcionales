@@ -631,8 +631,71 @@ describe('CRM Service', () => {
       .catch(fail);
   });
 
-  xit('Sends N/A when street number is missing', () => {
+  it('Sends N/A when street number is missing', (done) => {
+    const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
+    /**
+     * @var {Sinon.SinonMock} clientMock
+     */
+    const clientMock = sinon.mock(clientStub);
+
+    const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
+
+    const expectedRequest = {
+      listaContactos: {
+        ContactoMasivo: [
+          {
+            CondicionIVA: sinon.match.string,
+            PrimerNombre: sinon.match.string,
+            Apellido: sinon.match.string,
+            TelCasa: sinon.match.string,
+            Calle: sinon.match.string,
+            Numero: sinon.match.number,
+            Piso: sinon.match.string,
+            Dpto: sinon.match.string,
+            CodigoPostal: sinon.match.string,
+            Localidad: sinon.match.string,
+            UP: sinon.match.bool,
+            Provincia: sinon.match.string,
+            Pais: sinon.match.string,
+            VinculoLN: sinon.match.string,
+            TipoDoc: sinon.match.string,
+            NumeroDoc: sinon.match.string,
+            Sexo: sinon.match.string,
+            Email: sinon.match.string,
+            TipoPropiedad: sinon.match.string,
+            NombrePropiedad: sinon.match.string,
+            Barrio: sinon.match.string
+          }
+        ]
+      },
+    };
+
+    const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
+      .once()
+      .withArgs(expectedRequest)
+      .resolves(sampleResponse);
+
+
+    sampleOrder.billing_address.street = 'Cabildo 2779';
+    sampleOrder.billing_address.number = 0;
+
+    expectedRequest.listaContactos.ContactoMasivo[0].Calle = 'Cabildo 2779';
+    expectedRequest.listaContactos.ContactoMasivo[0].Numero = 'N/A';
+
+    const result = {
+      order: sampleOrder,
+      contact: null
+    };
+
+    CRMService.insertContact(result)
+      .then(() => {
+        expect(createClientSpy).toHaveBeenCalled();
+        expect(queryContactMethodSpy).not.toHaveBeenCalled();
+        soapMethodExpectation.verify();
+        done();
+      })
+      .catch(fail);
   });
 
 });
