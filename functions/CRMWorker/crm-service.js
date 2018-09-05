@@ -30,14 +30,13 @@ exports.fetchContact = order => {
         console.log('[fetchContact' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
 
-        if (result.length > 0 && result[0].hasOwnProperty('Consulta_ContactoPorDocumentoResult') &&
-          result[0].Consulta_ContactoPorDocumentoResult.hasOwnProperty('Contactos') &&
-          result[0].Consulta_ContactoPorDocumentoResult.Contactos &&
-          result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty('Contacto')
-        ) {
-          contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];
-          order.crm_contact_id = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0].CRMID;
-        }
+                if (result.length > 0 && result[0].hasOwnProperty('Consulta_ContactoPorDocumentoResult') &&
+                    result[0].Consulta_ContactoPorDocumentoResult.hasOwnProperty('Contactos') &&
+                    result[0].Consulta_ContactoPorDocumentoResult.Contactos &&
+                    result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty('Contacto')
+                ) {
+                    contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];
+                order.crm_contact_id = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0].CRMID;}
 
         return Promise.resolve({
           order: order,
@@ -81,32 +80,38 @@ exports.insertContact = result => {
       return customer.id_type;
     };
 
-    const request = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            UP: false,
-            VinculoLN: 'PROSPECT',
-            CondicionIVA: 'No Responsable',
-            TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
-            NumeroDoc: result.order.customer.id_number,
-            PrimerNombre: result.order.customer.first_name,
-            Apellido: result.order.customer.last_name,
-            Sexo: getGenderFromCustomer(result.order.customer),
-            Email: result.order.customer.email,
-            Pais: isoCountries.getCountryName(result.order.billing_address.country),
-            Provincia: result.order.billing_address.region,
-            Localidad: result.order.billing_address.city,
-            CodigoPostal: result.order.billing_address.post_code,
-            Calle: result.order.billing_address.street,
-            Numero: result.order.billing_address.number,
-            Piso: result.order.billing_address.floor,
-            Dpto: result.order.billing_address.apartment,
-            TelCasa: result.order.billing_address.telephone,
-          }
-        ]
+        const formatStreetNumber = function (number) {
+      if (parseInt(number) > 0) {
+        return number;
       }
-    };
+      return 'N/A';
+    };const request = {
+            listaContactos: {
+                ContactoMasivo: [
+                    {
+                        UP: true,
+                        VinculoLN: 'PROSPECT',
+                        CondicionIVA: 'No Responsable',
+                        TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
+                        NumeroDoc: result.order.customer.id_number,
+                        PrimerNombre: result.order.customer.first_name,
+                        Apellido: result.order.customer.last_name,
+                        Sexo: getGenderFromCustomer(result.order.customer),
+                        Email: result.order.customer.email,
+                        Pais: isoCountries.getCountryName(result.order.billing_address.country),
+                        Provincia: result.order.billing_address.region,
+                        Localidad: result.order.billing_address.city,Barrio: 'No Informa',
+                        CodigoPostal: result.order.billing_address.post_code,
+                        Calle: result.order.billing_address.street,
+                        Numero: formatStreetNumber(result.order.billing_address.number),
+                        Piso: result.order.billing_address.floor,
+                        Dpto: result.order.billing_address.apartment,TipoPropiedad: 'No Informa',
+            NombrePropiedad: 'No Informa',
+                        TelCasa: result.order.billing_address.telephone,
+                    }
+                ]
+            }
+        };
 
     if (result.order.shipping_address.telephone &&
       result.order.billing_address.telephone !== result.order.shipping_address.telephone) {
@@ -140,13 +145,11 @@ exports.insertContact = result => {
             );
           }
 
-          result.order.crm_contact_id = respuestaMasiva.CRMID;
-
-          return Promise.resolve({
-            order: result.order,
-            contact: respuestaMasiva
-          });
-        }
+                    result.order.crm_contact_id = respuestaMasiva.CRMID;return Promise.resolve({
+                       order: result.order,
+                       contact: respuestaMasiva
+                    });
+                }
 
         return Promise.reject(new Error('An error ocurred'));
 
