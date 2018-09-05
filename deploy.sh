@@ -34,6 +34,8 @@ do
     cd ${BASEDIR}/${d} && npm install --production ;
 done
 
+echo "Deploy to CloudFormation"
+
 cd ${BASEDIR};
 
 aws cloudformation package \
