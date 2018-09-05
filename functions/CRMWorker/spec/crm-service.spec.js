@@ -11,9 +11,40 @@ describe('CRM Service', () => {
   let sampleOrder;
   let sampleResponse;
   let isoStub;
+  let expectedInsertRequest;
 
   beforeEach(() => {
     sampleOrder = require('./sample-order');
+
+    expectedInsertRequest = {
+      listaContactos: {
+        ContactoMasivo: [
+          {
+            CondicionIVA: sinon.match.string,
+            PrimerNombre: sinon.match.string,
+            Apellido: sinon.match.string,
+            TelCasa: sinon.match.string,
+            Calle: sinon.match.string,
+            Numero: sinon.match.number,
+            Piso: sinon.match.string,
+            Dpto: sinon.match.string,
+            CodigoPostal: sinon.match.string,
+            Localidad: sinon.match.string,
+            UP: sinon.match.bool,
+            Provincia: sinon.match.string,
+            Pais: sinon.match.string,
+            VinculoLN: sinon.match.string,
+            TipoDoc: sinon.match.string,
+            NumeroDoc: sinon.match.string,
+            Sexo: sinon.match.string,
+            Email: sinon.match.string,
+            TipoPropiedad: sinon.match.string,
+            NombrePropiedad: sinon.match.string,
+            Barrio: sinon.match.string
+          }
+        ]
+      },
+    };
 
     soapStub = {
       /**
@@ -49,7 +80,7 @@ describe('CRM Service', () => {
     expect(CRMService.fetchContact(sampleOrder)).toEqual(jasmine.any(Promise));
   });
 
-  it('Calls the right soap function on fetchContact with the right parameters', () => {
+  it('Calls the right soap function on fetchContact with the right parameters', (done) => {
     const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
     /**
@@ -76,11 +107,12 @@ describe('CRM Service', () => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(insertContactMethodSpy).not.toHaveBeenCalled();
         soapMethodExpectation.verify();
+        done();
       })
       .catch(fail);
   });
 
-  it('Returns a result when fetchContact fails', () => {
+  it('Returns a result when fetchContact fails', (done) => {
     clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.reject({ faultstring: 'Internal error' });
 
     CRMService.fetchContact(sampleOrder)
@@ -92,11 +124,12 @@ describe('CRM Service', () => {
             faultstring: 'Internal error'
           }
         });
+        done();
       })
       .catch(fail);
   });
 
-  it('Returns a result when contact is not found', () => {
+  it('Returns a result when contact is not found', (done) => {
     clientStub.Consulta_ContactoPorDocumentoAsync = () => Promise.resolve([
       {
         Consulta_ContactoPorDocumentoResult: {
@@ -111,10 +144,12 @@ describe('CRM Service', () => {
           order: sampleOrder,
           contact: null
         });
-      });
+        done();
+      })
+      .catch(fail);
   });
 
-  it('Returns a full result when contact is found', () => {
+  it('Returns a full result when contact is found', (done) => {
     const sampleContact = {
       'ID': 'CQF8AA00BEDE',
       'VinculoConLN': 'Suscriptor',
@@ -160,8 +195,9 @@ describe('CRM Service', () => {
           order: sampleOrder,
           contact: sampleContact
         });
-      });
-
+        done();
+      })
+      .catch(fail);
   });
 
   it('Returns a promise on insertContact', () => {
@@ -218,12 +254,10 @@ describe('CRM Service', () => {
       .withArgs(expectedRequest)
       .resolves(sampleResponse);
 
-    const result = {
+    CRMService.insertContact({
       order: sampleOrder,
       contact: null
-    };
-
-    CRMService.insertContact(result)
+    })
       .then(() => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
@@ -243,50 +277,20 @@ describe('CRM Service', () => {
 
     const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
 
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: 'No Responsable',
-            PrimerNombre: 'Juan',
-            Apellido: 'Perez',
-            TelCasa: '15-1234-5678',
-            TelTrabajo: '11111111',
-            Calle: 'Cabildo',
-            Numero: 2779,
-            Piso: '10',
-            Dpto: 'A',
-            CodigoPostal: '1428',
-            Localidad: 'Capital Federal',
-            UP: true,
-            Provincia: 'Capital Federal',
-            Pais: 'Argentina',
-            VinculoLN: 'PROSPECT',
-            TipoDoc: 'DNI',
-            NumeroDoc: '12345678',
-            Sexo: 'M',
-            Email: 'example@domain.com',
-            TipoPropiedad: 'No Informa',
-            NombrePropiedad: 'No Informa',
-            Barrio: 'No Informa'
-          }
-        ]
-      },
-    };
-
     const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
       .once()
-      .withArgs(expectedRequest)
+      .withArgs(expectedInsertRequest)
       .resolves(sampleResponse);
-
-    const result = {
-      order: sampleOrder,
-      contact: null
-    };
 
     sampleOrder.shipping_address.telephone = '11111111';
 
-    CRMService.insertContact(result)
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].TelCasa = '15-1234-5678';
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].TelTrabajo = '11111111';
+
+    CRMService.insertContact({
+      order: sampleOrder,
+      contact: null
+    })
       .then(() => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
@@ -296,7 +300,7 @@ describe('CRM Service', () => {
       .catch(fail);
   });
 
-  it('Resolves a full result after insert', () => {
+  it('Resolves a full result after insert', (done) => {
     const result = {
       order: sampleOrder,
       contact: null
@@ -360,11 +364,12 @@ describe('CRM Service', () => {
           order: sampleOrder,
           contact: sampleContact
         });
+        done();
       })
       .catch(fail);
   });
 
-  it('Resolves a full result when insert fails', () => {
+  it('Resolves a full result when insert fails', (done) => {
     const result = {
       order: sampleOrder,
       contact: null
@@ -416,11 +421,12 @@ describe('CRM Service', () => {
           contact: null,
           error: new Error('[TipoErrorCrm] Crm Error')
         });
+        done();
       })
       .catch(fail);
   });
 
-  it('Resolves a full result when insert has invalid response', () => {
+  it('Resolves a full result when insert has invalid response', (done) => {
     const result = {
       order: sampleOrder,
       contact: null
@@ -435,6 +441,7 @@ describe('CRM Service', () => {
           contact: null,
           error: jasmine.any(Error)
         });
+        done();
       })
       .catch(fail);
   });
@@ -446,55 +453,23 @@ describe('CRM Service', () => {
      * @var {Sinon.SinonMock} clientMock
      */
     const clientMock = sinon.mock(clientStub);
-
     const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
-
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: 'No Responsable',
-            PrimerNombre: 'Juan',
-            Apellido: 'Perez',
-            TelCasa: '15-1234-5678',
-            Calle: 'Cabildo',
-            Numero: 2779,
-            Piso: '10',
-            Dpto: 'A',
-            CodigoPostal: '1428',
-            Localidad: 'Capital Federal',
-            UP: true,
-            Provincia: 'Capital Federal',
-            Pais: 'United States',
-            VinculoLN: 'PROSPECT',
-            TipoDoc: 'PAS',
-            NumeroDoc: '12345678',
-            Sexo: 'M',
-            Email: 'example@domain.com',
-            TipoPropiedad: 'No Informa',
-            NombrePropiedad: 'No Informa',
-            Barrio: 'No Informa'
-          }
-        ]
-      },
-    };
 
     const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
       .once()
-      .withArgs(expectedRequest)
+      .withArgs(expectedInsertRequest)
       .resolves(sampleResponse);
-
 
     sampleOrder.customer.id_type = 'DNI';
     sampleOrder.billing_address.country = 'US';
 
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].TipoDoc = 'PAS';
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].Pais = 'United States';
 
-    const result = {
+    CRMService.insertContact({
       order: sampleOrder,
       contact: null
-    };
-
-    CRMService.insertContact(result)
+    })
       .then(() => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
@@ -514,49 +489,18 @@ describe('CRM Service', () => {
 
     const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
 
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: 'No Responsable',
-            PrimerNombre: 'Juan',
-            Apellido: 'Perez',
-            TelCasa: '15-1234-5678',
-            Calle: 'Cabildo',
-            Numero: 2779,
-            Piso: '10',
-            Dpto: 'A',
-            CodigoPostal: '1428',
-            Localidad: 'Capital Federal',
-            UP: true,
-            Provincia: 'Capital Federal',
-            Pais: 'Argentina',
-            VinculoLN: 'PROSPECT',
-            TipoDoc: 'DNI',
-            NumeroDoc: '12345678',
-            Sexo: null,
-            Email: 'example@domain.com',
-            TipoPropiedad: 'No Informa',
-            NombrePropiedad: 'No Informa',
-            Barrio: 'No Informa'
-          }
-        ]
-      },
-    };
-
     const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
       .once()
-      .withArgs(expectedRequest)
+      .withArgs(expectedInsertRequest)
       .resolves(sampleResponse);
 
-    const result = {
+    delete sampleOrder.customer.gender;
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].Sexo = null;
+
+    CRMService.insertContact({
       order: sampleOrder,
       contact: null
-    };
-
-    delete result.order.customer.gender;
-
-    CRMService.insertContact(result)
+    })
       .then(() => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
@@ -576,52 +520,21 @@ describe('CRM Service', () => {
 
     const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
 
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: 'No Responsable',
-            PrimerNombre: 'Juan',
-            Apellido: 'Perez',
-            TelCasa: '15-1234-5678',
-            Calle: 'Cabildo',
-            Numero: 2779,
-            Piso: '10',
-            Dpto: 'A',
-            CodigoPostal: '1428',
-            Localidad: 'Capital Federal',
-            UP: true,
-            Provincia: 'Capital Federal',
-            Pais: 'United States',
-            VinculoLN: 'PROSPECT',
-            TipoDoc: 'PAS',
-            NumeroDoc: '12345678',
-            Sexo: 'M',
-            Email: 'example@domain.com',
-            TipoPropiedad: 'No Informa',
-            NombrePropiedad: 'No Informa',
-            Barrio: 'No Informa'
-          }
-        ]
-      },
-    };
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].TipoDoc = 'PAS';
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].Pais = 'United States';
 
     const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
       .once()
-      .withArgs(expectedRequest)
+      .withArgs(expectedInsertRequest)
       .resolves(sampleResponse);
-
 
     sampleOrder.customer.id_type = 'PASAPORTE';
     sampleOrder.billing_address.country = 'US';
 
-
-    const result = {
+    CRMService.insertContact({
       order: sampleOrder,
       contact: null
-    };
-
-    CRMService.insertContact(result)
+    })
       .then(() => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
@@ -638,50 +551,17 @@ describe('CRM Service', () => {
      * @var {Sinon.SinonMock} clientMock
      */
     const clientMock = sinon.mock(clientStub);
-
     const queryContactMethodSpy = spyOn(clientStub, 'Consulta_ContactoPorDocumentoAsync');
-
-    const expectedRequest = {
-      listaContactos: {
-        ContactoMasivo: [
-          {
-            CondicionIVA: sinon.match.string,
-            PrimerNombre: sinon.match.string,
-            Apellido: sinon.match.string,
-            TelCasa: sinon.match.string,
-            Calle: sinon.match.string,
-            Numero: sinon.match.number,
-            Piso: sinon.match.string,
-            Dpto: sinon.match.string,
-            CodigoPostal: sinon.match.string,
-            Localidad: sinon.match.string,
-            UP: sinon.match.bool,
-            Provincia: sinon.match.string,
-            Pais: sinon.match.string,
-            VinculoLN: sinon.match.string,
-            TipoDoc: sinon.match.string,
-            NumeroDoc: sinon.match.string,
-            Sexo: sinon.match.string,
-            Email: sinon.match.string,
-            TipoPropiedad: sinon.match.string,
-            NombrePropiedad: sinon.match.string,
-            Barrio: sinon.match.string
-          }
-        ]
-      },
-    };
-
     const soapMethodExpectation = clientMock.expects('Alta_Masiva_ContactoAsync')
       .once()
-      .withArgs(expectedRequest)
+      .withArgs(expectedInsertRequest)
       .resolves(sampleResponse);
-
 
     sampleOrder.billing_address.street = 'Cabildo 2779';
     sampleOrder.billing_address.number = 0;
 
-    expectedRequest.listaContactos.ContactoMasivo[0].Calle = 'Cabildo 2779';
-    expectedRequest.listaContactos.ContactoMasivo[0].Numero = 'N/A';
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].Calle = 'Cabildo 2779';
+    expectedInsertRequest.listaContactos.ContactoMasivo[0].Numero = 'N/A';
 
     const result = {
       order: sampleOrder,
