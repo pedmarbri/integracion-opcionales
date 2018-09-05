@@ -173,7 +173,7 @@ describe('CRM Service', () => {
         expect(CRMService.insertContact(result)).toEqual(jasmine.any(Promise));
     });
 
-    it('Inserts a new contact when one is not found', () => {
+    it('Inserts a new contact when one is not found', (done) => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -197,14 +197,17 @@ describe('CRM Service', () => {
                         Dpto: 'A',
                         CodigoPostal: '1428',
                         Localidad: 'Capital Federal',
-                        UP: false,
+                        UP: true,
                         Provincia: 'Capital Federal',
                         Pais: 'Argentina',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'DNI',
                         NumeroDoc: '12345678',
                         Sexo: 'M',
-                        Email: 'example@domain.com'
+                        Email: 'example@domain.com',
+                        TipoPropiedad: 'No Informa',
+                        NombrePropiedad: 'No Informa',
+                        Barrio: 'No Informa'
                     }
                 ]
             },
@@ -225,11 +228,12 @@ describe('CRM Service', () => {
                 expect(createClientSpy).toHaveBeenCalled();
                 expect(queryContactMethodSpy).not.toHaveBeenCalled();
                 soapMethodExpectation.verify();
+                done();
             })
             .catch(fail);
     });
 
-    it('Uses shipping phone for work phone', () => {
+    it('Uses shipping phone for work phone', (done) => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -254,14 +258,17 @@ describe('CRM Service', () => {
                         Dpto: 'A',
                         CodigoPostal: '1428',
                         Localidad: 'Capital Federal',
-                        UP: false,
+                        UP: true,
                         Provincia: 'Capital Federal',
                         Pais: 'Argentina',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'DNI',
                         NumeroDoc: '12345678',
                         Sexo: 'M',
-                        Email: 'example@domain.com'
+                        Email: 'example@domain.com',
+                        TipoPropiedad: 'No Informa',
+                        NombrePropiedad: 'No Informa',
+                        Barrio: 'No Informa'
                     }
                 ]
             },
@@ -284,6 +291,7 @@ describe('CRM Service', () => {
                 expect(createClientSpy).toHaveBeenCalled();
                 expect(queryContactMethodSpy).not.toHaveBeenCalled();
                 soapMethodExpectation.verify();
+                done();
             })
             .catch(fail);
     });
@@ -431,7 +439,7 @@ describe('CRM Service', () => {
             .catch(fail);
     });
 
-    it('Recognizes foreign IDs', () => {
+    it('Recognizes foreign IDs', (done) => {
         const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
         /**
@@ -455,14 +463,17 @@ describe('CRM Service', () => {
                         Dpto: 'A',
                         CodigoPostal: '1428',
                         Localidad: 'Capital Federal',
-                        UP: false,
+                        UP: true,
                         Provincia: 'Capital Federal',
                         Pais: 'United States',
                         VinculoLN: 'PROSPECT',
                         TipoDoc: 'PAS',
                         NumeroDoc: '12345678',
                         Sexo: 'M',
-                        Email: 'example@domain.com'
+                        Email: 'example@domain.com',
+                        TipoPropiedad: 'No Informa',
+                        NombrePropiedad: 'No Informa',
+                        Barrio: 'No Informa'
                     }
                 ]
             },
@@ -488,11 +499,12 @@ describe('CRM Service', () => {
                 expect(createClientSpy).toHaveBeenCalled();
                 expect(queryContactMethodSpy).not.toHaveBeenCalled();
                 soapMethodExpectation.verify();
+                done();
             })
             .catch(fail);
     });
 
-    it('Allows for gender to be missing', () => {
+    it('Allows for gender to be missing', (done) => {
       const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
       /**
@@ -516,14 +528,17 @@ describe('CRM Service', () => {
               Dpto: 'A',
               CodigoPostal: '1428',
               Localidad: 'Capital Federal',
-              UP: false,
+              UP: true,
               Provincia: 'Capital Federal',
               Pais: 'Argentina',
               VinculoLN: 'PROSPECT',
               TipoDoc: 'DNI',
               NumeroDoc: '12345678',
               Sexo: null,
-              Email: 'example@domain.com'
+              Email: 'example@domain.com',
+              TipoPropiedad: 'No Informa',
+              NombrePropiedad: 'No Informa',
+              Barrio: 'No Informa'
             }
           ]
         },
@@ -546,11 +561,12 @@ describe('CRM Service', () => {
           expect(createClientSpy).toHaveBeenCalled();
           expect(queryContactMethodSpy).not.toHaveBeenCalled();
           soapMethodExpectation.verify();
+          done();
         })
         .catch(fail);
     });
 
-  it('Converts Passport ID type to API code', () => {
+  it('Converts Passport ID type to API code', (done) => {
     const createClientSpy = spyOn(soapStub, 'createClientAsync').and.callThrough();
 
     /**
@@ -574,14 +590,17 @@ describe('CRM Service', () => {
             Dpto: 'A',
             CodigoPostal: '1428',
             Localidad: 'Capital Federal',
-            UP: false,
+            UP: true,
             Provincia: 'Capital Federal',
             Pais: 'United States',
             VinculoLN: 'PROSPECT',
             TipoDoc: 'PAS',
             NumeroDoc: '12345678',
             Sexo: 'M',
-            Email: 'example@domain.com'
+            Email: 'example@domain.com',
+            TipoPropiedad: 'No Informa',
+            NombrePropiedad: 'No Informa',
+            Barrio: 'No Informa'
           }
         ]
       },
@@ -607,8 +626,13 @@ describe('CRM Service', () => {
         expect(createClientSpy).toHaveBeenCalled();
         expect(queryContactMethodSpy).not.toHaveBeenCalled();
         soapMethodExpectation.verify();
+        done();
       })
       .catch(fail);
+  });
+
+  xit('Sends N/A when street number is missing', () => {
+
   });
 
 });

@@ -84,7 +84,7 @@ exports.insertContact = result => {
             listaContactos: {
                 ContactoMasivo: [
                     {
-                        UP: false,
+                        UP: true,
                         VinculoLN: 'PROSPECT',
                         CondicionIVA: 'No Responsable',
                         TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
@@ -96,11 +96,14 @@ exports.insertContact = result => {
                         Pais: isoCountries.getCountryName(result.order.billing_address.country),
                         Provincia: result.order.billing_address.region,
                         Localidad: result.order.billing_address.city,
+                        Barrio: 'No Informa',
                         CodigoPostal: result.order.billing_address.post_code,
                         Calle: result.order.billing_address.street,
                         Numero: result.order.billing_address.number,
                         Piso: result.order.billing_address.floor,
                         Dpto: result.order.billing_address.apartment,
+                        TipoPropiedad: 'No Informa',
+                        NombrePropiedad: 'No Informa',
                         TelCasa: result.order.billing_address.telephone,
                     }
                 ]
