@@ -31,7 +31,8 @@ fi
 
 for d in ./functions/* ;
 do
-    cd ${BASEDIR}/${d} && npm install --production ;
+  echo "Installing ${d}.";
+  cd ${BASEDIR}/${d} && npm i --production || { echo "Fallo la instalacion de ${d}." ; exit 1 ; }
 done
 
 echo "Deploy to CloudFormation"
@@ -39,11 +40,11 @@ echo "Deploy to CloudFormation"
 cd ${BASEDIR};
 
 aws cloudformation package \
-    --template-file cloudformation.json \
-    --s3-bucket ${BUCKET} \
-    --output-template-file output.yml \
-    && aws cloudformation deploy \
-        --template-file output.yml \
-        --stack-name ${STACK_NAME} \
-        --capabilities CAPABILITY_IAM \
-        --parameter-overrides LNStack=${LN_STACK}
+  --template-file cloudformation.json \
+  --s3-bucket ${BUCKET} \
+  --output-template-file output.yml \
+  && aws cloudformation deploy \
+    --template-file output.yml \
+    --stack-name ${STACK_NAME} \
+    --capabilities CAPABILITY_IAM \
+    --parameter-overrides LNStack=${LN_STACK}
