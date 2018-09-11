@@ -8,10 +8,10 @@ const sinon = require( 'sinon' );
 const proxyquire = require( 'proxyquire' );
 proxyquire.noCallThru();
 
-describe('CRM Worker Service', () => {
+describe('BAU Worker Service', () => {
 
     let lambdaRequestStub;
-    let CRMWorkerService;
+    let BAUWorkerService;
     let stubConfig;
     let AWSStub;
     let lambdaStub;
@@ -43,12 +43,12 @@ describe('CRM Worker Service', () => {
         AWSStub.Lambda.returns(lambdaStub);
 
         stubConfig = { 'aws-sdk': AWSStub };
-        CRMWorkerService = proxyquire('../crm-worker-service', stubConfig);
+        BAUWorkerService = proxyquire('../bau-worker-service', stubConfig);
     });
 
     it('Returns a promise on process', () => {
         lambdaRequestStub.promise.resolves([]);
-        expect(CRMWorkerService.process()).toEqual(jasmine.any(Promise));
+        expect(BAUWorkerService.process()).toEqual(jasmine.any(Promise));
     });
 
     it('Handles rejection on process', () => {
@@ -57,7 +57,7 @@ describe('CRM Worker Service', () => {
 
         lambdaRequestStub.promise.rejects();
 
-        CRMWorkerService.process()
+        BAUWorkerService.process()
             .then(messagesHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));

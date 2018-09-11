@@ -8,9 +8,9 @@ const sinon = require( 'sinon' );
 const proxyquire = require( 'proxyquire' );
 proxyquire.noCallThru();
 
-describe('CRM Queue Service', () => {
+describe('BAU Queue Service', () => {
 
-    let crmQueueService;
+    let bauQueueService;
     let sqsStub;
     let sqsRequestStub;
     let AWSStub;
@@ -43,12 +43,12 @@ describe('CRM Queue Service', () => {
         AWSStub.SQS.returns(sqsStub);
 
         stubConfig = { 'aws-sdk': AWSStub };
-        crmQueueService = proxyquire('../crm-queue-service', stubConfig);
+        bauQueueService = proxyquire('../bau-queue-service', stubConfig);
     });
 
     it('Returns a promise on receiveMessage', () => {
         sqsRequestStub.promise.resolves([]);
-        expect(crmQueueService.receiveMessages()).toEqual(jasmine.any(Promise));
+        expect(bauQueueService.receiveMessages()).toEqual(jasmine.any(Promise));
     });
 
     it('Contains json messages', () => {
@@ -64,7 +64,7 @@ describe('CRM Queue Service', () => {
 
         sqsRequestStub.promise.resolves(sqsResult);
 
-        crmQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
+        bauQueueService.receiveMessages().then(messages => expect(messages[0].json).toEqual( { foo: 'bar' } ));
     });
 
     it('Handles rejection on receiveMessage', () => {
@@ -72,7 +72,7 @@ describe('CRM Queue Service', () => {
 
         sqsRequestStub.promise.rejects();
 
-        crmQueueService.receiveMessages()
+        bauQueueService.receiveMessages()
             .then(messagesHandler)
             .catch(err => {
                 expect(err).toEqual(jasmine.any(Error));
