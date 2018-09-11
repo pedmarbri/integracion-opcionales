@@ -20,11 +20,11 @@
         "CONN_PORT": "1434"
       },
       "Production": {
-        "CONN_USER": "",
-        "CONN_PASS": "",
-        "CONN_SERVER": "",
-        "CONN_DATABASE": "",
-        "CONN_PORT": ""
+        "CONN_USER": "usrColecciones",
+        "CONN_PASS": "weu4578SA}DV{xN",
+        "CONN_SERVER": "SRVSQLAUDI16",
+        "CONN_DATABASE": "AUDIENCIA",
+        "CONN_PORT": "1434"
       }
     }
   },
