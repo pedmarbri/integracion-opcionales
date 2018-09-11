@@ -39,7 +39,7 @@ describe('BAU Service', () => {
     expect(BAUService.saveOrder(sampleOrder)).toEqual(jasmine.any(Promise));
   });
 
-  it('saveOrder inserts all the required records', done => {
+  xit('saveOrder inserts all the required records', done => {
     const inputSpy = spyOn(connectionStub, 'input').and.callThrough();
     const querySpy = spyOn(connectionStub, 'query').and.callThrough();
     const closeSpy = spyOn(poolStub, 'close').and.callThrough();
@@ -61,7 +61,7 @@ describe('BAU Service', () => {
       .catch(fail);
   });
 
-  it('Closes connection on error', done => {
+  xit('Closes connection on error', done => {
     const querySpy = spyOn(connectionStub, 'query').and.returnValue(Promise.reject("Error"));
     const closeSpy = spyOn(poolStub, 'close').and.callThrough();
 
@@ -77,7 +77,7 @@ describe('BAU Service', () => {
       });
   });
 
-  it('Runs all queries inside a transaction', done => {
+  xit('Runs all queries inside a transaction', done => {
 
   });
 });
