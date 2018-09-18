@@ -285,7 +285,7 @@ Resources:
     Type: AWS::Serverless::Function
   CRMConsumer:
     Properties:
-      CodeUri: s3://integracion-opcionales/6054c4d4d9c71b80b112cf837150869a
+      CodeUri: s3://integracion-opcionales/327187b790f0c2a73b678052645659e5
       Environment:
         Variables:
           CRM_QUEUE_URL:
@@ -350,7 +350,7 @@ Resources:
     Type: AWS::IAM::Role
   CRMWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/d95f21a10ce9da86f4fc2d7c342685ea
+      CodeUri: s3://integracion-opcionales/c1c35c713a0b72d93f666ca60ae35384
       Environment:
         Variables:
           CRM_QUEUE_URL:
@@ -554,7 +554,7 @@ Resources:
     Type: AWS::IAM::Role
   JobBroker:
     Properties:
-      CodeUri: s3://integracion-opcionales/63f431e240a5643a7a172269d960ff0d
+      CodeUri: s3://integracion-opcionales/64eb2cf66ea1e70e8bdd0908a16064d4
       Environment:
         Variables:
           CRM_QUEUE_URL:
@@ -1071,7 +1071,7 @@ Resources:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
   SapCMConsumer:
     Properties:
-      CodeUri: s3://integracion-opcionales/9b9c504b2550819eb5194385731217e1
+      CodeUri: s3://integracion-opcionales/be089cc92af6d4c3ecda73e0386a5cc6
       Environment:
         Variables:
           LN_STACK:
@@ -1145,7 +1145,7 @@ Resources:
     Type: AWS::SQS::Queue
   SapCMWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/3496c82c8bcbbec9dd45cba7d824df73
+      CodeUri: s3://integracion-opcionales/b05729f913dde854039b79255a909942
       Environment:
         Variables:
           LN_STACK:
@@ -1226,7 +1226,7 @@ Resources:
     Type: AWS::IAM::Role
   SapOrderConsumer:
     Properties:
-      CodeUri: s3://integracion-opcionales/a9b75f5b09ba24cf109755ca82923d5e
+      CodeUri: s3://integracion-opcionales/61d3995ec2a7887d098281be28307bc0
       Environment:
         Variables:
           LN_STACK:
@@ -1301,7 +1301,7 @@ Resources:
     Type: AWS::SQS::Queue
   SapOrderWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/4fa07d6f9bbae8f8ce5ff014355766bf
+      CodeUri: s3://integracion-opcionales/da45194f6ce7b425eba9d17f41e7bf91
       Environment:
         Variables:
           BAU_QUEUE_URL:
