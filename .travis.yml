@@ -4,8 +4,6 @@ node_js: "6.10.1"
 cache:
   directories:
     - ../../libs/node_modules
-before_install:
-  - chmod +x /*
 install:
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && travis_wait npm install ; done ;
 script:
