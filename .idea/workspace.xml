@@ -90,6 +90,7 @@
   </component>
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/functions/CRMWorker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/JobBroker/node_modules" />
     <handled-path value="$PROJECT_DIR$/functions/SAPCMWorker/node_modules" />
     <handled-path value="$PROJECT_DIR$/functions/SAPOrderWorker/node_modules" />
   </component>
@@ -160,12 +161,12 @@
       <updated>1537198532086</updated>
       <workItem from="1537198534903" duration="9321000" />
       <workItem from="1537276042400" duration="1077000" />
-      <workItem from="1537277236348" duration="8761000" />
+      <workItem from="1537277236348" duration="9357000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19159000" />
+    <option name="totallyTimeSpent" value="19755000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
