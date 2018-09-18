@@ -1,0 +1,1409 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Integracion de pedidos para SALN
+Mappings:
+  BAUCredentials:
+    Dev:
+      CONNDATABASE: AUDIENCIA
+      CONNPASS: pwdColecciones
+      CONNPORT: '1434'
+      CONNSERVER: SRVOLSQLQA
+      CONNUSER: usrColecciones
+    Production:
+      CONNDATABASE: AUDIENCIA
+      CONNPASS: weu4578SA}DV{xN
+      CONNPORT: '1434'
+      CONNSERVER: SRVSQLAUDI16
+      CONNUSER: usrColecciones
+    Test:
+      CONNDATABASE: AUDIENCIA
+      CONNPASS: pwdColecciones
+      CONNPORT: '1434'
+      CONNSERVER: SRVOLSQLQA
+      CONNUSER: usrColecciones
+Parameters:
+  LNStack:
+    AllowedValues:
+    - Test
+    - Production
+    - Dev
+    Default: Test
+    Description: LN Stack being used, Dev, Test or Production. Default is Test
+    Type: String
+Resources:
+  APIOpcionales:
+    Description: "Integraci\xC3\xB3n de Pedidos para SALN"
+    Properties:
+      Name:
+        Fn::Join:
+        - ' - '
+        - - Order API
+          - Ref: LNStack
+    Type: AWS::ApiGateway::RestApi
+  APIOpcionalesCreditMemoResource:
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+        - APIOpcionales
+        - RootResourceId
+      PathPart: creditmemo
+      RestApiId:
+        Ref: APIOpcionales
+    Type: AWS::ApiGateway::Resource
+  APIOpcionalesOrderResource:
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+        - APIOpcionales
+        - RootResourceId
+      PathPart: order
+      RestApiId:
+        Ref: APIOpcionales
+    Type: AWS::ApiGateway::Resource
+  APIOpcionalesSQSIAM:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - apigateway.amazonaws.com
+        Version: '2012-10-17'
+      Path: /app/all/
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: '*'
+          - Action:
+            - sqs:SendMessage
+            Effect: Allow
+            Resource:
+            - '*'
+          Version: '2012-10-17'
+        PolicyName: APIGATEWAYIAMAll
+    Type: AWS::IAM::Role
+  APIOpcionalesValidator:
+    Properties:
+      Name: Validate Body
+      RestApiId:
+        Ref: APIOpcionales
+      ValidateRequestBody: true
+      ValidateRequestParameters: false
+    Type: AWS::ApiGateway::RequestValidator
+  BAUConsumer:
+    Properties:
+      CodeUri: s3://integracion-opcionales/7a119fac8f1ba5d98c65746b3e1c9505
+      Environment:
+        Variables:
+          BAU_QUEUE_URL:
+            Ref: BauQueue
+          BAU_WORKER:
+            Ref: BauWorker
+          LN_STACK:
+            Ref: LNStack
+      Events:
+        Timer:
+          Properties:
+            Schedule: rate(5 minutes)
+          Type: Schedule
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${BAUConsumerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 60
+    Type: AWS::Serverless::Function
+  BAUConsumerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:ReceiveMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${BauQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${BauWorker.Arn}
+        PolicyName: lambda
+    Type: AWS::IAM::Role
+  BAUWorkerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DetachNetworkInterface
+            - ec2:DeleteNetworkInterface
+            Effect: Allow
+            Resource: '*'
+        PolicyName: VPC-execution
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:DeleteMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${BauQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:SendMessage
+            Effect: Allow
+            Resource:
+            - Fn::Sub: ${SapOrderQueue.Arn}
+        PolicyName: sqsSendMessage
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:dynamodb:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :table/
+                - Ref: OrderTable
+        PolicyName: dynamodb
+    Type: AWS::IAM::Role
+  BauDeadLetterQueue:
+    Type: AWS::SQS::Queue
+  BauQueue:
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::Sub: ${BauDeadLetterQueue.Arn}
+        maxReceiveCount: 10
+    Type: AWS::SQS::Queue
+  BauWorker:
+    Properties:
+      CodeUri: s3://integracion-opcionales/cb23f15425810c651615faebb02a047a
+      Environment:
+        Variables:
+          BAU_QUEUE_URL:
+            Ref: BauQueue
+          CONNDATABASE:
+            Fn::FindInMap:
+            - BAUCredentials
+            - Ref: LNStack
+            - CONNDATABASE
+          CONNPASS:
+            Fn::FindInMap:
+            - BAUCredentials
+            - Ref: LNStack
+            - CONNPASS
+          CONNPORT:
+            Fn::FindInMap:
+            - BAUCredentials
+            - Ref: LNStack
+            - CONNPORT
+          CONNSERVER:
+            Fn::FindInMap:
+            - BAUCredentials
+            - Ref: LNStack
+            - CONNSERVER
+          CONNUSER:
+            Fn::FindInMap:
+            - BAUCredentials
+            - Ref: LNStack
+            - CONNUSER
+          LN_STACK:
+            Ref: LNStack
+          ORDER_TABLE:
+            Ref: OrderTable
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${BAUWorkerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 15
+    Type: AWS::Serverless::Function
+  CRMConsumer:
+    Properties:
+      CodeUri: s3://integracion-opcionales/6054c4d4d9c71b80b112cf837150869a
+      Environment:
+        Variables:
+          CRM_QUEUE_URL:
+            Ref: CrmQueue
+          CRM_WORKER:
+            Ref: CRMWorker
+          LN_STACK:
+            Ref: LNStack
+      Events:
+        Timer:
+          Properties:
+            Schedule: rate(5 minutes)
+          Type: Schedule
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${CRMConsumerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 60
+    Type: AWS::Serverless::Function
+  CRMConsumerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:ReceiveMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${CrmQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${CRMWorker.Arn}
+        PolicyName: lambda
+    Type: AWS::IAM::Role
+  CRMWorker:
+    Properties:
+      CodeUri: s3://integracion-opcionales/9fef35a6a71d32711985e06ab03bae7a
+      Environment:
+        Variables:
+          CRM_QUEUE_URL:
+            Ref: CrmQueue
+          LN_STACK:
+            Ref: LNStack
+          ORDER_TABLE:
+            Ref: OrderTable
+          SAP_ORDER_QUEUE_URL:
+            Ref: SapOrderQueue
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${CRMWorkerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 15
+    Type: AWS::Serverless::Function
+  CRMWorkerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DetachNetworkInterface
+            - ec2:DeleteNetworkInterface
+            Effect: Allow
+            Resource: '*'
+        PolicyName: VPC-execution
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:DeleteMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${CrmQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:SendMessage
+            Effect: Allow
+            Resource:
+            - Fn::Sub: ${SapOrderQueue.Arn}
+        PolicyName: sqsSendMessage
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:dynamodb:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :table/
+                - Ref: OrderTable
+        PolicyName: dynamodb
+    Type: AWS::IAM::Role
+  CreditMemoModel:
+    Properties:
+      ContentType: application/json
+      RestApiId:
+        Ref: APIOpcionales
+      Schema:
+        properties:
+          creditmemo_id:
+            type: string
+          items:
+            items:
+              properties:
+                discount_amount:
+                  minimum: 0
+                  type: number
+                discount_percent:
+                  minimum: 0
+                  type: number
+                flags:
+                  items:
+                    enum:
+                    - exclusive
+                    - broken
+                    type: string
+                  type: array
+                name:
+                  type: string
+                qty:
+                  exclusiveMinimum: true
+                  minimum: 0
+                  type: number
+                reason:
+                  type: string
+                refund_amount:
+                  exclusiveMinimum: true
+                  minimum: 0
+                  type: number
+                return_stock:
+                  type: boolean
+                row_total:
+                  minimum: 0
+                  type: number
+                sku:
+                  minLength: 1
+                  type: string
+              required:
+              - sku
+              - name
+              - reason
+              - qty
+              - refund_amount
+              - discount_percent
+              - discount_amount
+              - row_total
+              type: object
+            type: array
+          order_id:
+            type: string
+          timestamp:
+            format: date-time
+            type: string
+          totals:
+            properties:
+              shipping:
+                minimum: 0
+                type: number
+            type: object
+        required:
+        - creditmemo_id
+        - order_id
+        - timestamp
+        - totals
+        - items
+        title: Credit Memo
+        type: object
+    Type: AWS::ApiGateway::Model
+  CrmDeadLetterQueue:
+    Type: AWS::SQS::Queue
+  CrmQueue:
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::Sub: ${CrmDeadLetterQueue.Arn}
+        maxReceiveCount: 10
+    Type: AWS::SQS::Queue
+  DBScalingRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - application-autoscaling.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:DescribeTable
+            - dynamodb:UpdateTable
+            - cloudwatch:PutMetricAlarm
+            - cloudwatch:DescribeAlarms
+            - cloudwatch:GetMetricStatistics
+            - cloudwatch:SetAlarmState
+            - cloudwatch:DeleteAlarms
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: root
+    Type: AWS::IAM::Role
+  JobBroker:
+    Properties:
+      CodeUri: s3://integracion-opcionales/01372f88bf8332badebb294a727fe14b
+      Environment:
+        Variables:
+          CRM_QUEUE_URL:
+            Ref: CrmQueue
+          JOB_QUEUE_URL:
+            Ref: JobQueue
+          LN_STACK:
+            Ref: LNStack
+          ORDER_TABLE:
+            Ref: OrderTable
+          SAP_CM_QUEUE_URL:
+            Ref: SapCMQueue
+          SAP_ORDER_QUEUE_URL:
+            Ref: SapOrderQueue
+      Events:
+        Timer:
+          Properties:
+            Schedule: rate(5 minutes)
+          Type: Schedule
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+        - JobBrokerRole
+        - Arn
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 60
+    Type: AWS::Serverless::Function
+  JobBrokerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${JobQueue.Arn}
+        PolicyName: sqsRead
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:SendMessage
+            Effect: Allow
+            Resource:
+            - Fn::Sub: ${CrmQueue.Arn}
+            - Fn::Sub: ${SapCMQueue.Arn}
+        PolicyName: sqsWrite
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:dynamodb:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :table/
+                - Ref: OrderTable
+        PolicyName: dynamodb
+    Type: AWS::IAM::Role
+  JobDeadLetterQueue:
+    Type: AWS::SQS::Queue
+  JobQueue:
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::Sub: ${JobDeadLetterQueue.Arn}
+        maxReceiveCount: 10
+      VisibilityTimeout: 60
+    Type: AWS::SQS::Queue
+  OrderModel:
+    Properties:
+      ContentType: application/json
+      RestApiId:
+        Ref: APIOpcionales
+      Schema:
+        properties:
+          billing_address:
+            properties:
+              apartment:
+                type: string
+              city:
+                type: string
+              country:
+                maxLength: 2
+                minLength: 2
+                type: string
+              email:
+                format: email
+                type: string
+              first_name:
+                type: string
+              floor:
+                type: string
+              last_name:
+                type: string
+              number:
+                type: integer
+              post_code:
+                type: string
+              region:
+                type: string
+              street:
+                type: string
+              telephone:
+                type: string
+            required:
+            - country
+            - region
+            - city
+            - post_code
+            - street
+            - number
+            - first_name
+            - last_name
+            - email
+            - telephone
+            type: object
+          customer:
+            properties:
+              birth_date:
+                format: date-time
+                type: string
+              email:
+                format: email
+                type: string
+              first_name:
+                type: string
+              gender:
+                enum:
+                - F
+                - M
+                - 'null'
+                type:
+                - string
+                - 'null'
+              id_number:
+                type: string
+              id_type:
+                enum:
+                - DNI
+                - CI
+                - LC
+                - LE
+                - PASAPORTE
+                - dni
+                - ci
+                - lc
+                - le
+                - pasaporte
+                type: string
+              last_name:
+                type: string
+            required:
+            - birth_date
+            - email
+            - first_name
+            - last_name
+            - id_type
+            - id_number
+            type: object
+          items:
+            items:
+              properties:
+                discount_amount:
+                  minimum: 0
+                  type: number
+                discount_percent:
+                  minimum: 0
+                  type: number
+                flags:
+                  items:
+                    enum:
+                    - exclusive
+                    type: string
+                  type: array
+                list_price:
+                  exclusiveMinimum: true
+                  minimum: 0
+                  type: number
+                name:
+                  type: string
+                qty:
+                  exclusiveMinimum: true
+                  minimum: 0
+                  type: number
+                row_total:
+                  minimum: 0
+                  type: number
+                row_weight:
+                  minimum: 0
+                  type: number
+                sku:
+                  minLength: 1
+                  type: string
+                weight:
+                  minimum: 0
+                  type: number
+              required:
+              - sku
+              - name
+              - qty
+              - weight
+              - row_weight
+              - list_price
+              - discount_percent
+              - discount_amount
+              - row_total
+              type: object
+            minItems: 1
+            type: array
+          order_id:
+            type: string
+          payment:
+            properties:
+              method:
+                minLength: 1
+                type: string
+              transaction_id:
+                minLength: 1
+                type: string
+            required:
+            - method
+            type: object
+          sales_channel:
+            type: string
+          shipping_address:
+            properties:
+              apartment:
+                type: string
+              city:
+                type: string
+              country:
+                maxLength: 2
+                minLength: 2
+                type: string
+              email:
+                format: email
+                type: string
+              first_name:
+                type: string
+              floor:
+                type: string
+              last_name:
+                type: string
+              number:
+                type: integer
+              post_code:
+                type: string
+              region:
+                type: string
+              street:
+                type: string
+              telephone:
+                type: string
+            required:
+            - country
+            - region
+            - city
+            - post_code
+            - street
+            - number
+            - first_name
+            - last_name
+            - email
+            - telephone
+            type: object
+          shipping_method:
+            type: string
+          timestamp:
+            format: date-time
+            type: string
+          totals:
+            properties:
+              discount:
+                minimum: 0
+                type: number
+              finance_cost:
+                minimum: 0
+                type: number
+              grand_total:
+                minimum: 0
+                type: number
+              shipping:
+                minimum: 0
+                type: number
+              subtotal:
+                minimum: 0
+                type: number
+            required:
+            - subtotal
+            - discount
+            - shipping
+            - finance_cost
+            - grand_total
+            type: object
+        required:
+        - order_id
+        - timestamp
+        - shipping_method
+        - sales_channel
+        - customer
+        - totals
+        - billing_address
+        - shipping_address
+        - items
+        - payment
+        title: Order
+        type: object
+    Type: AWS::ApiGateway::Model
+  OrderReadScalingPolicy:
+    Properties:
+      PolicyName: OrderReadAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId:
+        Ref: ReadCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBReadCapacityUtilization
+        TargetValue: 70.0
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+  OrderTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: order_id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: order_id
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName:
+        Fn::Join:
+        - ''
+        - - IntegracionColecciones
+          - Order
+          - Ref: LNStack
+      Tags:
+      - Key: COST CENTER
+        Value: integracion-colecciones
+      - Key: Stack
+        Value:
+          Ref: LNStack
+    Type: AWS::DynamoDB::Table
+  OrderWriteScalingPolicy:
+    Properties:
+      PolicyName: OrderWriteAutoScalingPolicy
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId:
+        Ref: WriteCapacityScalableTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: DynamoDBWriteCapacityUtilization
+        TargetValue: 70.0
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+  PostCreditMemo:
+    Properties:
+      ApiKeyRequired: true
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        Credentials:
+          Fn::GetAtt:
+          - APIOpcionalesSQSIAM
+          - Arn
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: '#set($inputRoot = $input.path(''$'')){"message_id":
+              "$inputRoot.SendMessageResponse.SendMessageResult.MessageId"}'
+          SelectionPattern: 2\d{2}
+          StatusCode: '200'
+        - ResponseTemplates:
+            application/json: '#set($inputRoot = $input.path(''$'')){"message" : "$inputRoot.Error.Code"}'
+          SelectionPattern: 4\d{2}
+          StatusCode: '400'
+        PassthroughBehavior: NEVER
+        RequestParameters:
+          integration.request.header.Content-Type: '''application/x-www-form-urlencoded'''
+        RequestTemplates:
+          application/json: Action=SendMessage&MessageBody={"type":"creditmemo","payload":$input.json('$')}
+        Type: AWS
+        Uri:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:apigateway:'
+            - Ref: AWS::Region
+            - :sqs:path//
+            - Ref: AWS::AccountId
+            - /
+            - Fn::GetAtt:
+              - JobQueue
+              - QueueName
+      MethodResponses:
+      - ResponseModels:
+          application/json: Empty
+        StatusCode: '200'
+      - ResponseModels:
+          application/json: Error
+        StatusCode: '400'
+      RequestModels:
+        application/json:
+          Ref: CreditMemoModel
+      RequestValidatorId:
+        Ref: APIOpcionalesValidator
+      ResourceId:
+        Ref: APIOpcionalesCreditMemoResource
+      RestApiId:
+        Ref: APIOpcionales
+    Type: AWS::ApiGateway::Method
+  PostOrder:
+    Properties:
+      ApiKeyRequired: true
+      AuthorizationType: NONE
+      HttpMethod: POST
+      Integration:
+        Credentials:
+          Fn::GetAtt:
+          - APIOpcionalesSQSIAM
+          - Arn
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: '#set($inputRoot = $input.path(''$'')){"message_id":
+              "$inputRoot.SendMessageResponse.SendMessageResult.MessageId"}'
+          SelectionPattern: 2\d{2}
+          StatusCode: '200'
+        - ResponseTemplates:
+            application/json: '#set($inputRoot = $input.path(''$'')){"message" : "$inputRoot.Error.Code"}'
+          SelectionPattern: 4\d{2}
+          StatusCode: '400'
+        PassthroughBehavior: NEVER
+        RequestParameters:
+          integration.request.header.Content-Type: '''application/x-www-form-urlencoded'''
+        RequestTemplates:
+          application/json: Action=SendMessage&MessageBody={"type":"order","payload":$input.json('$')}
+        Type: AWS
+        Uri:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:apigateway:'
+            - Ref: AWS::Region
+            - :sqs:path//
+            - Ref: AWS::AccountId
+            - /
+            - Fn::GetAtt:
+              - JobQueue
+              - QueueName
+      MethodResponses:
+      - ResponseModels:
+          application/json: Empty
+        StatusCode: '200'
+      - ResponseModels:
+          application/json: Error
+        StatusCode: '400'
+      RequestModels:
+        application/json:
+          Ref: OrderModel
+      RequestValidatorId:
+        Ref: APIOpcionalesValidator
+      ResourceId:
+        Ref: APIOpcionalesOrderResource
+      RestApiId:
+        Ref: APIOpcionales
+    Type: AWS::ApiGateway::Method
+  ReadCapacityScalableTarget:
+    Properties:
+      MaxCapacity: 100
+      MinCapacity: 5
+      ResourceId:
+        Fn::Join:
+        - /
+        - - table
+          - Ref: OrderTable
+      RoleARN:
+        Fn::GetAtt:
+        - DBScalingRole
+        - Arn
+      ScalableDimension: dynamodb:table:ReadCapacityUnits
+      ServiceNamespace: dynamodb
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+  SapCMConsumer:
+    Properties:
+      CodeUri: s3://integracion-opcionales/9b9c504b2550819eb5194385731217e1
+      Environment:
+        Variables:
+          LN_STACK:
+            Ref: LNStack
+          SAP_CM_QUEUE_URL:
+            Ref: SapCMQueue
+          SAP_CM_WORKER:
+            Ref: SapCMWorker
+      Events:
+        Timer:
+          Properties:
+            Schedule: rate(5 minutes)
+          Type: Schedule
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${SapCMConsumerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 300
+    Type: AWS::Serverless::Function
+  SapCMConsumerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:ReceiveMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapCMQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapCMWorker.Arn}
+        PolicyName: lambda
+    Type: AWS::IAM::Role
+  SapCMDeadLetterQueue:
+    Type: AWS::SQS::Queue
+  SapCMQueue:
+    Properties:
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::Sub: ${SapCMDeadLetterQueue.Arn}
+        maxReceiveCount: 10
+    Type: AWS::SQS::Queue
+  SapCMWorker:
+    Properties:
+      CodeUri: s3://integracion-opcionales/cf492d7402969f1658b0de69d08b0d0f
+      Environment:
+        Variables:
+          LN_STACK:
+            Ref: LNStack
+          ORDER_TABLE:
+            Ref: OrderTable
+          SAP_CM_QUEUE_URL:
+            Ref: SapCMQueue
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${SapCMWorkerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 90
+    Type: AWS::Serverless::Function
+  SapCMWorkerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DetachNetworkInterface
+            - ec2:DeleteNetworkInterface
+            Effect: Allow
+            Resource: '*'
+        PolicyName: VPC-execution
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:DeleteMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapCMQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:dynamodb:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :table/
+                - Ref: OrderTable
+        PolicyName: dynamodb
+    Type: AWS::IAM::Role
+  SapOrderConsumer:
+    Properties:
+      CodeUri: s3://integracion-opcionales/a9b75f5b09ba24cf109755ca82923d5e
+      Environment:
+        Variables:
+          LN_STACK:
+            Ref: LNStack
+          SAP_ORDER_QUEUE_URL:
+            Ref: SapOrderQueue
+          SAP_ORDER_WORKER:
+            Ref: SapOrderWorker
+      Events:
+        Timer:
+          Properties:
+            Schedule: rate(5 minutes)
+          Type: Schedule
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${SapOrderConsumerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 300
+    Type: AWS::Serverless::Function
+  SapOrderConsumerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:ReceiveMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapOrderQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapOrderWorker.Arn}
+        PolicyName: lambda
+    Type: AWS::IAM::Role
+  SapOrderDeadLetterQueue:
+    Type: AWS::SQS::Queue
+  SapOrderQueue:
+    Properties:
+      DelaySeconds: 900
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::Sub: ${SapOrderDeadLetterQueue.Arn}
+        maxReceiveCount: 10
+    Type: AWS::SQS::Queue
+  SapOrderWorker:
+    Properties:
+      CodeUri: s3://integracion-opcionales/68673bfe33772032d66961e3bd6f11d4
+      Environment:
+        Variables:
+          BAU_QUEUE_URL:
+            Ref: BauQueue
+          LN_STACK:
+            Ref: LNStack
+          ORDER_TABLE:
+            Ref: OrderTable
+          SAP_ORDER_QUEUE_URL:
+            Ref: SapOrderQueue
+      Handler: index.handler
+      MemorySize: 128
+      Role:
+        Fn::Sub: ${SapOrderWorkerRole.Arn}
+      Runtime: nodejs6.10
+      Tags:
+        COST CENTER: integracion-colecciones
+        Stack:
+          Ref: LNStack
+      Timeout: 90
+    Type: AWS::Serverless::Function
+  SapOrderWorkerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Effect: Allow
+            Resource: arn:aws:logs:*:*:*
+        PolicyName: logs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DetachNetworkInterface
+            - ec2:DeleteNetworkInterface
+            Effect: Allow
+            Resource: '*'
+        PolicyName: VPC-execution
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:DeleteMessage
+            Effect: Allow
+            Resource:
+              Fn::Sub: ${SapOrderQueue.Arn}
+        PolicyName: sqs
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - sqs:SendMessage
+            Effect: Allow
+            Resource:
+            - Fn::Sub: ${BauQueue.Arn}
+        PolicyName: sqsSendMessage
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - dynamodb:Scan
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:UpdateItem
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:dynamodb:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :table/
+                - Ref: OrderTable
+        PolicyName: dynamodb
+    Type: AWS::IAM::Role
+  WriteCapacityScalableTarget:
+    Properties:
+      MaxCapacity: 100
+      MinCapacity: 5
+      ResourceId:
+        Fn::Join:
+        - /
+        - - table
+          - Ref: OrderTable
+      RoleARN:
+        Fn::GetAtt:
+        - DBScalingRole
+        - Arn
+      ScalableDimension: dynamodb:table:WriteCapacityUnits
+      ServiceNamespace: dynamodb
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+Transform: AWS::Serverless-2016-10-31

@@ -1,0 +1,2227 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "Integracion de pedidos para SALN",
+  "Parameters": {
+    "LNStack": {
+      "Type": "String",
+      "Default": "Test",
+      "AllowedValues": ["Test", "Production", "Dev"],
+      "Description": "LN Stack being used, Dev, Test or Production. Default is Test"
+    }
+  },
+  "Mappings": {
+    "BAUCredentials": {
+      "Dev": {
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "pwdColecciones",
+        "CONNSERVER": "SRVOLSQLQA",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
+      },      
+      "Test": {
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "pwdColecciones",
+        "CONNSERVER": "SRVOLSQLQA",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
+      },
+      "Production": {
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "weu4578SA}DV{xN",
+        "CONNSERVER": "SRVSQLAUDI16",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
+      }
+    }
+  },
+  "Resources": {
+    "APIOpcionalesSQSIAM": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "Path": "/app/all/",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "apigateway.amazonaws.com"
+                ]
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "APIGATEWAYIAMAll",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": "*",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Resource": [
+                    "*"
+                  ],
+                  "Action": [
+                    "sqs:SendMessage"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "APIOpcionales": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Description": "Integración de Pedidos para SALN",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            " - ",
+            [
+              "Order API",
+              {
+                "Ref": "LNStack"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "APIOpcionalesValidator": {
+      "Type": "AWS::ApiGateway::RequestValidator",
+      "Properties": {
+        "Name": "Validate Body",
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ValidateRequestBody": true,
+        "ValidateRequestParameters": false
+      }
+    },
+    "APIOpcionalesOrderResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "APIOpcionales",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "order"
+      }
+    },
+    "PostOrder": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "APIOpcionalesOrderResource"
+        },
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "OrderModel"
+          }
+        },
+        "RequestValidatorId": {
+          "Ref": "APIOpcionalesValidator"
+        },
+        "Integration": {
+          "Type": "AWS",
+          "Credentials": {
+            "Fn::GetAtt": [
+              "APIOpcionalesSQSIAM",
+              "Arn"
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "NEVER",
+          "RequestParameters": {
+            "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+          },
+          "RequestTemplates": {
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"order\",\"payload\":$input.json('$')}"
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
+              },
+              "SelectionPattern": "2\\d{2}"
+            },
+            {
+              "StatusCode": "400",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message\" : \"$inputRoot.Error.Code\"}"
+              },
+              "SelectionPattern": "4\\d{2}"
+            }
+          ],
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":sqs:path//",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                "/",
+                {
+                  "Fn::GetAtt": [
+                    "JobQueue",
+                    "QueueName"
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            }
+          },
+          {
+            "StatusCode": "400",
+            "ResponseModels": {
+              "application/json": "Error"
+            }
+          }
+        ]
+      }
+    },
+    "OrderModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "title": "Order",
+          "type": "object",
+          "required": [
+            "order_id",
+            "timestamp",
+            "shipping_method",
+            "sales_channel",
+            "customer",
+            "totals",
+            "billing_address",
+            "shipping_address",
+            "items",
+            "payment"
+          ],
+          "properties": {
+            "order_id": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "shipping_method": {
+              "type": "string"
+            },
+            "sales_channel": {
+              "type": "string"
+            },
+            "customer": {
+              "type": "object",
+              "required": [
+                "birth_date",
+                "email",
+                "first_name",
+                "last_name",
+                "id_type",
+                "id_number"
+              ],
+              "properties": {
+                "birth_date": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "id_type": {
+                  "type": "string",
+                  "enum": [
+                    "DNI",
+                    "CI",
+                    "LC",
+                    "LE",
+                    "PASAPORTE",
+                    "dni",
+                    "ci",
+                    "lc",
+                    "le",
+                    "pasaporte"
+                  ]
+                },
+                "id_number": {
+                  "type": "string"
+                },
+                "gender": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "enum": [
+                    "F",
+                    "M",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "totals": {
+              "type": "object",
+              "required": [
+                "subtotal",
+                "discount",
+                "shipping",
+                "finance_cost",
+                "grand_total"
+              ],
+              "properties": {
+                "subtotal": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "discount": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "shipping": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "finance_cost": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "grand_total": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "billing_address": {
+              "type": "object",
+              "required": [
+                "country",
+                "region",
+                "city",
+                "post_code",
+                "street",
+                "number",
+                "first_name",
+                "last_name",
+                "email",
+                "telephone"
+              ],
+              "properties": {
+                "country": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2
+                },
+                "region": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "post_code": {
+                  "type": "string"
+                },
+                "street": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "floor": {
+                  "type": "string"
+                },
+                "apartment": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "telephone": {
+                  "type": "string"
+                }
+              }
+            },
+            "shipping_address": {
+              "type": "object",
+              "required": [
+                "country",
+                "region",
+                "city",
+                "post_code",
+                "street",
+                "number",
+                "first_name",
+                "last_name",
+                "email",
+                "telephone"
+              ],
+              "properties": {
+                "country": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 2
+                },
+                "region": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "post_code": {
+                  "type": "string"
+                },
+                "street": {
+                  "type": "string"
+                },
+                "number": {
+                  "type": "integer"
+                },
+                "floor": {
+                  "type": "string"
+                },
+                "apartment": {
+                  "type": "string"
+                },
+                "first_name": {
+                  "type": "string"
+                },
+                "last_name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "telephone": {
+                  "type": "string"
+                }
+              }
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "name",
+                  "qty",
+                  "weight",
+                  "row_weight",
+                  "list_price",
+                  "discount_percent",
+                  "discount_amount",
+                  "row_total"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "qty": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                  },
+                  "weight": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "row_weight": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "list_price": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                  },
+                  "discount_percent": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "discount_amount": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "row_total": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "flags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "exclusive"
+                      ]
+                    }
+                  }
+                }
+              },
+              "minItems": 1
+            },
+            "payment": {
+              "type": "object",
+              "required": [
+                "method"
+              ],
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "transaction_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "APIOpcionalesCreditMemoResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "APIOpcionales",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "creditmemo"
+      }
+    },
+    "PostCreditMemo": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "ApiKeyRequired": true,
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "APIOpcionalesCreditMemoResource"
+        },
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "RequestModels": {
+          "application/json": {
+            "Ref": "CreditMemoModel"
+          }
+        },
+        "RequestValidatorId": {
+          "Ref": "APIOpcionalesValidator"
+        },
+        "Integration": {
+          "Type": "AWS",
+          "Credentials": {
+            "Fn::GetAtt": [
+              "APIOpcionalesSQSIAM",
+              "Arn"
+            ]
+          },
+          "IntegrationHttpMethod": "POST",
+          "PassthroughBehavior": "NEVER",
+          "RequestParameters": {
+            "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+          },
+          "RequestTemplates": {
+            "application/json": "Action=SendMessage&MessageBody={\"type\":\"creditmemo\",\"payload\":$input.json('$')}"
+          },
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message_id\": \"$inputRoot.SendMessageResponse.SendMessageResult.MessageId\"}"
+              },
+              "SelectionPattern": "2\\d{2}"
+            },
+            {
+              "StatusCode": "400",
+              "ResponseTemplates": {
+                "application/json": "#set($inputRoot = $input.path('$')){\"message\" : \"$inputRoot.Error.Code\"}"
+              },
+              "SelectionPattern": "4\\d{2}"
+            }
+          ],
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:aws:apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":sqs:path//",
+                {
+                  "Ref": "AWS::AccountId"
+                },
+                "/",
+                {
+                  "Fn::GetAtt": [
+                    "JobQueue",
+                    "QueueName"
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            }
+          },
+          {
+            "StatusCode": "400",
+            "ResponseModels": {
+              "application/json": "Error"
+            }
+          }
+        ]
+      }
+    },
+    "CreditMemoModel": {
+      "Type": "AWS::ApiGateway::Model",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "APIOpcionales"
+        },
+        "ContentType": "application/json",
+        "Schema": {
+          "title": "Credit Memo",
+          "type": "object",
+          "required": [
+            "creditmemo_id",
+            "order_id",
+            "timestamp",
+            "totals",
+            "items"
+          ],
+          "properties": {
+            "creditmemo_id": {
+              "type": "string"
+            },
+            "order_id": {
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "totals": {
+              "type": "object",
+              "properties": {
+                "shipping": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "sku",
+                  "name",
+                  "reason",
+                  "qty",
+                  "refund_amount",
+                  "discount_percent",
+                  "discount_amount",
+                  "row_total"
+                ],
+                "properties": {
+                  "sku": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "return_stock": {
+                    "type": "boolean"
+                  },
+                  "qty": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "refund_amount": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                  },
+                  "discount_percent": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "discount_amount": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "row_total": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "flags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "exclusive",
+                        "broken"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "JobQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "VisibilityTimeout": 60,
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${JobDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "JobDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "JobBrokerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsRead",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${JobQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsWrite",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${CrmQueue.Arn}"
+                    },
+                    {
+                      "Fn::Sub": "${SapCMQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "JobBroker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/JobBroker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::GetAtt": [
+            "JobBrokerRole",
+            "Arn"
+          ]
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "JOB_QUEUE_URL": {
+              "Ref": "JobQueue"
+            },
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
+            },
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "SapOrderQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "DelaySeconds": 900,
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${SapOrderDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "SapOrderDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "SapOrderConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapOrderQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapOrderWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapOrderConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SapOrderConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapOrderConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 300,
+        "Environment": {
+          "Variables": {
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
+            },
+            "SAP_ORDER_WORKER": {
+              "Ref": "SapOrderWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "SapOrderWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapOrderQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsSendMessage",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${BauQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapOrderWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SAPOrderWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapOrderWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 90,
+        "Environment": {
+          "Variables": {
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
+            },
+            "BAU_QUEUE_URL": {
+              "Ref": "BauQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "SapCMQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${SapCMDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "SapCMDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "SapCMConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapCMConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SapCMConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapCMConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 300,
+        "Environment": {
+          "Variables": {
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
+            "SAP_CM_WORKER": {
+              "Ref": "SapCMWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "SapCMWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${SapCMQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "SapCMWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/SAPCMWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${SapCMWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 90,
+        "Environment": {
+          "Variables": {
+            "SAP_CM_QUEUE_URL": {
+              "Ref": "SapCMQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "CrmQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${CrmDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "CrmDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "CRMConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CrmQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CRMWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CRMConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/CRMConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${CRMConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
+            },
+            "CRM_WORKER": {
+              "Ref": "CRMWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "CRMWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${CrmQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsSendMessage",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${SapOrderQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CRMWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/CRMWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${CRMWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 15,
+        "Environment": {
+          "Variables": {
+            "CRM_QUEUE_URL": {
+              "Ref": "CrmQueue"
+            },
+            "SAP_ORDER_QUEUE_URL": {
+              "Ref": "SapOrderQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "BauQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::Sub": "${BauDeadLetterQueue.Arn}"
+          },
+          "maxReceiveCount": 10
+        }
+      }
+    },
+    "BauDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue"
+    },
+    "BAUWorkerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "VPC-execution",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ec2:CreateNetworkInterface",
+                    "ec2:DescribeNetworkInterfaces",
+                    "ec2:DetachNetworkInterface",
+                    "ec2:DeleteNetworkInterface"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:DeleteMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${BauQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqsSendMessage",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "${SapOrderQueue.Arn}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "dynamodb",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:Scan",
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem"
+                  ],
+                  "Resource": {
+                    "Fn::Join" : [
+                      "",
+                      [
+                        "arn:aws:dynamodb:",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        ":",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        ":table/",
+                        {
+                          "Ref": "OrderTable"
+                        }
+                      ]
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "BauWorker": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/BAUWorker",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${BAUWorkerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 15,
+        "Environment": {
+          "Variables": {
+            "CONNUSER": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONNUSER"]},
+            "CONNPASS": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONNPASS"]},
+            "CONNSERVER": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONNSERVER"]},
+            "CONNDATABASE": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONNDATABASE"]},
+            "CONNPORT": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONNPORT"]},
+            "BAU_QUEUE_URL": {
+              "Ref": "BauQueue"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            },
+            "ORDER_TABLE": {
+              "Ref": "OrderTable"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "BAUConsumerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "logs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "sqs",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${BauQueue.Arn}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "lambda",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "lambda:InvokeFunction"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${BauWorker.Arn}"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "BAUConsumer": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "CodeUri": "./functions/BAUConsumer",
+        "Handler": "index.handler",
+        "MemorySize": 128,
+        "Role": {
+          "Fn::Sub": "${BAUConsumerRole.Arn}"
+        },
+        "Runtime": "nodejs6.10",
+        "Timeout": 60,
+        "Environment": {
+          "Variables": {
+            "BAU_QUEUE_URL": {
+              "Ref": "BauQueue"
+            },
+            "BAU_WORKER": {
+              "Ref": "BauWorker"
+            },
+            "LN_STACK": {
+              "Ref": "LNStack"
+            }
+          }
+        },
+        "Events": {
+          "Timer": {
+            "Type": "Schedule",
+            "Properties": {
+              "Schedule": "rate(5 minutes)"
+            }
+          }
+        },
+        "Tags": {
+          "COST CENTER": "integracion-colecciones",
+          "Stack": {
+            "Ref": "LNStack"
+          }
+        }
+      }
+    },
+    "OrderTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "order_id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "order_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "TableName": {
+          "Fn::Join": [
+            "",
+            [
+              "IntegracionColecciones",
+              "Order",
+              {
+                "Ref": "LNStack"
+              }
+            ]
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "COST CENTER",
+            "Value": "integracion-colecciones"
+          },
+          {
+            "Key": "Stack",
+            "Value": {
+              "Ref": "LNStack"
+            }
+          }
+        ]
+      }
+    },
+    "WriteCapacityScalableTarget": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "Properties": {
+        "MaxCapacity": 100,
+        "MinCapacity": 5,
+        "ResourceId": {
+          "Fn::Join": [
+            "/",
+            [
+              "table",
+              {
+                "Ref": "OrderTable"
+              }
+            ]
+          ]
+        },
+        "RoleARN": {
+          "Fn::GetAtt": [
+            "DBScalingRole",
+            "Arn"
+          ]
+        },
+        "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
+        "ServiceNamespace": "dynamodb"
+      }
+    },
+    "OrderWriteScalingPolicy": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": "OrderWriteAutoScalingPolicy",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "WriteCapacityScalableTarget"
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "TargetValue": 70.0,
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "DynamoDBWriteCapacityUtilization"
+          }
+        }
+      }
+    },
+    "ReadCapacityScalableTarget": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "Properties": {
+        "MaxCapacity": 100,
+        "MinCapacity": 5,
+        "ResourceId": {
+          "Fn::Join": [
+            "/",
+            [
+              "table",
+              {
+                "Ref": "OrderTable"
+              }
+            ]
+          ]
+        },
+        "RoleARN": {
+          "Fn::GetAtt": [
+            "DBScalingRole",
+            "Arn"
+          ]
+        },
+        "ScalableDimension": "dynamodb:table:ReadCapacityUnits",
+        "ServiceNamespace": "dynamodb"
+      }
+    },
+    "OrderReadScalingPolicy": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": "OrderReadAutoScalingPolicy",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "ReadCapacityScalableTarget"
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "TargetValue": 70.0,
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "DynamoDBReadCapacityUtilization"
+          }
+        }
+      }
+    },
+    "DBScalingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "application-autoscaling.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "root",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:DescribeTable",
+                    "dynamodb:UpdateTable",
+                    "cloudwatch:PutMetricAlarm",
+                    "cloudwatch:DescribeAlarms",
+                    "cloudwatch:GetMetricStatistics",
+                    "cloudwatch:SetAlarmState",
+                    "cloudwatch:DeleteAlarms"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e9d9a077-b551-441c-91d3-38e1ce755390" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/.jshintignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/.jshintrc" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/bau-queue-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/bau-worker-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/index.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/package-lock.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/package.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/spec/bau-queue-service.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/spec/bau-worker-service.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/spec/custom_boot.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/spec/index.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUConsumer/spec/support/jasmine.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/.jshintignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/.jshintrc" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/bau-queue-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/bau-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/index.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/order-table-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/package-lock.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/package.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/resources/events/sample-order.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/serverless.env.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/serverless.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/spec/bau-service.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/spec/custom_boot.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/spec/sample-order.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/BAUWorker/spec/support/jasmine.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/crm-service-production.wsdl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/iso-countries.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/resources/events/sample-order.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/sap-order-queue-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/serverless.env.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/serverless.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/spec/iso-countries.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/CRMWorker/spec/sap-order-queue-service.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/SAPOrderWorker/bau-queue-service.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/SAPOrderWorker/resources/events/sample-order.json" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/SAPOrderWorker/serverless.env.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/SAPOrderWorker/serverless.yml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/functions/SAPOrderWorker/spec/bau-queue-service.spec.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/integracion-opcionales" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yes" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/yes.pub" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cloudformation.json" afterPath="$PROJECT_DIR$/cloudformation.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/functions/CRMWorker/crm-service.js" afterPath="$PROJECT_DIR$/functions/CRMWorker/crm-service.js" />
+    </list>
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="450" />
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>./node_modules/.bin/</find>
+      <find>npm publish</find>
+      <find>Dev</find>
+      <find>CONN_PORT</find>
+      <find>CONN_USER</find>
+      <find>update</find>
+      <find>order</find>
+      <find>insert</find>
+      <find>shipping_method</find>
+      <find>OrderModel</find>
+      <find>RequestModels</find>
+      <find>PostCreditMemo</find>
+      <find>APIOpcionalesCreditMemoResource</find>
+      <find>APIOpcionales</find>
+      <find>CRM_QUEUE_URL</find>
+      <find>CrmQueue</find>
+      <find>CRM_WORKER</find>
+      <find>listaContactos</find>
+      <find>=&gt;</find>
+      <find>= &gt;</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>../../libs/node_modules/.bin/</replace>
+      <replace>CONNPORT</replace>
+      <replace>= &gt;</replace>
+      <replace>=&gt;</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>C:\Lagash\Projects\LaNacion\LaNacionAWS\integracion-opcionales\functions</dir>
+      <dir>C:\Lagash\Projects\LaNacion\LaNacionAWS\integracion-opcionales</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/functions/BAUConsumer/package.json" />
+        <option value="$PROJECT_DIR$/cloudformation.json" />
+        <option value="$PROJECT_DIR$/functions/CRMWorker/crm-service.js" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsFlowSettings">
+    <service-enabled>false</service-enabled>
+    <exe-path />
+    <annotation-enable>false</annotation-enable>
+    <other-services-enabled>false</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/functions/BAUConsumer/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/BAUWorker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/CRMConsumer/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/CRMWorker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/JobBroker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/SAPCMWorker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/SAPOrderWorker/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/SapCMConsumer/node_modules" />
+    <handled-path value="$PROJECT_DIR$/functions/SapOrderConsumer/node_modules" />
+    <handled-path value="$PROJECT_DIR$/libs/node_modules" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="6" />
+    <option name="width" value="1938" />
+    <option name="height" value="1048" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="integracion-opcionales" type="b2602c69:ProjectViewProjectNode" />
+              <item name="integracion-opcionales" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="integracion-opcionales" type="b2602c69:ProjectViewProjectNode" />
+              <item name="integracion-opcionales" type="462c0819:PsiDirectoryNode" />
+              <item name="functions" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="integracion-opcionales" type="b2602c69:ProjectViewProjectNode" />
+              <item name="integracion-opcionales" type="462c0819:PsiDirectoryNode" />
+              <item name="libs" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path" value="C:/Program Files/nodejs/node" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="settings.editor.selected.configurable" value="settings.nodejs" />
+    <property name="javascript.nodejs.core.library.configured.version" value="6.10.1" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e9d9a077-b551-441c-91d3-38e1ce755390" name="Default" comment="" />
+      <created>1537198532086</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1537198532086</updated>
+      <workItem from="1537198534903" duration="9321000" />
+      <workItem from="1537276042400" duration="1077000" />
+      <workItem from="1537277236348" duration="650000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="11048000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24986738" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24986738" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297491" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/libs/node_modules/aws-sdk/scripts/services-table-generator.js" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service-dev.wsdl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34950">
+          <caret line="1398" column="83" lean-forward="false" selection-start-line="1398" selection-start-column="69" selection-end-line="1398" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/order-table-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="31" lean-forward="false" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="14" column="34" lean-forward="true" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/crm-queue-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="12" column="57" lean-forward="true" selection-start-line="12" selection-start-column="57" selection-end-line="12" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service-dev.wsdl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34950">
+          <caret line="1398" column="83" lean-forward="false" selection-start-line="1398" selection-start-column="69" selection-end-line="1398" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/order-table-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/BAUConsumer/package.json" />
+    <entry file="file://$PROJECT_DIR$/deploy.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-50">
+          <caret line="7" column="29" lean-forward="false" selection-start-line="7" selection-start-column="29" selection-end-line="7" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yes.pub" />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-11">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5725">
+          <caret line="5" column="19" lean-forward="false" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libs/node_modules/nyc/node_modules/yallist/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="55" column="2928" lean-forward="false" selection-start-line="55" selection-start-column="2928" selection-end-line="55" selection-end-column="2928" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMConsumer/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-75">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libs/node_modules/kew/test/externs_node.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/.jshintrc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-300">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/spec/support/jasmine.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/spec/crm-queue-service.spec.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-129">
+          <caret line="35" column="33" lean-forward="true" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/EcmaScript.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="94" column="17" lean-forward="false" selection-start-line="94" selection-start-column="17" selection-end-line="94" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/DHTML.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="17" column="17" lean-forward="false" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/sap-order-queue-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="7" column="26" lean-forward="false" selection-start-line="7" selection-start-column="26" selection-end-line="7" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/SAPOrderWorker/package-lock.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-425">
+          <caret line="1" column="15" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/order-table-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/job-queue-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="703">
+          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/sap-cm-queue-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libs/node_modules/aws-sdk/clients/sqs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cloudformation.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="292">
+          <caret line="1582" column="31" lean-forward="false" selection-start-line="1582" selection-start-column="22" selection-end-line="1582" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMConsumer/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="800">
+          <caret line="38" column="1" lean-forward="true" selection-start-line="38" selection-start-column="1" selection-end-line="38" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMConsumer/crm-worker-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="4" column="49" lean-forward="false" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service-dev.wsdl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34950">
+          <caret line="1398" column="83" lean-forward="false" selection-start-line="1398" selection-start-column="69" selection-end-line="1398" selection-end-column="83" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/javascript/nodejs/library/node-console-stub.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="11" column="4" lean-forward="false" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/crm-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="500">
+          <caret line="20" column="4" lean-forward="false" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/CRMWorker/order-table-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="31" lean-forward="false" selection-start-line="25" selection-start-column="15" selection-end-line="25" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="14" column="34" lean-forward="false" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/functions/JobBroker/crm-queue-service.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="12" column="57" lean-forward="false" selection-start-line="12" selection-start-column="57" selection-end-line="12" selection-end-column="57" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
