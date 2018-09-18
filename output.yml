@@ -97,7 +97,7 @@ Resources:
     Type: AWS::ApiGateway::RequestValidator
   BAUConsumer:
     Properties:
-      CodeUri: s3://integracion-opcionales/7a119fac8f1ba5d98c65746b3e1c9505
+      CodeUri: s3://integracion-opcionales/9ce71f33f8ca5f5d2840f062b360d79c
       Environment:
         Variables:
           BAU_QUEUE_URL:
@@ -238,7 +238,7 @@ Resources:
     Type: AWS::SQS::Queue
   BauWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/cb23f15425810c651615faebb02a047a
+      CodeUri: s3://integracion-opcionales/57c0471128a6441d988907f1a71da31a
       Environment:
         Variables:
           BAU_QUEUE_URL:
@@ -350,7 +350,7 @@ Resources:
     Type: AWS::IAM::Role
   CRMWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/9fef35a6a71d32711985e06ab03bae7a
+      CodeUri: s3://integracion-opcionales/d95f21a10ce9da86f4fc2d7c342685ea
       Environment:
         Variables:
           CRM_QUEUE_URL:
@@ -554,7 +554,7 @@ Resources:
     Type: AWS::IAM::Role
   JobBroker:
     Properties:
-      CodeUri: s3://integracion-opcionales/01372f88bf8332badebb294a727fe14b
+      CodeUri: s3://integracion-opcionales/63f431e240a5643a7a172269d960ff0d
       Environment:
         Variables:
           CRM_QUEUE_URL:
@@ -1145,7 +1145,7 @@ Resources:
     Type: AWS::SQS::Queue
   SapCMWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/cf492d7402969f1658b0de69d08b0d0f
+      CodeUri: s3://integracion-opcionales/3496c82c8bcbbec9dd45cba7d824df73
       Environment:
         Variables:
           LN_STACK:
@@ -1301,7 +1301,7 @@ Resources:
     Type: AWS::SQS::Queue
   SapOrderWorker:
     Properties:
-      CodeUri: s3://integracion-opcionales/68673bfe33772032d66961e3bd6f11d4
+      CodeUri: s3://integracion-opcionales/4fa07d6f9bbae8f8ce5ff014355766bf
       Environment:
         Variables:
           BAU_QUEUE_URL:

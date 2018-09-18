@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run-script jshint && npm run-script jasmine && npm run-script coverage",
-    "jshint": "../../libs/node_modules/.bin/jshint .",
+    "jshint": "../../node_modules/.bin/jshint .",
     "jasmine": "../../libs/node_modules/.bin/nyc --all jasmine",
     "coverage": "../../libs/node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
   },
   "dependencies": {},
   "devDependencies": {
+    "and": "0.0.3",
     "aws-sdk": "^2.206.0",
+    "enter": "0.0.0",
+    "hit": "0.0.3",
     "jasmine": "^3.1.0",
     "jasmine-console-reporter": "^3.0.0",
-    "jshint": "^2.9.5",
+    "jshint": "^2.9.6",
     "lambda-tester": "^3.2.0",
     "nyc": "^13.0.0",
     "proxyquire": "^2.0.0",
