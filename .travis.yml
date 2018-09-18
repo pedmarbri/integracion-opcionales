@@ -3,10 +3,9 @@ sudo: false
 node_js: "6.10.1"
 cache:
   directories:
-    - functions/JobBroker/node_modules
-    - functions/SAPCMWorker/node_modules
-    - functions/SapOrderConsumer/node_modules
-    - functions/SAPOrderWorker/node_modules
+    - ../../libs/node_modules
+before_install:
+  - chmod +x /*
 install:
   - for d in $TRAVIS_BUILD_DIR/functions/* ; do cd $d && travis_wait npm install ; done ;
 script:
