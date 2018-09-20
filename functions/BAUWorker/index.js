@@ -19,6 +19,9 @@ exports.handler = (event, context, callback) => {
     .then(() => Promise.resolve(event))
     .then(BAUQueueService.deleteMessage)
     .then(result => callback(null, result))
-    .catch(callback);
+    .catch(error => {
+      console.log(error.toString());
+      callback(error);
+    });
 };
 

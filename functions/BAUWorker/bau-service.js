@@ -2,18 +2,18 @@
 
 const sql = require('mssql');
 
-const CONN_USER = process.env.CONN_USER;
-const CONN_PASS = process.env.CONN_PASS;
-const CONN_SERVER = process.env.CONN_SERVER;
-const CONN_DATABASE = process.env.CONN_DATABASE;
-const CONN_PORT = process.env.CONN_PORT;
+const CONNUSER = process.env.CONN_USER;
+const CONNPASS = process.env.CONNPASS;
+const CONNSERVER = process.env.CONNSERVER;
+const CONNDATABASE = process.env.CONNDATABASE;
+const CONNPORT = process.env.CONNPORT;
 
 const config = {
-  user: CONN_USER,
-  password: CONN_PASS,
-  server: CONN_SERVER,
-  database: CONN_DATABASE,
-  port: CONN_PORT,
+  user: CONNUSER,
+  password: CONNPASS,
+  server: CONNSERVER,
+  database: CONNDATABASE,
+  port: CONNPORT,
   options: {
     encrypt: false,
     abortTransactionOnError: true
@@ -64,6 +64,7 @@ exports.saveOrder = order => {
     .then(() => connection.close())
     .then(() => Promise.resolve({ order: order, error: null }))
     .catch(error => {
+      console.log('[saveOrder' + ' - ' + order.order_id + '] Catched error', error.toString());
       connection.close();
       return Promise.reject({ order: order, error: error });
     });
