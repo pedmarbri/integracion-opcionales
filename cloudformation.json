@@ -6,25 +6,36 @@
     "LNStack": {
       "Type": "String",
       "Default": "Test",
-      "AllowedValues": ["Test", "Production", "Dev"],
+      "AllowedValues": [
+        "Test",
+        "Production",
+        "Dev"
+      ],
       "Description": "LN Stack being used, Dev, Test or Production. Default is Test"
     }
   },
   "Mappings": {
     "BAUCredentials": {
+      "Dev": {
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "pwdColecciones",
+        "CONNSERVER": "SRVOLSQLQA",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
+      },
       "Test": {
-        "CONN_USER": "usrColecciones",
-        "CONN_PASS": "pwdColecciones",
-        "CONN_SERVER": "SRVOLSQLQA",
-        "CONN_DATABASE": "AUDIENCIA",
-        "CONN_PORT": "1434"
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "pwdColecciones",
+        "CONNSERVER": "SRVOLSQLQA",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
       },
       "Production": {
-        "CONN_USER": "usrColecciones",
-        "CONN_PASS": "weu4578SA}DV{xN",
-        "CONN_SERVER": "SRVSQLAUDI16",
-        "CONN_DATABASE": "AUDIENCIA",
-        "CONN_PORT": "1434"
+        "CONNUSER": "usrColecciones",
+        "CONNPASS": "weu4578SA}DV{xN",
+        "CONNSERVER": "SRVSQLAUDI16",
+        "CONNDATABASE": "AUDIENCIA",
+        "CONNPORT": "1434"
       }
     }
   },
@@ -847,7 +858,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Join" : [
+                    "Fn::Join": [
                       "",
                       [
                         "arn:aws:dynamodb:",
@@ -1149,7 +1160,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Join" : [
+                    "Fn::Join": [
                       "",
                       [
                         "arn:aws:dynamodb:",
@@ -1415,7 +1426,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Join" : [
+                    "Fn::Join": [
                       "",
                       [
                         "arn:aws:dynamodb:",
@@ -1696,7 +1707,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Join" : [
+                    "Fn::Join": [
                       "",
                       [
                         "arn:aws:dynamodb:",
@@ -1870,7 +1881,7 @@
                     "dynamodb:UpdateItem"
                   ],
                   "Resource": {
-                    "Fn::Join" : [
+                    "Fn::Join": [
                       "",
                       [
                         "arn:aws:dynamodb:",
@@ -1908,11 +1919,51 @@
         "Timeout": 15,
         "Environment": {
           "Variables": {
-            "CONN_USER": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONN_USER"]},
-            "CONN_PASS": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONN_PASS"]},
-            "CONN_SERVER": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONN_SERVER"]},
-            "CONN_DATABASE": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONN_DATABASE"]},
-            "CONN_PORT": { "Fn::FindInMap" : [ "BAUCredentials", { "Ref" : "LNStack" }, "CONN_PORT"]},
+            "CONNUSER": {
+              "Fn::FindInMap": [
+                "BAUCredentials",
+                {
+                  "Ref": "LNStack"
+                },
+                "CONNUSER"
+              ]
+            },
+            "CONNPASS": {
+              "Fn::FindInMap": [
+                "BAUCredentials",
+                {
+                  "Ref": "LNStack"
+                },
+                "CONNPASS"
+              ]
+            },
+            "CONNSERVER": {
+              "Fn::FindInMap": [
+                "BAUCredentials",
+                {
+                  "Ref": "LNStack"
+                },
+                "CONNSERVER"
+              ]
+            },
+            "CONNDATABASE": {
+              "Fn::FindInMap": [
+                "BAUCredentials",
+                {
+                  "Ref": "LNStack"
+                },
+                "CONNDATABASE"
+              ]
+            },
+            "CONNPORT": {
+              "Fn::FindInMap": [
+                "BAUCredentials",
+                {
+                  "Ref": "LNStack"
+                },
+                "CONNPORT"
+              ]
+            },
             "BAU_QUEUE_URL": {
               "Ref": "BauQueue"
             },
