@@ -28,14 +28,14 @@
         "CONNPASS": "pwdColecciones",
         "CONNSERVER": "SRVOLSQLQA",
         "CONNDATABASE": "AUDIENCIA",
-        "CONNPORT": "1434"
+        "CONNPORT": "1433"
       },
       "Production": {
         "CONNUSER": "usrColecciones",
         "CONNPASS": "weu4578SA}DV{xN",
         "CONNSERVER": "SRVSQLAUDI16",
         "CONNDATABASE": "AUDIENCIA",
-        "CONNPORT": "1434"
+        "CONNPORT": "1433"
       }
     }
   },
