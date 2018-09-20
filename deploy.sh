@@ -23,9 +23,9 @@ then
   STACK_NAME="${BUCKET}";
 fi
 
-if [ ! "$NODEVERSION" == "v6.10.1" ] ;
+if [ ! "$NODEVERSION" == "v8.10.0" ] ;
 then
-    echo "Node version must be 6.10.1"
+    echo "Node version must be 8.10.0"
     exit 1
 fi
 
