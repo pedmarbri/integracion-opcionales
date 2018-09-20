@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npm run-script jshint && npm run-script jasmine && npm run-script coverage",
+    "test": "npm run-script jshint && npm run-script jasmine",
     "jshint": "./node_modules/.bin/jshint .",
     "jasmine": "./node_modules/.bin/nyc --all jasmine",
-    "coverage": "./node_modules/.bin/nyc check-coverage --lines 10 --functions 10 --branches 10"
+    "coverage": "./node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
   },
   "dependencies": {
     "mssql": "^4.1.0"
