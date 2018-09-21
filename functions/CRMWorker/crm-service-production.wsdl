@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://slxwsdes/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://slxwsdes/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
-    <s:schema elementFormDefault="qualified" targetNamespace="http://slxwsdes/">
+    <s:schema elementFormDefault="qualified" targetNamespace="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/">
       <s:element name="Consulta_CuentaPorID">
         <s:complexType>
           <s:sequence>
@@ -3567,7 +3567,7 @@
   <wsdl:binding name="WS_SLXSoap" type="tns:WS_SLXSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Consulta_CuentaPorID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3576,7 +3576,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorCMRID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorCMRID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorCMRID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3585,7 +3585,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNombre">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorNombre" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNombre" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3594,7 +3594,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorDcoumento">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorDcoumento" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorDcoumento" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3603,7 +3603,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CtasCtesPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CtasCtesPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CtasCtesPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3612,7 +3612,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentasModificadasEl">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentasModificadasEl" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentasModificadasEl" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3621,7 +3621,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNumeroDeCtaCte">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorNumeroDeCtaCte" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNumeroDeCtaCte" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3630,7 +3630,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNombreDeFantasia">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CuentaPorNombreDeFantasia" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNombreDeFantasia" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3639,7 +3639,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3648,7 +3648,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeDocumentoDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeDocumentoDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeDocumentoDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3657,7 +3657,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SubtiposDeCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_SubtiposDeCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SubtiposDeCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3666,7 +3666,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MercadosDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MercadosDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MercadosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3675,7 +3675,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CondicionesIVADeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CondicionesIVADeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CondicionesIVADeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3684,7 +3684,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_VinculosLNDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_VinculosLNDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_VinculosLNDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3693,7 +3693,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadosDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_EstadosDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3702,7 +3702,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeAgencia">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeAgencia" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeAgencia" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3711,7 +3711,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeMonedaDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeMonedaDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeMonedaDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3720,7 +3720,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeClasificacionDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeClasificacionDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeClasificacionDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3729,7 +3729,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CentrosComerciales">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CentrosComerciales" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CentrosComerciales" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3738,7 +3738,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RubrosDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_RubrosDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RubrosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3747,7 +3747,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SubRubrosDeUnaCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_SubRubrosDeUnaCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SubRubrosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3756,7 +3756,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResponsablesComercialClub">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ResponsablesComercialClub" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResponsablesComercialClub" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3765,7 +3765,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Cuenta">
-      <soap:operation soapAction="http://slxwsdes/Alta_Cuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Cuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3774,7 +3774,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Cuenta">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Cuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Cuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3783,7 +3783,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3792,7 +3792,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3801,7 +3801,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorListaCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorListaCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorListaCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3810,7 +3810,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorApellidoNombre">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorApellidoNombre" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorApellidoNombre" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3819,7 +3819,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoEsModificable">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoEsModificable" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoEsModificable" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3828,7 +3828,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorDocumento">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorDocumento" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorDocumento" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3837,7 +3837,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorMail">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorMail" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorMail" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3846,7 +3846,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorTelefono">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoPorTelefono" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorTelefono" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3855,7 +3855,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactosModifcadosEl">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactosModifcadosEl" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactosModifcadosEl" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3864,7 +3864,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TotalAvisosDeUnContactoPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TotalAvisosDeUnContactoPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TotalAvisosDeUnContactoPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3873,7 +3873,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoNotaVigentePorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ContactoNotaVigentePorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoNotaVigentePorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3882,7 +3882,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadosDeUnContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_EstadosDeUnContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadosDeUnContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3891,7 +3891,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PrefijoNombre">
-      <soap:operation soapAction="http://slxwsdes/Consulta_PrefijoNombre" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PrefijoNombre" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3900,7 +3900,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDocumentoContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDocumentoContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDocumentoContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3909,7 +3909,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Sexos">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Sexos" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Sexos" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3918,7 +3918,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CondicionIVAContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CondicionIVAContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CondicionIVAContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3927,7 +3927,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MediosDeContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MediosDeContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MediosDeContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3936,7 +3936,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CargosDelContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CargosDelContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CargosDelContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3945,7 +3945,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_AreasDeTrabajoDelContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_AreasDeTrabajoDelContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_AreasDeTrabajoDelContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3954,7 +3954,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipificacionContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TipificacionContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipificacionContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3963,7 +3963,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionGastoAdministrativoContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_OpcionGastoAdministrativoContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionGastoAdministrativoContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3972,7 +3972,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivoGastoAdministrativo">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MotivoGastoAdministrativo" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivoGastoAdministrativo" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3981,7 +3981,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadoCivil">
-      <soap:operation soapAction="http://slxwsdes/Consulta_EstadoCivil" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadoCivil" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3990,7 +3990,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Profesiones">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Profesiones" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Profesiones" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -3999,7 +3999,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_VinculoLNContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_VinculoLNContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_VinculoLNContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4008,7 +4008,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Contacto">
-      <soap:operation soapAction="http://slxwsdes/Alta_Contacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Contacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4017,7 +4017,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Masiva_Contacto">
-      <soap:operation soapAction="http://slxwsdes/Alta_Masiva_Contacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Masiva_Contacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4026,7 +4026,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Contacto">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Contacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Contacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4035,7 +4035,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomicilioPorID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4044,7 +4044,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorIDEntidad">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomicilioPorIDEntidad" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorIDEntidad" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4053,7 +4053,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomicilioPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4062,7 +4062,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomiciliosDeCuentasModificadosEl">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomiciliosDeCuentasModificadosEl" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomiciliosDeCuentasModificadosEl" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4071,7 +4071,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomiciliosDeContactosModificadosEl">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomiciliosDeContactosModificadosEl" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomiciliosDeContactosModificadosEl" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4080,7 +4080,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_UrbanizacionesPrivadas">
-      <soap:operation soapAction="http://slxwsdes/Consulta_UrbanizacionesPrivadas" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_UrbanizacionesPrivadas" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4089,7 +4089,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_UrbanizacionesPrivadasPorDescripcion">
-      <soap:operation soapAction="http://slxwsdes/Consulta_UrbanizacionesPrivadasPorDescripcion" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_UrbanizacionesPrivadasPorDescripcion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4098,7 +4098,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_NormalizacionDomcilio">
-      <soap:operation soapAction="http://slxwsdes/Consulta_NormalizacionDomcilio" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_NormalizacionDomcilio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4107,7 +4107,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDomicilio">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDomicilio" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDomicilio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4116,7 +4116,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCalle">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCalle" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCalle" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4125,7 +4125,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Localidades">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Localidades" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Localidades" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4134,7 +4134,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Provincias">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Provincias" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Provincias" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4143,7 +4143,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Paises">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Paises" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Paises" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4152,7 +4152,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDePropiedad">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDePropiedad" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDePropiedad" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4161,7 +4161,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Domicilio">
-      <soap:operation soapAction="http://slxwsdes/Alta_Domicilio" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Domicilio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4170,7 +4170,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Domicilio">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Domicilio" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Domicilio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4179,7 +4179,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCredencialTitular">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCredencialTitular" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCredencialTitular" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4188,7 +4188,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCredencialAdicional">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCredencialAdicional" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCredencialAdicional" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4197,7 +4197,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeDiseñosDeCredencial">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeDiseñosDeCredencial" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeDiseñosDeCredencial" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4206,7 +4206,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCartaParaCredenciales">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCartaParaCredenciales" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCartaParaCredenciales" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4215,7 +4215,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesParaImprimirPor">
-      <soap:operation soapAction="http://slxwsdes/Consulta_OpcionesParaImprimirPor" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesParaImprimirPor" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4224,7 +4224,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesParaEnviarPor">
-      <soap:operation soapAction="http://slxwsdes/Consulta_OpcionesParaEnviarPor" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesParaEnviarPor" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4233,7 +4233,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCircuito">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TiposDeCircuito" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCircuito" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4242,7 +4242,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_GerenciasSolicitantesParaCredenciales">
-      <soap:operation soapAction="http://slxwsdes/Consulta_GerenciasSolicitantesParaCredenciales" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_GerenciasSolicitantesParaCredenciales" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4251,7 +4251,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PlazosParaCredenciales">
-      <soap:operation soapAction="http://slxwsdes/Consulta_PlazosParaCredenciales" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PlazosParaCredenciales" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4260,7 +4260,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TurnosDeEntregaParaCredencial">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TurnosDeEntregaParaCredencial" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TurnosDeEntregaParaCredencial" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4269,7 +4269,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RelacionTitularEnCredenciales">
-      <soap:operation soapAction="http://slxwsdes/Consulta_RelacionTitularEnCredenciales" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RelacionTitularEnCredenciales" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4278,7 +4278,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional">
-      <soap:operation soapAction="http://slxwsdes/Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4287,7 +4287,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialesPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CredencialesPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialesPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4296,7 +4296,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialesTitularesYAdicionalesPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CredencialesTitularesYAdicionalesPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialesTitularesYAdicionalesPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4305,7 +4305,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialCorrespondientePorPuntos">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CredencialCorrespondientePorPuntos" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialCorrespondientePorPuntos" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4314,7 +4314,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Credencial">
-      <soap:operation soapAction="http://slxwsdes/Alta_Credencial" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Credencial" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4323,7 +4323,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Credencial">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Credencial" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Credencial" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4332,7 +4332,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Baja_Credencial">
-      <soap:operation soapAction="http://slxwsdes/Baja_Credencial" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Baja_Credencial" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4341,7 +4341,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MedioDeContactoTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MedioDeContactoTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MedioDeContactoTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4350,7 +4350,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TemaCategoriaAsuntoTickets">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TemaCategoriaAsuntoTickets" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TemaCategoriaAsuntoTickets" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4359,7 +4359,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ArbolVisible">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ArbolVisible" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ArbolVisible" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4368,7 +4368,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ArbolNoVisible">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ArbolNoVisible" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ArbolNoVisible" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4377,7 +4377,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioEntregaTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DomicilioEntregaTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioEntregaTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4386,7 +4386,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PrioridadTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_PrioridadTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PrioridadTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4395,7 +4395,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DerivadoA">
-      <soap:operation soapAction="http://slxwsdes/Consulta_DerivadoA" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DerivadoA" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4404,7 +4404,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResultadoTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ResultadoTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResultadoTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4413,7 +4413,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResolucionPorTemaTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ResolucionPorTemaTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResolucionPorTemaTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4422,7 +4422,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Obsequio">
-      <soap:operation soapAction="http://slxwsdes/Consulta_Obsequio" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Obsequio" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4431,7 +4431,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoImporte">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TipoImporte" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoImporte" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4440,7 +4440,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivoNC">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MotivoNC" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivoNC" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4449,7 +4449,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoRetencion">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TipoRetencion" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoRetencion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4458,7 +4458,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivosDeIntencionDeBaja">
-      <soap:operation soapAction="http://slxwsdes/Consulta_MotivosDeIntencionDeBaja" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivosDeIntencionDeBaja" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4467,7 +4467,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_AreaGestora">
-      <soap:operation soapAction="http://slxwsdes/Consulta_AreaGestora" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_AreaGestora" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4476,7 +4476,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CanalDeIngresoDelAviso">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CanalDeIngresoDelAviso" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CanalDeIngresoDelAviso" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4485,7 +4485,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoDeAprobacion">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TipoDeAprobacion" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoDeAprobacion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4494,7 +4494,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResponsablesReclamo">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ResponsablesReclamo" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResponsablesReclamo" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4503,7 +4503,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CausaRaiz">
-      <soap:operation soapAction="http://slxwsdes/Consulta_CausaRaiz" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CausaRaiz" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4512,7 +4512,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RelacionCategoriaCausaRaiz">
-      <soap:operation soapAction="http://slxwsdes/Consulta_RelacionCategoriaCausaRaiz" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RelacionCategoriaCausaRaiz" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4521,7 +4521,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ProductosTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ProductosTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ProductosTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4530,7 +4530,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ActividadesARealizarAccionTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_ActividadesARealizarAccionTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ActividadesARealizarAccionTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4539,7 +4539,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadoAccionTicket">
-      <soap:operation soapAction="http://slxwsdes/Consulta_EstadoAccionTicket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadoAccionTicket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4548,7 +4548,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorId">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TicketPorId" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorId" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4557,7 +4557,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorCRMIDCuenta">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TicketPorCRMIDCuenta" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorCRMIDCuenta" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4566,7 +4566,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorCRMIDContacto">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TicketPorCRMIDContacto" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorCRMIDContacto" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4575,7 +4575,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorNumero">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TicketPorNumero" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorNumero" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4584,7 +4584,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Ticket">
-      <soap:operation soapAction="http://slxwsdes/Alta_Ticket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Ticket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4593,7 +4593,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Ticket">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Ticket" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Ticket" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4602,7 +4602,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TerminalesPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_TerminalesPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TerminalesPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4611,7 +4611,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4620,7 +4620,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorNumero">
-      <soap:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorNumero" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorNumero" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4629,7 +4629,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorCRMID">
-      <soap:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorCRMID" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorCRMID" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4638,7 +4638,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Suscripcion">
-      <soap:operation soapAction="http://slxwsdes/Modificacion_Suscripcion" style="document" />
+      <soap:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Suscripcion" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -4650,7 +4650,7 @@
   <wsdl:binding name="WS_SLXSoap12" type="tns:WS_SLXSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="Consulta_CuentaPorID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4659,7 +4659,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorCMRID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorCMRID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorCMRID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4668,7 +4668,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNombre">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorNombre" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNombre" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4677,7 +4677,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorDcoumento">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorDcoumento" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorDcoumento" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4686,7 +4686,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CtasCtesPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CtasCtesPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CtasCtesPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4695,7 +4695,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentasModificadasEl">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentasModificadasEl" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentasModificadasEl" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4704,7 +4704,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNumeroDeCtaCte">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorNumeroDeCtaCte" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNumeroDeCtaCte" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4713,7 +4713,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CuentaPorNombreDeFantasia">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CuentaPorNombreDeFantasia" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CuentaPorNombreDeFantasia" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4722,7 +4722,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4731,7 +4731,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeDocumentoDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeDocumentoDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeDocumentoDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4740,7 +4740,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SubtiposDeCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_SubtiposDeCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SubtiposDeCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4749,7 +4749,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MercadosDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MercadosDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MercadosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4758,7 +4758,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CondicionesIVADeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CondicionesIVADeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CondicionesIVADeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4767,7 +4767,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_VinculosLNDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_VinculosLNDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_VinculosLNDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4776,7 +4776,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadosDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_EstadosDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4785,7 +4785,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeAgencia">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeAgencia" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeAgencia" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4794,7 +4794,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeMonedaDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeMonedaDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeMonedaDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4803,7 +4803,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeClasificacionDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeClasificacionDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeClasificacionDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4812,7 +4812,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CentrosComerciales">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CentrosComerciales" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CentrosComerciales" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4821,7 +4821,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RubrosDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_RubrosDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RubrosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4830,7 +4830,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SubRubrosDeUnaCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_SubRubrosDeUnaCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SubRubrosDeUnaCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4839,7 +4839,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResponsablesComercialClub">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ResponsablesComercialClub" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResponsablesComercialClub" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4848,7 +4848,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Cuenta">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Cuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Cuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4857,7 +4857,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Cuenta">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Cuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Cuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4866,7 +4866,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4875,7 +4875,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4884,7 +4884,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorListaCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorListaCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorListaCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4893,7 +4893,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorApellidoNombre">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorApellidoNombre" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorApellidoNombre" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4902,7 +4902,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoEsModificable">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoEsModificable" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoEsModificable" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4911,7 +4911,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorDocumento">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorDocumento" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorDocumento" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4920,7 +4920,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorMail">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorMail" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorMail" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4929,7 +4929,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoPorTelefono">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoPorTelefono" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoPorTelefono" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4938,7 +4938,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactosModifcadosEl">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactosModifcadosEl" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactosModifcadosEl" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4947,7 +4947,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TotalAvisosDeUnContactoPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TotalAvisosDeUnContactoPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TotalAvisosDeUnContactoPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4956,7 +4956,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ContactoNotaVigentePorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ContactoNotaVigentePorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ContactoNotaVigentePorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4965,7 +4965,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadosDeUnContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_EstadosDeUnContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadosDeUnContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4974,7 +4974,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PrefijoNombre">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_PrefijoNombre" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PrefijoNombre" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4983,7 +4983,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDocumentoContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDocumentoContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDocumentoContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -4992,7 +4992,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Sexos">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Sexos" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Sexos" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5001,7 +5001,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CondicionIVAContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CondicionIVAContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CondicionIVAContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5010,7 +5010,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MediosDeContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MediosDeContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MediosDeContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5019,7 +5019,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CargosDelContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CargosDelContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CargosDelContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5028,7 +5028,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_AreasDeTrabajoDelContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_AreasDeTrabajoDelContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_AreasDeTrabajoDelContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5037,7 +5037,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipificacionContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TipificacionContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipificacionContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5046,7 +5046,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionGastoAdministrativoContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_OpcionGastoAdministrativoContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionGastoAdministrativoContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5055,7 +5055,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivoGastoAdministrativo">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MotivoGastoAdministrativo" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivoGastoAdministrativo" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5064,7 +5064,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadoCivil">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_EstadoCivil" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadoCivil" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5073,7 +5073,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Profesiones">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Profesiones" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Profesiones" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5082,7 +5082,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_VinculoLNContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_VinculoLNContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_VinculoLNContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5091,7 +5091,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Contacto">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Contacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Contacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5100,7 +5100,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Masiva_Contacto">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Masiva_Contacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Masiva_Contacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5109,7 +5109,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Contacto">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Contacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Contacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5118,7 +5118,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomicilioPorID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5127,7 +5127,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorIDEntidad">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomicilioPorIDEntidad" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorIDEntidad" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5136,7 +5136,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomicilioPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5145,7 +5145,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomiciliosDeCuentasModificadosEl">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomiciliosDeCuentasModificadosEl" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomiciliosDeCuentasModificadosEl" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5154,7 +5154,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomiciliosDeContactosModificadosEl">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomiciliosDeContactosModificadosEl" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomiciliosDeContactosModificadosEl" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5163,7 +5163,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_UrbanizacionesPrivadas">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_UrbanizacionesPrivadas" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_UrbanizacionesPrivadas" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5172,7 +5172,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_UrbanizacionesPrivadasPorDescripcion">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_UrbanizacionesPrivadasPorDescripcion" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_UrbanizacionesPrivadasPorDescripcion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5181,7 +5181,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_NormalizacionDomcilio">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_NormalizacionDomcilio" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_NormalizacionDomcilio" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5190,7 +5190,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDomicilio">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDomicilio" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDomicilio" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5199,7 +5199,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCalle">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCalle" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCalle" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5208,7 +5208,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Localidades">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Localidades" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Localidades" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5217,7 +5217,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Provincias">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Provincias" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Provincias" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5226,7 +5226,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Paises">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Paises" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Paises" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5235,7 +5235,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDePropiedad">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDePropiedad" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDePropiedad" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5244,7 +5244,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Domicilio">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Domicilio" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Domicilio" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5253,7 +5253,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Domicilio">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Domicilio" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Domicilio" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5262,7 +5262,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCredencialTitular">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCredencialTitular" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCredencialTitular" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5271,7 +5271,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCredencialAdicional">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCredencialAdicional" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCredencialAdicional" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5280,7 +5280,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeDiseñosDeCredencial">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeDiseñosDeCredencial" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeDiseñosDeCredencial" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5289,7 +5289,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCartaParaCredenciales">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCartaParaCredenciales" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCartaParaCredenciales" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5298,7 +5298,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesParaImprimirPor">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_OpcionesParaImprimirPor" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesParaImprimirPor" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5307,7 +5307,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesParaEnviarPor">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_OpcionesParaEnviarPor" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesParaEnviarPor" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5316,7 +5316,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TiposDeCircuito">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TiposDeCircuito" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TiposDeCircuito" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5325,7 +5325,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_GerenciasSolicitantesParaCredenciales">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_GerenciasSolicitantesParaCredenciales" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_GerenciasSolicitantesParaCredenciales" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5334,7 +5334,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PlazosParaCredenciales">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_PlazosParaCredenciales" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PlazosParaCredenciales" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5343,7 +5343,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TurnosDeEntregaParaCredencial">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TurnosDeEntregaParaCredencial" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TurnosDeEntregaParaCredencial" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5352,7 +5352,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RelacionTitularEnCredenciales">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_RelacionTitularEnCredenciales" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RelacionTitularEnCredenciales" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5361,7 +5361,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_OpcionesDeRelacionConTitularParaCredencialAdicional" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5370,7 +5370,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialesPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CredencialesPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialesPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5379,7 +5379,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialesTitularesYAdicionalesPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CredencialesTitularesYAdicionalesPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialesTitularesYAdicionalesPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5388,7 +5388,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CredencialCorrespondientePorPuntos">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CredencialCorrespondientePorPuntos" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CredencialCorrespondientePorPuntos" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5397,7 +5397,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Credencial">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Credencial" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Credencial" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5406,7 +5406,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Credencial">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Credencial" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Credencial" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5415,7 +5415,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Baja_Credencial">
-      <soap12:operation soapAction="http://slxwsdes/Baja_Credencial" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Baja_Credencial" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5424,7 +5424,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MedioDeContactoTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MedioDeContactoTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MedioDeContactoTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5433,7 +5433,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TemaCategoriaAsuntoTickets">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TemaCategoriaAsuntoTickets" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TemaCategoriaAsuntoTickets" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5442,7 +5442,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ArbolVisible">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ArbolVisible" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ArbolVisible" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5451,7 +5451,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ArbolNoVisible">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ArbolNoVisible" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ArbolNoVisible" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5460,7 +5460,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DomicilioEntregaTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DomicilioEntregaTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DomicilioEntregaTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5469,7 +5469,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_PrioridadTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_PrioridadTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_PrioridadTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5478,7 +5478,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_DerivadoA">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_DerivadoA" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_DerivadoA" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5487,7 +5487,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResultadoTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ResultadoTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResultadoTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5496,7 +5496,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResolucionPorTemaTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ResolucionPorTemaTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResolucionPorTemaTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5505,7 +5505,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_Obsequio">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_Obsequio" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_Obsequio" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5514,7 +5514,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoImporte">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TipoImporte" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoImporte" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5523,7 +5523,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivoNC">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MotivoNC" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivoNC" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5532,7 +5532,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoRetencion">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TipoRetencion" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoRetencion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5541,7 +5541,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_MotivosDeIntencionDeBaja">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_MotivosDeIntencionDeBaja" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_MotivosDeIntencionDeBaja" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5550,7 +5550,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_AreaGestora">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_AreaGestora" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_AreaGestora" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5559,7 +5559,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CanalDeIngresoDelAviso">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CanalDeIngresoDelAviso" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CanalDeIngresoDelAviso" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5568,7 +5568,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TipoDeAprobacion">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TipoDeAprobacion" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TipoDeAprobacion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5577,7 +5577,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ResponsablesReclamo">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ResponsablesReclamo" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ResponsablesReclamo" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5586,7 +5586,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_CausaRaiz">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_CausaRaiz" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_CausaRaiz" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5595,7 +5595,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_RelacionCategoriaCausaRaiz">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_RelacionCategoriaCausaRaiz" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_RelacionCategoriaCausaRaiz" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5604,7 +5604,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ProductosTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ProductosTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ProductosTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5613,7 +5613,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_ActividadesARealizarAccionTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_ActividadesARealizarAccionTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_ActividadesARealizarAccionTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5622,7 +5622,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_EstadoAccionTicket">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_EstadoAccionTicket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_EstadoAccionTicket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5631,7 +5631,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorId">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TicketPorId" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorId" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5640,7 +5640,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorCRMIDCuenta">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TicketPorCRMIDCuenta" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorCRMIDCuenta" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5649,7 +5649,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorCRMIDContacto">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TicketPorCRMIDContacto" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorCRMIDContacto" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5658,7 +5658,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TicketPorNumero">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TicketPorNumero" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TicketPorNumero" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5667,7 +5667,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Alta_Ticket">
-      <soap12:operation soapAction="http://slxwsdes/Alta_Ticket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Alta_Ticket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5676,7 +5676,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Ticket">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Ticket" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Ticket" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5685,7 +5685,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_TerminalesPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_TerminalesPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_TerminalesPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5694,7 +5694,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5703,7 +5703,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorNumero">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorNumero" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorNumero" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5712,7 +5712,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Consulta_SuscripcionPorCRMID">
-      <soap12:operation soapAction="http://slxwsdes/Consulta_SuscripcionPorCRMID" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Consulta_SuscripcionPorCRMID" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -5721,7 +5721,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="Modificacion_Suscripcion">
-      <soap12:operation soapAction="http://slxwsdes/Modificacion_Suscripcion" style="document" />
+      <soap12:operation soapAction="http://lnws.lanacion.com.ar/CRMWS/WS-SLX.asmx/Modificacion_Suscripcion" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
