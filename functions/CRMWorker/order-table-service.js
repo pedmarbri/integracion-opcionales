@@ -22,7 +22,7 @@ exports.saveResult = result => {
 
     let timestamp = new Date().toISOString();
 
-    if (result.error)  {
+    if (result.error) {
         params.UpdateExpression = 'set ' + [
             '#i.crm.last_result = :last_result',
             '#i.crm.last_timestamp = :now',

@@ -21,7 +21,6 @@ exports.handler = (event, context, callback) => {
         .then(result => callback(null, result))
         .catch(error => {
             console.log('[saveOrder' + ' - ' + order.order_id + '] Catched error', JSON.stringify(error));
-            console.log(error.toString());
             callback(error);
         });
 };

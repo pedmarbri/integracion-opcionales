@@ -1,9 +1,10 @@
 'use strict';
 
+var crypto = require('crypto');
 const sql = require('mssql');
 
 const CONNUSER = process.env.CONNUSER;
-const CONNPASS = process.env.CONNPASS;
+const CONNPASS = decrypt(process.env.CONNPASS);
 const CONNSERVER = process.env.CONNSERVER;
 const CONNDATABASE = process.env.CONNDATABASE;
 const CONNPORT = process.env.CONNPORT;
@@ -42,7 +43,7 @@ exports.saveOrder = order => {
             request.input('crm_id', sql.VarChar(12), order.crm_contact_id);
             request.input('total', sql.Money(), order.totals.grand_total);
 
-            return request.query('INSERT INTO [order] (order_id, glamit_id, timestamp, crmId, total) VALUES (@order_id, @glamit_id, @timestamp, @crm_id, @total)')
+            return request.query('INSERT INTO colecciones.[order] (order_id, glamit_id, timestamp, crmId, total) VALUES (@order_id, @glamit_id, @timestamp, @crm_id, @total)')
                 .then(() => {
                     // Make a chain of promises that resolve sequentially so the connection is released for each request
                     return order.items.reduce((chain, item) => {
@@ -53,7 +54,7 @@ exports.saveOrder = order => {
                             request.input('sku', sql.VarChar(512), item.sku);
                             request.input('row_total', sql.Money(), item.row_total);
 
-                            return request.query('INSERT INTO [order_items] (order_id, sku, row_total) VALUES (@order_id, @sku, @row_total)');
+                            return request.query('INSERT INTO colecciones.[order_items] (order_id, sku, row_total) VALUES (@order_id, @sku, @row_total)');
                         });
                     }, Promise.resolve()); // Initial promise
                 })
@@ -68,3 +69,10 @@ exports.saveOrder = order => {
             return Promise.reject({order: order, error: error});
         });
 };
+
+function decrypt(text){
+    var decipher = crypto.createDecipher('aes-256-cbc','lanacion');
+    var dec = decipher.update(text,'hex','utf8');
+    dec += decipher.final('utf8');
+    return dec;
+}
