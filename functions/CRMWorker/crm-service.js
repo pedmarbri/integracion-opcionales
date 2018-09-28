@@ -104,7 +104,7 @@ exports.insertContact = result => {
                         Provincia: result.order.billing_address.region,
                         Localidad: result.order.billing_address.city, Barrio: 'No Informa',
                         CodigoPostal: result.order.billing_address.post_code,
-                        Calle: result.order.billing_address.street,
+                        Calle: result.order.billing_address.street.substring(0,60),
                         Numero: formatStreetNumber(result.order.billing_address.number),
                         Piso: result.order.billing_address.floor,
                         Dpto: result.order.billing_address.apartment, TipoPropiedad: 'No Informa',

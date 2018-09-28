@@ -29,7 +29,7 @@
     }
   },
   "Mappings": {
-    "VpcCrm": {
+    "VpcAssignment": {
       "Dev": {
         "VPCSubnetIDs": "subnet-326bb755,subnet-92db06ce",
         "VPCSecurityGroupIDs": "sg-00cbfd78bcb1e6c72"
@@ -1080,6 +1080,28 @@
           "Stack": {
             "Ref": "LNStack"
           }
+        },
+        "VpcConfig": {
+          "SubnetIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSubnetIDs"]
+              }]
+          },
+          "SecurityGroupIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSecurityGroupIDs"]
+              }]
+          }
         }
       }
     },
@@ -1298,6 +1320,28 @@
           "COST CENTER": "integracion-colecciones",
           "Stack": {
             "Ref": "LNStack"
+          }
+        },
+        "VpcConfig": {
+          "SubnetIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSubnetIDs"]
+              }]
+          },
+          "SecurityGroupIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSecurityGroupIDs"]
+              }]
           }
         }
       }
@@ -1538,7 +1582,7 @@
           "SubnetIds": {
             "Fn::Split": [",",
               {
-                "Fn::FindInMap": ["VpcCrm",
+                "Fn::FindInMap": ["VpcAssignment",
                   {
                     "Ref": "LNStack"
                   },
@@ -1548,7 +1592,7 @@
           "SecurityGroupIds": {
             "Fn::Split": [",",
               {
-                "Fn::FindInMap": ["VpcCrm",
+                "Fn::FindInMap": ["VpcAssignment",
                   {
                     "Ref": "LNStack"
                   },
@@ -1716,6 +1760,28 @@
           "COST CENTER": "integracion-colecciones",
           "Stack": {
             "Ref": "LNStack"
+          }
+        },
+        "VpcConfig": {
+          "SubnetIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSubnetIDs"]
+              }]
+          },
+          "SecurityGroupIds": {
+            "Fn::Split": [",",
+              {
+                "Fn::FindInMap": ["VpcAssignment",
+                  {
+                    "Ref": "LNStack"
+                  },
+                  "VPCSecurityGroupIDs"]
+              }]
           }
         }
       }

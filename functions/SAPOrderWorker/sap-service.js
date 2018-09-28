@@ -78,6 +78,11 @@ const formatDiscountCondition = (item, index) => {
         return null;
     }
 
+    if (item.discount_percent > 100) {
+        // "throw" the error safely by returning it
+        return new Error("El porcentaje de descuento no puede ser mayor al 100%")
+    }
+
     let discountIsPercent = item.discount_percent > 0;
     let discountType = discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION;
     let discountAmount = discountIsPercent ? item.discount_percent : item.discount_amount;
