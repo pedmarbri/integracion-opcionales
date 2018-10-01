@@ -2,17 +2,17 @@ module.exports = {
     AD_SMTPADR: 'example@domain.com',
     AUART: 'ZPSI',
     AUGRU: '001',
-    BSTDK: '20181123', // !
-    BSTKD: '12700000000065', // !
+    BSTDK: '20181123',
+    BSTKD: '12700000000065',
     CITY: 'CABA',
     COUNTRY: 'AR',
     IHREZ: '1234',
-    KUNNR: 'Y600099', // !
+    KUNNR: 'AAA123',
     LANGU: 'S',
     NAME1: 'Juan Perez',
     NAME4: '12345678',
     SPART: '02',
-    T_CONDITIONS: { // !
+    T_CONDITIONS: {
         item: [
             {
                 KPOSN: 10,

@@ -47,7 +47,14 @@ const restrictNumber = function (num) {
   return Math.min(num, Math.pow(10, 10));
 };
 
-const formatTransactionId = payment => payment.transaction_id.substr(0, 12);
+const formatTransactionId = payment => {
+    if (!payment.transaction_id) {
+        return null;
+    }
+
+    return payment.transaction_id.substr(0, 12);
+};
+
 const formatCustomerName = customer => (customer.first_name + ' ' + customer.last_name).substr(0, 30);
 const formatCustomerIdNumber = customer => customer.id_number.substr(0, 30);
 
@@ -69,6 +76,11 @@ const formatPriceCondition = (item, index) => {
 const formatDiscountCondition = (item, index) => {
     if (item.discount_percent === 0 && item.discount_amount === 0) {
         return null;
+    }
+
+    if (item.discount_percent > 100) {
+        // "throw" the error safely by returning it
+        return new Error("El porcentaje de descuento no puede ser mayor al 100%")
     }
 
     let discountIsPercent = item.discount_percent > 0;
@@ -158,7 +170,7 @@ exports.sendOrder = order => {
         CITY: 'CABA',
         COUNTRY: 'AR',
         IHREZ: formatTransactionId(order.payment),
-        KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
+        KUNNR: order.crm_contact_id,
         LANGU: LANGUAGE_CODE,
         NAME1: formatCustomerName(order.customer),
         NAME4: formatCustomerIdNumber(order.customer),
@@ -205,6 +217,10 @@ exports.sendOrder = order => {
                 console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
                 console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
                 console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
+
+                if (result[0] && result[0].VBELN) {
+                  order.sap_id = result[0].VBELN;
+                }
 
                 return Promise.resolve({
                     result: result[0],

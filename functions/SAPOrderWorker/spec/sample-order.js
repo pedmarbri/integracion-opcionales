@@ -1,5 +1,6 @@
 module.exports = {
     order_id: '12700000000065',
+    crm_contact_id: 'AAA123',
     timestamp: '2018-11-23T18:49:03Z',
     shipping_method: 'andreanisucursal_andreanisucursal',
     sales_channel: 'store',

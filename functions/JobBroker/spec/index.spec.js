@@ -206,7 +206,9 @@ describe("Job Broker handler", () => {
             .verify(done);
     });
 
-    it('Fails when it cannot insert Order Message into Sap Order Queue', done => {
+    xit('Fails when it cannot insert Order Message into Sap Order Queue', done => {
+        // V2 does not send messages to Sap Order Queue anymore
+
         JobQueueServiceStub.receiveMessages.resolves([orderMessage]);
         OrderTableServiceStub.saveMessage.resolves(orderMessage);
         CrmQueueServiceStub.sendMessage.resolves(orderMessage);
