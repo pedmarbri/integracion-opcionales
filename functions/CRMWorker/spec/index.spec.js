@@ -16,6 +16,7 @@ describe('CRM Worker', () => {
     let CRMServiceStub = {};
     let CRMQueueServiceStub = {};
     let OrderTableServiceStub = {};
+    let SapOrderQueueServiceStub = {};
     let sampleOrder;
     let sampleEvent;
 
@@ -49,6 +50,13 @@ describe('CRM Worker', () => {
             deleteMessage: sinon.stub()
         };
 
+        SapOrderQueueServiceStub = {
+            /**
+             *  @var {Sinon.SinonStub}
+             */
+            sendMessage: sinon.stub()
+        };
+
         sampleEvent = {
             Body: JSON.stringify(sampleOrder)
         };
@@ -56,7 +64,8 @@ describe('CRM Worker', () => {
         CRMWorker = proxyquire('../index', {
             './crm-service': CRMServiceStub,
             './crm-queue-service': CRMQueueServiceStub,
-            './order-table-service': OrderTableServiceStub
+            './order-table-service': OrderTableServiceStub,
+            './sap-order-queue-service': SapOrderQueueServiceStub
         });
     });
 
@@ -79,6 +88,7 @@ describe('CRM Worker', () => {
         spyOn(CRMServiceStub, 'insertContact').and.callThrough();
         spyOn(OrderTableServiceStub, 'saveResult').and.callThrough();
         spyOn(CRMQueueServiceStub, 'deleteMessage').and.callThrough();
+        spyOn(SapOrderQueueServiceStub, 'sendMessage').and.callThrough();
     }
 
     it('Fails when CRM rejects', done => {
@@ -94,6 +104,7 @@ describe('CRM Worker', () => {
                 expect(CRMServiceStub.insertContact).not.toHaveBeenCalled();
                 expect(OrderTableServiceStub.saveResult).not.toHaveBeenCalled();
                 expect(CRMQueueServiceStub.deleteMessage).not.toHaveBeenCalled();
+                expect(SapOrderQueueServiceStub.sendMessage).not.toHaveBeenCalled();
             })
             .verify(done);
     });
@@ -142,6 +153,27 @@ describe('CRM Worker', () => {
                 expect(CRMQueueServiceStub.deleteMessage).toHaveBeenCalled();
             })
             .verify(done);
+    });
+
+    it('Sends Message to Sap Order Queue', done => {
+      CRMServiceStub.fetchContact.resolves({
+        contact: {
+          CRMID: '123'
+        }
+      });
+
+      setupSpies();
+
+      return LambdaTester(CRMWorker.handler)
+        .timeout(60)
+        .event(sampleEvent)
+        .expectResult(() => {
+          expect(CRMServiceStub.fetchContact).toHaveBeenCalled();
+          expect(OrderTableServiceStub.saveResult).toHaveBeenCalled();
+          expect(CRMQueueServiceStub.deleteMessage).toHaveBeenCalled();
+          expect(SapOrderQueueServiceStub.sendMessage).toHaveBeenCalled();
+        })
+        .verify(done);
     });
 
     it('Sends the original event to deleteMessage', done => {

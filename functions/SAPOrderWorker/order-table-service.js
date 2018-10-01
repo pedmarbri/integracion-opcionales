@@ -95,5 +95,5 @@ exports.saveResult = sapResult => {
     };
 
     return table.update(params).promise()
-        .then(() => Promise.resolve(sapResult.order));
+        .then(() => Promise.resolve(sapResult));
 };

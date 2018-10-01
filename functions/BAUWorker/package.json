@@ -1,0 +1,32 @@
+{
+  "name": "bau-worker",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run-script jshint && npm run-script jasmine",
+    "jshint": "./node_modules/.bin/jshint .",
+    "jasmine": "./node_modules/.bin/nyc --all jasmine",
+    "coverage": "./node_modules/.bin/nyc check-coverage --lines 95 --functions 95 --branches 95"
+  },
+  "dependencies": {
+    "mssql": "^4.1.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.222.1",
+    "jasmine": "^3.1.0",
+    "jasmine-console-reporter": "^2.0.1",
+    "jshint": "^2.9.5",
+    "lambda-tester": "^3.4.1",
+    "nyc": "^13.0.0",
+    "proxyquire": "^2.0.1",
+    "serverless": "^1.30.3",
+    "serverless-offline": "^3.25.4",
+    "sinon": "^4.4.10"
+  },
+  "nyc": {
+    "exclude": [
+      "spec"
+    ]
+  }
+}

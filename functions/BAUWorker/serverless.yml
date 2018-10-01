@@ -1,0 +1,10 @@
+service: CRMWorker
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-1
+
+functions:
+  BAUWorker:
+    handler: index.handler
+    environment: ${file(./serverless.env.yml):BAUWorker}

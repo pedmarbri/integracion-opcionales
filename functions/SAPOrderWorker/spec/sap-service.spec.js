@@ -12,7 +12,7 @@ function setupServiceMocks(clientStub, expectedRequest, sampleResponse) {
   return clientMock.expects('ZWS_GEN_PEDAsync')
       .once()
       .withArgs(expectedRequest)
-      .resolves(sampleResponse);
+      .resolves([sampleResponse, '<raw-xml></raw-xml>']);
 }
 
 describe('Sap Service', () => {
@@ -321,6 +321,23 @@ describe('Sap Service', () => {
 
       SapService.sendOrder(sampleOrder)
         .then(() => soapMethodExpectation.verify())
+        .catch(fail);
+    });
+
+    it('Resolves a full result after sendOrder', () => {
+      setupServiceMocks(clientStub, expectedRequest, sampleResponse);
+
+      SapService.sendOrder(sampleOrder)
+        .then(result => {
+          expect(result).toEqual({
+            result: jasmine.any(Object),
+            order: jasmine.any(Object),
+            rows: jasmine.any(Object)
+          });
+
+          // Order should contain the created SAP Order ID
+          expect(result.order.sap_id).toEqual('1234567890');
+        })
         .catch(fail);
     });
 });

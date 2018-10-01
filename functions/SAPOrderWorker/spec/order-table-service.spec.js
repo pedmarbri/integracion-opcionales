@@ -86,11 +86,10 @@ describe('Order Table', () => {
             .catch(result => expect(result).toEqual(jasmine.any(Error)));
     });
 
-    it('Resolves to the order on saveResult', () => {
-        sampleResponse.VBELN = null;
-
+    it('Resolves to the result on saveResult', () => {
         OrderTableService.saveResult(sampleResult)
-            .then(result => expect(result).toEqual(sampleResult.order));
+            .then(result => expect(result).toEqual(sampleResult))
+            .catch(fail);
     });
 
     it('Saves successful result to table', () => {

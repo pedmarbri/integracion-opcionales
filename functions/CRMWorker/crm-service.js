@@ -21,7 +21,7 @@ exports.fetchContact = order => {
 
         console.log('[fetchContact' + ' - ' + order.order_id + '] Request parameters', JSON.stringify(request));
 
-        return client.Consulta_ContactoPorDocumentoAsync(request, { timeout: 3000 })
+        return client.Consulta_ContactoPorDocumentoAsync(request, {timeout: 3000})
             .then(result => {
                 let contact = null;
 
@@ -30,12 +30,13 @@ exports.fetchContact = order => {
                 console.log('[fetchContact' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
 
 
-                if (result.length > 0 && result[0].hasOwnProperty("Consulta_ContactoPorDocumentoResult") &&
-                    result[0].Consulta_ContactoPorDocumentoResult.hasOwnProperty("Contactos") &&
+                if (result.length > 0 && result[0].hasOwnProperty('Consulta_ContactoPorDocumentoResult') &&
+                    result[0].Consulta_ContactoPorDocumentoResult.hasOwnProperty('Contactos') &&
                     result[0].Consulta_ContactoPorDocumentoResult.Contactos &&
-                    result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty("Contacto")
+                    result[0].Consulta_ContactoPorDocumentoResult.Contactos.hasOwnProperty('Contacto')
                 ) {
                     contact = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0];
+                    order.crm_contact_id = result[0].Consulta_ContactoPorDocumentoResult.Contactos.Contacto[0].CRMID;
                 }
 
                 return Promise.resolve({
@@ -63,11 +64,11 @@ exports.fetchContact = order => {
 };
 
 exports.insertContact = result => {
-  const getGenderFromCustomer = function (customer) {
-    return customer.gender ? customer.gender : null;
-  };
+    const getGenderFromCustomer = function (customer) {
+        return customer.gender ? customer.gender : null;
+    };
 
-  const createContact = client => {
+    const createContact = client => {
         const formatIdType = (customer, address) => {
             if (customer.id_type.toUpperCase() === ID_TYPE_PASSPORT_LONG) {
                 return ID_TYPE_PASSPORT;
@@ -80,11 +81,17 @@ exports.insertContact = result => {
             return customer.id_type;
         };
 
+        const formatStreetNumber = function (number) {
+            if (parseInt(number) > 0) {
+                return number;
+            }
+            return 'N/A';
+        };
         const request = {
             listaContactos: {
                 ContactoMasivo: [
                     {
-                        UP: false,
+                        UP: true,
                         VinculoLN: 'PROSPECT',
                         CondicionIVA: 'No Responsable',
                         TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
@@ -95,12 +102,13 @@ exports.insertContact = result => {
                         Email: result.order.customer.email,
                         Pais: isoCountries.getCountryName(result.order.billing_address.country),
                         Provincia: result.order.billing_address.region,
-                        Localidad: result.order.billing_address.city,
+                        Localidad: result.order.billing_address.city, Barrio: 'No Informa',
                         CodigoPostal: result.order.billing_address.post_code,
-                        Calle: result.order.billing_address.street,
-                        Numero: result.order.billing_address.number,
+                        Calle: result.order.billing_address.street.substring(0,60),
+                        Numero: formatStreetNumber(result.order.billing_address.number),
                         Piso: result.order.billing_address.floor,
-                        Dpto: result.order.billing_address.apartment,
+                        Dpto: result.order.billing_address.apartment, TipoPropiedad: 'No Informa',
+                        NombrePropiedad: 'No Informa',
                         TelCasa: result.order.billing_address.telephone,
                     }
                 ]
@@ -114,7 +122,7 @@ exports.insertContact = result => {
 
         console.log('[insertContact' + ' - ' + result.order.order_id + '] Request parameters', JSON.stringify(request));
 
-        return client.Alta_Masiva_ContactoAsync(request, { timeout: 5000 })
+        return client.Alta_Masiva_ContactoAsync(request, {timeout: 5000})
             .then(insertResult => {
                 let respuestaMasiva;
 
@@ -139,22 +147,23 @@ exports.insertContact = result => {
                         );
                     }
 
+                    result.order.crm_contact_id = respuestaMasiva.CRMID;
                     return Promise.resolve({
-                       order: result.order,
-                       contact: respuestaMasiva
+                        order: result.order,
+                        contact: respuestaMasiva
                     });
                 }
 
-                return Promise.reject(new Error("An error ocurred"));
+                return Promise.reject(new Error('An error ocurred'));
 
             })
             .catch(error => {
                 console.log('[insertContact' + ' - ' + result.order.order_id + '] Catched error', JSON.stringify(error));
 
                 return Promise.resolve({
-                   order: result.order,
-                   contact: null,
-                   error: error
+                    order: result.order,
+                    contact: null,
+                    error: error
                 });
             });
 

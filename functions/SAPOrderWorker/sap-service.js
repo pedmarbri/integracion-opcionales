@@ -78,6 +78,11 @@ const formatDiscountCondition = (item, index) => {
         return null;
     }
 
+    if (item.discount_percent > 100) {
+        error: new Error('El porcentaje de descuento no puede ser mayor al 100%');
+        return Promise.reject(error);
+    }
+
     let discountIsPercent = item.discount_percent > 0;
     let discountType = discountIsPercent ? PERCENT_DISCOUNT_CONDITION : FIXED_DISCOUNT_CONDITION;
     let discountAmount = discountIsPercent ? item.discount_percent : item.discount_amount;
@@ -165,7 +170,7 @@ exports.sendOrder = order => {
         CITY: 'CABA',
         COUNTRY: 'AR',
         IHREZ: formatTransactionId(order.payment),
-        KUNNR: LN_STACK === 'Production' ? 'Y600022' : 'Y600099',
+        KUNNR: order.crm_contact_id,
         LANGU: LANGUAGE_CODE,
         NAME1: formatCustomerName(order.customer),
         NAME4: formatCustomerIdNumber(order.customer),
@@ -212,6 +217,10 @@ exports.sendOrder = order => {
                 console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
                 console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
                 console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
+
+                if (result[0] && result[0].VBELN) {
+                  order.sap_id = result[0].VBELN;
+                }
 
                 return Promise.resolve({
                     result: result[0],

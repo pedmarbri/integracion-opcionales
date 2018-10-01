@@ -20,6 +20,7 @@ describe('Sap Order Worker Handler', () => {
     let sampleResult = {};
     let sampleOrder = {};
     let sampleResponse = {};
+    let BauQueueServiceStub = {};
 
     beforeEach(() => {
         sampleOrder = require('./sample-order');
@@ -51,6 +52,13 @@ describe('Sap Order Worker Handler', () => {
             deleteMessage: sinon.stub()
         };
 
+        BauQueueServiceStub = {
+          /**
+           * @var {Sinon.SinonStub}
+           */
+          sendMessage: sinon.stub()
+        };
+
         sampleMessage = {
             Body: '{"foo":"bar"}'
         };
@@ -58,7 +66,8 @@ describe('Sap Order Worker Handler', () => {
         SapOrderWorker = proxyquire('../index', {
             './sap-service': SapServiceStub,
             './sap-order-queue-service': SapOrderQueueServiceStub,
-            './order-table-service': OrderTableStub
+            './order-table-service': OrderTableStub,
+            './bau-queue-service': BauQueueServiceStub
         });
     });
 
@@ -126,4 +135,25 @@ describe('Sap Order Worker Handler', () => {
             .verify(done);
     });
 
+    it('Sends Message to Bau Queue', done => {
+        SapServiceStub.sendOrder.resolves(sampleResult);
+        OrderTableStub.saveResult.resolves(sampleOrder);
+        SapOrderQueueServiceStub.deleteMessage.resolves(sampleMessage);
+
+        spyOn(SapServiceStub, 'sendOrder').and.callThrough();
+        spyOn(OrderTableStub, 'saveResult').and.callThrough();
+        spyOn(SapOrderQueueServiceStub, 'deleteMessage').and.callThrough();
+        spyOn(BauQueueServiceStub, 'sendMessage').and.callThrough();
+
+        return LambdaTester(SapOrderWorker.handler)
+            .timeout(60)
+            .event(sampleMessage)
+            .expectResult(() => {
+                expect(SapServiceStub.sendOrder).toHaveBeenCalled();
+                expect(OrderTableStub.saveResult).toHaveBeenCalled();
+                expect(SapOrderQueueServiceStub.deleteMessage).toHaveBeenCalled();
+                expect(BauQueueServiceStub.sendMessage).toHaveBeenCalled();
+            })
+            .verify(done);
+    });
 });
