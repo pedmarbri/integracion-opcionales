@@ -44,7 +44,7 @@ const formatDate = isoDate => {
 
 // Avoid huge numbers
 const restrictNumber = function (num) {
-  return Math.min(num, Math.pow(10, 10));
+    return Math.min(num, Math.pow(10, 10));
 };
 
 const formatTransactionId = payment => {
@@ -79,8 +79,7 @@ const formatDiscountCondition = (item, index) => {
     }
 
     if (item.discount_percent > 100) {
-        error: new Error('El porcentaje de descuento no puede ser mayor al 100%');
-        return Promise.reject(error);
+        throw new Error("El porcentaje de descuento no puede ser mayor al 100%");
     }
 
     let discountIsPercent = item.discount_percent > 0;
@@ -120,7 +119,7 @@ const formatShippingCondition = totals => {
 const formatConditions = (items, totals) => {
     const conditions = [];
 
-    items.forEach(function(item, index) {
+    items.forEach(function (item, index) {
         conditions.push(formatPriceCondition(item, index));
         let discountCondition = formatDiscountCondition(item, index);
         if (discountCondition) {
@@ -138,104 +137,108 @@ const formatConditions = (items, totals) => {
 };
 
 exports.sendOrder = order => {
-    console.log('[sendOrder' + ' - ' + order.order_id + '] Sending order to SAP');
-    const sapRows = {};
+    try {
+        console.log('[sendOrder' + ' - ' + order.order_id + '] Sending order to SAP');
+        const sapRows = {};
 
-    const formatItems = orderItems => ({
-        item: orderItems.map((item, index) => {
-            const sapRow = (index + 1) * 10;
+        const formatItems = orderItems => ({
+            item: orderItems.map((item, index) => {
+                const sapRow = (index + 1) * 10;
 
-            sapRows[item.sku] = sapRow;
+                sapRows[item.sku] = sapRow;
 
-            return {
-                POSNR: sapRow,
-                MATNR: item.sku.substr(0, 18),
-                WERKS: CENTER_CODE,
-                LGORT: WAREHOUSE,
-                MENGE: restrictNumber(item.qty),
-                MEINS: MEASUREMENT_UNIT,
-                MVGR5: MATERIAL_GROUP_5,
-                KDMAT: item.name.substr(0, 35),
-                POSEX: String(sapRow)
+                return {
+                    POSNR: sapRow,
+                    MATNR: item.sku.substr(0, 18),
+                    WERKS: CENTER_CODE,
+                    LGORT: WAREHOUSE,
+                    MENGE: restrictNumber(item.qty),
+                    MEINS: MEASUREMENT_UNIT,
+                    MVGR5: MATERIAL_GROUP_5,
+                    KDMAT: item.name.substr(0, 35),
+                    POSEX: String(sapRow)
+                };
+            })
+        });
+
+        const formatRequest = order => ({
+            AD_SMTPADR: order.customer.email.substr(0, 241),
+            AUART: DOCUMENT_TYPE_ORDER,
+            AUGRU: ORDER_REASON_CODE,
+            BSTDK: formatDate(order.timestamp),
+            BSTKD: order.order_id.substr(0, 35),
+            CITY: 'CABA',
+            COUNTRY: 'AR',
+            IHREZ: formatTransactionId(order.payment),
+            KUNNR: order.crm_contact_id,
+            LANGU: LANGUAGE_CODE,
+            NAME1: formatCustomerName(order.customer),
+            NAME4: formatCustomerIdNumber(order.customer),
+            SPART: SECTOR_CODE,
+            T_CONDITIONS: formatConditions(order.items, order.totals),
+            T_ITEMS: formatItems(order.items),
+            T_RETURN: {
+                item: [
+                    {
+                        TYPE: '?',
+                        ID: '?',
+                        NUMBER: null,
+                        MESSAGE: null,
+                        LOG_NO: null,
+                        LOG_MSG_NO: null,
+                        MESSAGE_V1: null,
+                        MESSAGE_V2: null,
+                        MESSAGE_V3: null,
+                        MESSAGE_V4: null,
+                        PARAMETER: null,
+                        ROW: null,
+                        FIELD: null,
+                        SYSTEM: null
+                    }
+                ],
+            },
+            VBELN_EXT: null,
+            VKORG: SALES_ORGANIZATION,
+            VTWEG: SALES_CHANNEL
+        });
+
+        const callSapService = client => {
+            const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
+            const request = formatRequest(order);
+            const options = {
+                timeout: 60000
             };
-        })
-    });
 
-    const formatRequest = order => ({
-        AD_SMTPADR: order.customer.email.substr(0, 241),
-        AUART: DOCUMENT_TYPE_ORDER,
-        AUGRU: ORDER_REASON_CODE,
-        BSTDK: formatDate(order.timestamp),
-        BSTKD: order.order_id.substr(0, 35),
-        CITY: 'CABA',
-        COUNTRY: 'AR',
-        IHREZ: formatTransactionId(order.payment),
-        KUNNR: order.crm_contact_id,
-        LANGU: LANGUAGE_CODE,
-        NAME1: formatCustomerName(order.customer),
-        NAME4: formatCustomerIdNumber(order.customer),
-        SPART: SECTOR_CODE,
-        T_CONDITIONS: formatConditions(order.items, order.totals),
-        T_ITEMS: formatItems(order.items),
-        T_RETURN: {
-            item: [
-                {
-                    TYPE: '?',
-                    ID: '?',
-                    NUMBER: null,
-                    MESSAGE: null,
-                    LOG_NO: null,
-                    LOG_MSG_NO: null,
-                    MESSAGE_V1: null,
-                    MESSAGE_V2: null,
-                    MESSAGE_V3: null,
-                    MESSAGE_V4: null,
-                    PARAMETER: null,
-                    ROW: null,
-                    FIELD: null,
-                    SYSTEM: null
-                }
-            ],
-        },
-        VBELN_EXT: null,
-        VKORG: SALES_ORGANIZATION,
-        VTWEG: SALES_CHANNEL
-    });
+            client.addHttpHeader('Authorization', auth);
+            console.log('[sendOrder' + ' - ' + order.order_id + '] Request Parameters', JSON.stringify(request));
 
-    const callSapService = client => {
-        const auth = 'Basic ' + new Buffer(SAP_HTTP_USER + ':' + SAP_HTTP_PASS).toString('base64');
-        const request = formatRequest(order);
-        const options = {
-            timeout: 60000
+            return client.ZWS_GEN_PEDAsync(request, options)
+                .then(result => {
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
+
+                    if (result[0] && result[0].VBELN) {
+                        order.sap_id = result[0].VBELN;
+                    }
+
+                    return Promise.resolve({
+                        result: result[0],
+                        order: order,
+                        rows: sapRows
+                    });
+                })
+                .catch(error => {
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] Error', JSON.stringify(error));
+                    console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
+                    return Promise.reject(error);
+                });
         };
 
-        client.addHttpHeader('Authorization', auth);
-        console.log('[sendOrder' + ' - ' + order.order_id + '] Request Parameters', JSON.stringify(request));
-
-        return client.ZWS_GEN_PEDAsync(request, options)
-            .then(result => {
-                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
-                console.log('[sendOrder' + ' - ' + order.order_id + '] Result', JSON.stringify(result));
-                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
-
-                if (result[0] && result[0].VBELN) {
-                  order.sap_id = result[0].VBELN;
-                }
-
-                return Promise.resolve({
-                    result: result[0],
-                    order: order,
-                    rows: sapRows
-                });
-            })
-            .catch(error => {
-                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Request', client.lastRequest);
-                console.log('[sendOrder' + ' - ' + order.order_id + '] Error', JSON.stringify(error));
-                console.log('[sendOrder' + ' - ' + order.order_id + '] XML Response', client.lastResponse);
-                return Promise.reject(error);
-            });
-    };
-
-    return soap.createClientAsync(WSDL_URI)
-        .then(callSapService);
+        return soap.createClientAsync(WSDL_URI)
+            .then(callSapService);
+    } catch (error) {
+        return Promise.reject(error);
+    }
 };
