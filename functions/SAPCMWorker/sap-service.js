@@ -19,7 +19,16 @@ const SALES_CHANNEL = '02';
 const CENTER_CODE = 'SALN';
 const WAREHOUSE = 'GSTK';
 const MEASUREMENT_UNIT = 'EJE';
-const MATERIAL_GROUP_5 = '30';
+
+//Sale_Type from Glamit
+const ONESHOT_DES = 'oneshot';
+const SUSCRIPTION_DES = 'suscription';
+const MELI_DES = 'meli';
+//Sale_Type value convertion
+const ONESHOT = '31';
+const SUSCRIPTION = '33';
+const MELI = '35';
+var MATERIAL_GROUP_5;
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -147,6 +156,23 @@ exports.sendOrder = order => {
 
                 sapRows[item.sku] = sapRow;
 
+                if (typeof item.sale_type !== 'undefined' && item.sale_type !== null) {
+                    switch (item.sale_type) {
+                        case ONESHOT_DES:
+                            MATERIAL_GROUP_5 = ONESHOT;
+                            break;
+                        case SUSCRIPTION_DES:
+                            MATERIAL_GROUP_5 = SUSCRIPTION;
+                            break;
+                        case MELI_DES:
+                            MATERIAL_GROUP_5 = MELI;
+                            break;
+                        default:
+                            MATERIAL_GROUP_5 = ONESHOT;
+                    }
+                } else {
+                    MATERIAL_GROUP_5 = ONESHOT;
+                }
                 return {
                     POSNR: sapRow,
                     MATNR: item.sku.substr(0, 18),
