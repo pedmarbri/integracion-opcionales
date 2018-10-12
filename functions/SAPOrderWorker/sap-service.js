@@ -156,7 +156,7 @@ exports.sendOrder = order => {
 
                 sapRows[item.sku] = sapRow;
 
-                if (typeof item.sale_type !== 'undefined' && item.sale_type !== null) {
+                if (typeof item.sale_type !== 'undefined' || item.sale_type !=='' || item.sale_type !== null) {
                     switch (item.sale_type) {
                         case ONESHOT_DES:
                             MATERIAL_GROUP_5 = ONESHOT;
