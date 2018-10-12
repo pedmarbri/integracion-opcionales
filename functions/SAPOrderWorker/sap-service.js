@@ -28,7 +28,6 @@ const MELI_DES = 'meli';
 const ONESHOT = '30';
 const SUSCRIPTION = '32';
 const MELI = '34';
-var MATERIAL_GROUP_5;
 
 // Condition types
 const UNIT_PRICE_CONDITION = 'ZPBI';
@@ -152,6 +151,7 @@ exports.sendOrder = order => {
 
         const formatItems = orderItems => ({
             item: orderItems.map((item, index) => {
+                let MATERIAL_GROUP_5;
                 const sapRow = (index + 1) * 10;
 
                 sapRows[item.sku] = sapRow;

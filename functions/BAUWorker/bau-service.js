@@ -1,6 +1,6 @@
 'use strict';
 
-var crypto = require('crypto');
+const crypto = require('crypto');
 const sql = require('mssql');
 
 const CONNUSER = process.env.CONNUSER;

@@ -5,6 +5,7 @@ const isoCountries = require('./iso-countries');
 
 const LN_STACK = String(process.env.LN_STACK);
 const WSDL_URI = './crm-service-' + LN_STACK.toLowerCase() + '.wsdl';
+//const WSDL_URI = './crm-service.wsdl';
 
 const ID_TYPE_DNI = 'DNI';
 const ID_TYPE_PASSPORT = 'PAS';
@@ -93,7 +94,7 @@ exports.insertContact = result => {
                     {
                         UP: true,
                         VinculoLN: 'PROSPECT',
-                        CondicionIVA: 'No Responsable',
+                        CondicionIVA: 'Consumidor Final',
                         TipoDoc: formatIdType(result.order.customer, result.order.billing_address),
                         NumeroDoc: result.order.customer.id_number,
                         PrimerNombre: result.order.customer.first_name,
